@@ -5,7 +5,7 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-red-200">
       {/* Custom Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 bg-red-400">
+      <View className="flex-row items-center justify-between px-4 py-6 bg-red-400">
         <Text className="text-xl font-bold text-blue-600">Home</Text>
         <Link href="/profile" asChild>
           <Pressable className="px-3 py-1 bg-blue-600 rounded">
@@ -16,7 +16,7 @@ export default function HomeScreen() {
       {/* Main Content */}
       <View className="flex-1 items-center justify-center">
         <Text className="text-3xl font-bold text-blue-500">
-          Welcome to the App!
+          Hot reloading?...
         </Text>
       </View>
     </View>
