@@ -1,34 +1,66 @@
-# Team 3 Project (name for now)
+# RAO Rentals App
 
 ## Project Overview
-[Brief description of the business problem and solution]
+
+Car owners often have thousands of dollars in idle vehicle value, while renters face high costs and limited options with traditional rentals. RAO Rentals solves this by providing a trusted, mobile-first peer-to-peer car rental marketplace, enabling owners to monetize their vehicles and renters to find affordable, local options. The app streamlines listing, booking, payments, and secure messaging for a seamless user experience.
 
 ## Team Members & Roles
 
 - **Ken Brown** - Backend Software Engineer
 - **Cameron Stanley** - Backend Software Engineer
-- **Dustin Snellings** - Frontend Software Engineer
+- **Dustin Snellings** - Fullstack Software Engineer
+- **Kyle Coffie** - Frontend Software Engineer
 - **Andre Livsey** - Frontend Software Engineer
 - **Jim Gorman** - Cybersecurity Specialist
-- **[Name]** - Data Analyst
-- **[Name]** - QA Engineer
-- **[Additional roles as applicable]**
 
 ## Tech Stack
-- **Frontend:** [React, TypeScript, etc.]
-- **Backend:** [Python/Flask, Node.js, etc.]
-- **Database:** [PostgreSQL, MongoDB, etc.]
-- **Deployment:** [AWS, Heroku, etc.]
+
+**Frontend Framework:** React/TypeScript, React Native, Expo, NativeWind, Axios, Zustand, Stripe
+**Backend Technology:** NestJS
+**Database:** PostgreSQL, Firebase (images)
+**APIs & Integrations:** Prisma
+**Hosting & Deployment:** Docker + Render (backend), EAS (Expo Application Services) for mobile builds
 
 ## Getting Started
-[Setup instructions - will be expanded as project develops]
+
+### Running the `/frontend` Locally
+
+1. **Pull from develop branch**
+
+   ```sh
+   git pull upstream develop
+   ```
+
+2. **Install dependencies**
+
+   ```sh
+   cd /frontend
+   npm install
+   ```
+
+3. **Ensure Expo CLI is installed globally**
+
+     ```sh
+     npm install -g expo-cli
+     ```
+
+4. **Start the Expo development server**
+
+   ```sh
+   expo start
+   ```
+
+5. **Run on your device or emulator**
+   - Scan the QR code with Expo Go (iOS/Android) or launch on an emulator using the Expo CLI prompts.
 
 ## Project Documentation
-- [Link to PRD in Notion]
-- [Link to team workspace]
-- [Link to GITFLOW.md]
+
+- [RAO Rentals PRD](https://www.notion.so/codingtemple/Rao-Rentals-PRD-Participants-NEW-237d15b03f0a804b849cda29eb567e07?source=copy_link)
+- [RAO Rentals OS](https://www.notion.so/codingtemple/RAO-RENTALS-Tech-Residency-OS-239d15b03f0a804dbaf4caac35f8058c?source=copy_link)
+- [GITFLOW.md](https://github.com/Tech-Res-Team-3/team-3-project/blob/develop/GITFLOW.md)
 
 ## Team Communication
-- **Daily Standups:** [Time/Platform]
-- **Sprint Reviews:** [Schedule]
-- **Team Chat:** [Slack/Discord channel]
+
+- **Daily Standups:** TBD
+- **Sprint Reviews:** TBD
+- **Team Chat:** [Slack Channel](https://codingtemple.slack.com/archives/C096Y7KGXDL)
