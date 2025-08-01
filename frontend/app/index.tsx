@@ -1,24 +1,54 @@
-import { View, Text, Pressable } from "react-native";
+import { useState } from "react";
+import { View, Image, ImageBackground, Text, Pressable } from "react-native";
 import { Link } from "expo-router";
+import { Button } from "../components/Button";
 
 export default function HomeScreen() {
+  const [btnColor, setBtnColor] = useState("bg-ruby");
+
+  const handleTouch = () => {
+    setBtnColor(btnColor === "bg-ruby" ? "bg-ruby/20" : "bg-ruby");
+  };
   return (
-    <View className="flex-1 bg-red-200">
-      {/* Custom Header */}
-      <View className="flex-row items-center justify-between px-4 py-6 bg-red-400">
-        <Text className="text-xl font-bold text-blue-600">Home</Text>
-        <Link href="/profile" asChild>
-          <Pressable className="px-3 py-1 bg-blue-600 rounded">
-            <Text className="text-white font-semibold">Profile</Text>
-          </Pressable>
-        </Link>
-      </View>
-      {/* Main Content */}
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-3xl font-bold text-blue-500">
-          Hot reloading?...
-        </Text>
-      </View>
-    </View>
+    <>
+      <ImageBackground
+        source={require("../assets/city-background.jpg")}
+        className="flex-1"
+        resizeMode="cover"
+      >
+        {/* Overlay */}
+        <View className="absolute inset-0 bg-white/40" pointerEvents="none" />
+        <View className="flex-1">
+          {/* Logo */}
+          <View className="flex-col items-center justify-center gap-9 pt-24">
+            <Image
+              source={require("../assets/logo-main.png")}
+              className="w-3/4 h-44"
+              resizeMode="contain"
+            />
+            <Image
+              source={require("../assets/logo-sub.png")}
+              className="w-2/4 h-9"
+              resizeMode="contain"
+            />
+          </View>
+          {/* Buttons */}
+          <View className="absolute bottom-0 left-0 right-0 pb-28 flex-col items-center justify-end gap-6">
+            <Button
+              title="Sign Up"
+              onPress={handleTouch}
+              className={btnColor}
+              textClassName="text-white"
+            ></Button>
+            <Button
+              title="Login"
+              onPress={handleTouch}
+              className={`bg-white border-2 border-ruby text-ruby`}
+              textClassName="text-ruby"
+            ></Button>
+          </View>
+        </View>
+      </ImageBackground>
+    </>
   );
 }
