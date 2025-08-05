@@ -34,12 +34,14 @@ export default function HomeScreen() {
           </View>
           {/* Buttons */}
           <View className="absolute bottom-0 left-0 right-0 pb-28 flex-col items-center justify-end gap-6">
-            <Button
-              title="Sign Up"
-              onPress={handleTouch}
-              className={btnColor}
-              textClassName="text-white"
-            ></Button>
+            <Link href="/signup" asChild>
+              <Button
+                title="Sign Up"
+                className={btnColor}
+                textClassName="text-white"
+              ></Button>
+            </Link>
+
             <Button
               title="Login"
               onPress={handleTouch}
