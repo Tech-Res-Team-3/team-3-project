@@ -1,0 +1,99 @@
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Button } from "./Button";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+
+export default function SignUpForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreed, setAgreed] = useState(false);
+
+  const handleSignUp = () => {
+    // Handle sign up logic here
+  };
+
+  return (
+    <View className="w-full max-w-[400px] mx-auto p-6 bg-white">
+      <View className="mb-5">
+        <Text className="mb-2 text-xl font-semibold text-gray-400">Name</Text>
+        <TextInput
+          className="border border-gray-300 rounded-xl px-4 py-5"
+          value={name}
+          onChangeText={setName}
+          placeholder="Name"
+          placeholderTextColor="#d1d5db"
+          autoCapitalize="words"
+        />
+      </View>
+      <View className="mb-5">
+        <Text className="mb-2 text-xl font-semibold text-gray-400">Email</Text>
+        <TextInput
+          className="border border-gray-300 rounded-xl px-4 py-5"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          placeholderTextColor="#d1d5db"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
+      <View className="mb-5">
+        <Text className="mb-2 text-xl font-semibold text-gray-400">Password</Text>
+        <TextInput
+          className="border border-gray-300 rounded-xl px-4 py-5"
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Password"
+          placeholderTextColor="#d1d5db"
+          secureTextEntry
+        />
+      </View>
+      <View className="mb-5">
+        <Text className="mb-2 text-xl font-semibold text-gray-400">Confirm Password</Text>
+        <TextInput
+          className="border border-gray-300 rounded-xl px-4 py-5"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirm password"
+          placeholderTextColor="#d1d5db"
+          secureTextEntry
+        />
+      </View>
+      <View className="flex-row items-center mb-6 mt-3">
+        <TouchableOpacity
+          className={`w-5 h-5 border rounded mr-2 ${agreed ? "bg-ruby border-ruby" : "border-gray-400"}`}
+          onPress={() => setAgreed((prev) => !prev)}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: agreed }}
+        >
+          {agreed && (
+            <FontAwesome
+              name="check"
+              size={12}
+              color="#fff"
+              style={{ alignSelf: "center", marginTop: 1 }}
+            />
+          )}
+        </TouchableOpacity>
+        <Text className="text-lg">
+          I agree to <Text className="text-ruby">terms and conditions</Text>
+        </Text>
+      </View>
+      <Button
+        title="Sign Up"
+        onPress={handleSignUp}
+        disabled={!agreed}
+        className="bg-ruby self-center"
+        textClassName="text-white"
+      />
+      <Text className="text-xl font-semibold self-center pt-4">
+        Already have an account?
+      </Text>
+      <Text className="text-ruby text-lg font-bold self-center pb-3">
+        Login
+      </Text>
+    </View>
+  );
+}

@@ -3,7 +3,7 @@ import { TouchableOpacity, Text } from "react-native";
 
 interface ButtonProps {
   title: string;
-  onPress: () => void;
+  onPress?: () => void;
   className?: string;
   textClassName?: string;
   disabled?: boolean;
@@ -19,7 +19,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       activeOpacity={0.4}
-      className={`py-6 rounded-full w-11/12 items-center ${disabled ? "bg-gray-300" : ""} ${className}`}
+      className={`py-6 rounded-full w-[365] items-center ${disabled ? "bg-ruby/20" : ""} ${className}`}
       onPress={onPress}
       disabled={disabled}
     >
