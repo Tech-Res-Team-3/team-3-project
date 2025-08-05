@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "823838304957",
+    "project_id": "rao-rentals",
+    "storage_bucket": "rao-rentals.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823838304957:android:5846a1e78501c6ad1b65d4",
+        "android_client_info": {
+          "package_name": "com.raorentals.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823838304957-gsh4brqnba990o79ulukcknflod78gga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.raorentals.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "823838304957-v1b5g3nd18k1249qpd6vrtheq0a44632.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnbB8w5ptAxE8HD60Pgypt1HZKmqGSFvY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823838304957-v1b5g3nd18k1249qpd6vrtheq0a44632.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
