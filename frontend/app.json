@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.tempteam.frontend"
+      "package": "com.raorentals.app"
     },
     "scheme": "your-app-scheme",
     "web": {
@@ -38,7 +38,7 @@
             "image": "./assets/rao-logo-white.png",
             "backgroundColor": "#000000"
           },
-          "imageWidth": 200
+          "imageWidth": 300
         }
       ],
       "expo-router"
