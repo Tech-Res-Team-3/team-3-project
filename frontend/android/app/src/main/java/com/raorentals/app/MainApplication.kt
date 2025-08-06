@@ -1,4 +1,4 @@
-package com.tempteam.frontend
+package com.raorentals.app
 
 import android.app.Application
 import android.content.res.Configuration
