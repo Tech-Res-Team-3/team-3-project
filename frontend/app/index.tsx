@@ -33,7 +33,7 @@ export default function HomeScreen() {
             />
           </View>
           {/* Buttons */}
-          <View className="absolute bottom-0 left-0 right-0 pb-28 flex-col items-center justify-end gap-6">
+          <View className="absolute bottom-0 left-0 right-0 pb-24 flex-col items-center justify-end gap-6">
             <Link href="/signup" asChild>
               <Button
                 title="Sign Up"

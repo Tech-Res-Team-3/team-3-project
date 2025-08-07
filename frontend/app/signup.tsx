@@ -56,38 +56,40 @@ export default function SignUpScreen() {
 
   return (
     <>
-      <View className="items-center justify-center bg-white">
-        <Text className="text-black text-3xl font-semibold mt-20">
-          Sign Up to Continue
-        </Text>
-        <View className="flex flex-row gap-6 mt-6">
-          <SocialLoginButton
-            className="bg-gray-100 p-3"
-            icon={<AppleIcon size={36} />}
-            onPress={onAppleButtonPress}
-            size={36}
-          />
-          <SocialLoginButton
-            className="bg-gray-100 p-3"
-            icon={<GoogleIcon size={36} />}
-            onPress={onGoogleButtonPress}
-            size={36}
-          />
-          <SocialLoginButton
-            className="bg-gray-100 p-3"
-            icon={<FacebookIcon size={36} />}
-            onPress={onFacebookButtonPress}
-            size={36}
-          />
+      <View className="flex-1 justify-around h-full bg-white">
+        <View className="items-center justify-center bg-white pt-6">
+          <Text className="text-black text-2xl font-semibold">
+            Sign Up to Continue
+          </Text>
+          <View className="flex flex-row gap-6 mt-8">
+            <SocialLoginButton
+              className="bg-gray-100 p-3"
+              icon={<AppleIcon size={30} />}
+              onPress={onAppleButtonPress}
+              size={30}
+            />
+            <SocialLoginButton
+              className="bg-gray-100 p-3"
+              icon={<GoogleIcon size={30} />}
+              onPress={onGoogleButtonPress}
+              size={30}
+            />
+            <SocialLoginButton
+              className="bg-gray-100 p-3"
+              icon={<FacebookIcon size={30} />}
+              onPress={onFacebookButtonPress}
+              size={30}
+            />
+          </View>
+          <View className="flex flex-row w-5/6 items-center gap-3 mt-8">
+            <View className="flex-1 h-px bg-gray-300" />
+            <Text className="text-gray-800 text-lg font-bold">OR</Text>
+            <View className="flex-1 h-px bg-gray-300" />
+          </View>
         </View>
-        <View className="flex flex-row w-5/6 items-center gap-3 mt-4">
-          <View className="flex-1 h-px bg-gray-300" />
-          <Text className="text-gray-800 text-xl font-semibold">OR</Text>
-          <View className="flex-1 h-px bg-gray-300" />
+        <View className="items-center justify-end -mt-16 bg-white">
+          <SignUpForm />
         </View>
-      </View>
-      <View className="flex-1 items-center justify-end bg-white">
-        <SignUpForm />
       </View>
     </>
   );

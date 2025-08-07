@@ -2,6 +2,7 @@ import "../styles/global.css";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,13 +19,15 @@ export default function RootLayout() {
     return () => clearTimeout(timer);
   }, []);
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false, // Hide the default nav bar
-      }}
-    >
-      <Stack.Screen name="index" />
-      <Stack.Screen name="signup" />
-    </Stack>
+    <View className="flex-1 bg-white">
+      <Stack
+        screenOptions={{
+          headerShown: false, // Hide the default nav bar
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="signup" />
+      </Stack>
+    </View>
   );
 }
