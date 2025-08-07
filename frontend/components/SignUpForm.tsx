@@ -15,72 +15,81 @@ export default function SignUpForm() {
   };
 
   return (
-    <View className="w-full max-w-[400px] mx-auto p-6 bg-white">
-      <View className="mb-5">
-        <Text className="mb-2 text-xl font-semibold text-gray-400">Name</Text>
-        <TextInput
-          className="border border-gray-300 rounded-xl px-4 py-5"
-          value={name}
-          onChangeText={setName}
-          placeholder="Name"
-          placeholderTextColor="#d1d5db"
-          autoCapitalize="words"
-        />
+    <View className="w-full mx-auto bg-white">
+      <View className="justify-center px-5">
+        <View className="mb-3">
+          <Text className="mb-2 text-lg font-semibold text-gray-400">Name</Text>
+          <TextInput
+            className="border border-gray-300 rounded-xl px-4 py-5"
+            value={name}
+            onChangeText={setName}
+            placeholder="Name"
+            placeholderTextColor="#d1d5db"
+            autoCapitalize="words"
+          />
+        </View>
+        <View className="mb-3">
+          <Text className="mb-2 text-lg font-semibold text-gray-400">
+            Email
+          </Text>
+          <TextInput
+            className="border border-gray-300 rounded-xl px-4 py-5"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            placeholderTextColor="#d1d5db"
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+        <View className="mb-3">
+          <Text className="mb-2 text-lg font-semibold text-gray-400">
+            Password
+          </Text>
+          <TextInput
+            className="border border-gray-300 rounded-xl px-4 py-5"
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            placeholderTextColor="#d1d5db"
+            secureTextEntry
+          />
+        </View>
+        <View className="mb-3">
+          <Text className="mb-2 text-lg font-semibold text-gray-400">
+            Confirm Password
+          </Text>
+          <TextInput
+            className="border border-gray-300 rounded-xl px-4 py-5"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Confirm password"
+            placeholderTextColor="#d1d5db"
+            secureTextEntry
+          />
+        </View>
+        <View className="flex-row items-center mb-6 mt-1">
+          <TouchableOpacity
+            className={`w-5 h-5 border rounded mr-2 ${agreed ? "bg-ruby border-ruby" : "border-gray-400"}`}
+            onPress={() => setAgreed((prev) => !prev)}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: agreed }}
+          >
+            {agreed && (
+              <FontAwesome
+                name="check"
+                size={12}
+                color="#fff"
+                style={{ alignSelf: "center", marginTop: 1 }}
+              />
+            )}
+          </TouchableOpacity>
+          <Text className="text-lg">
+            I agree to <Text className="text-ruby">terms and conditions</Text>
+          </Text>
+        </View>
       </View>
-      <View className="mb-5">
-        <Text className="mb-2 text-xl font-semibold text-gray-400">Email</Text>
-        <TextInput
-          className="border border-gray-300 rounded-xl px-4 py-5"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          placeholderTextColor="#d1d5db"
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-      </View>
-      <View className="mb-5">
-        <Text className="mb-2 text-xl font-semibold text-gray-400">Password</Text>
-        <TextInput
-          className="border border-gray-300 rounded-xl px-4 py-5"
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          placeholderTextColor="#d1d5db"
-          secureTextEntry
-        />
-      </View>
-      <View className="mb-5">
-        <Text className="mb-2 text-xl font-semibold text-gray-400">Confirm Password</Text>
-        <TextInput
-          className="border border-gray-300 rounded-xl px-4 py-5"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          placeholder="Confirm password"
-          placeholderTextColor="#d1d5db"
-          secureTextEntry
-        />
-      </View>
-      <View className="flex-row items-center mb-6 mt-3">
-        <TouchableOpacity
-          className={`w-5 h-5 border rounded mr-2 ${agreed ? "bg-ruby border-ruby" : "border-gray-400"}`}
-          onPress={() => setAgreed((prev) => !prev)}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: agreed }}
-        >
-          {agreed && (
-            <FontAwesome
-              name="check"
-              size={12}
-              color="#fff"
-              style={{ alignSelf: "center", marginTop: 1 }}
-            />
-          )}
-        </TouchableOpacity>
-        <Text className="text-lg">
-          I agree to <Text className="text-ruby">terms and conditions</Text>
-        </Text>
-      </View>
+
       <Button
         title="Sign Up"
         onPress={handleSignUp}
@@ -91,7 +100,7 @@ export default function SignUpForm() {
       <Text className="text-xl font-semibold self-center pt-4">
         Already have an account?
       </Text>
-      <Text className="text-ruby text-lg font-bold self-center pb-3">
+      <Text className="text-ruby text-lg font-bold self-center pb-16">
         Login
       </Text>
     </View>
