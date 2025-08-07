@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "Rao Rentals",
+    "slug": "raorentals",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/rao-app-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -33,12 +33,12 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#c41111",
-          "image": "./assets/rao-logo-white.png",
+          "image": "./assets/rao-logo-white_pad.png",
           "dark": {
-            "image": "./assets/rao-logo-white.png",
+            "image": "./assets/rao-logo-white_pad.png",
             "backgroundColor": "#000000"
           },
-          "imageWidth": 300
+          "imageWidth": 200
         }
       ],
       "expo-router"
