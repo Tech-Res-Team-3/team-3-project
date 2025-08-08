@@ -20,7 +20,7 @@ export default function SignUpForm() {
         <View className="mb-3">
           <Text className="mb-2 text-lg font-semibold text-gray-400">Name</Text>
           <TextInput
-            className="border border-gray-300 rounded-xl px-4 py-5"
+            className="border border-gray-300 rounded-xl px-4 py-4"
             value={name}
             onChangeText={setName}
             placeholder="Name"
@@ -33,7 +33,7 @@ export default function SignUpForm() {
             Email
           </Text>
           <TextInput
-            className="border border-gray-300 rounded-xl px-4 py-5"
+            className="border border-gray-300 rounded-xl px-4 py-4"
             value={email}
             onChangeText={setEmail}
             placeholder="Email"
@@ -47,7 +47,7 @@ export default function SignUpForm() {
             Password
           </Text>
           <TextInput
-            className="border border-gray-300 rounded-xl px-4 py-5"
+            className="border border-gray-300 rounded-xl px-4 py-4"
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
@@ -60,7 +60,7 @@ export default function SignUpForm() {
             Confirm Password
           </Text>
           <TextInput
-            className="border border-gray-300 rounded-xl px-4 py-5"
+            className="border border-gray-300 rounded-xl px-4 py-4"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             placeholder="Confirm password"
