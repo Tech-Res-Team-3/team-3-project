@@ -1,8 +1,9 @@
 import "../styles/global.css";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
+import AppSplash from "../components/AppSplash";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -15,9 +16,15 @@ export default function RootLayout() {
   useEffect(() => {
     const timer = setTimeout(() => {
       SplashScreen.hideAsync();
-    }, 9000); // 9 second delay
+    }, 1000); // 1 second delay
     return () => clearTimeout(timer);
   }, []);
+
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return <AppSplash onFinish={() => setShowSplash(false)} />;
+  }
   return (
     <View className="flex-1 bg-white">
       <Stack

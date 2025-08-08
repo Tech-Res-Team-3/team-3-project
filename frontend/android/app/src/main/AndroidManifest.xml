@@ -25,7 +25,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="your-app-scheme"/>
-        <data android:scheme="exp+frontend"/>
         <data android:scheme="exp+raorentals"/>
       </intent-filter>
     </activity>
