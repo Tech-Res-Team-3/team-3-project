@@ -10,9 +10,9 @@ const config: ExpoConfig = {
   userInterfaceStyle: "light",
   newArchEnabled: true,
   splash: {
-    image: "./assets/splash-icon.png",
+    image: "./assets/transparent.png",
     resizeMode: "contain",
-    backgroundColor: "#ffffff"
+    backgroundColor: "#c41111"
   },
   ios: {
     supportsTablet: true
@@ -36,12 +36,12 @@ const config: ExpoConfig = {
       "expo-splash-screen",
       {
         backgroundColor: "#c41111",
-        image: "./assets/rao-logo-white_pad.png",
+        image: "./assets/transparent.png",
         dark: {
-          image: "./assets/rao-logo-white_pad.png",
-          backgroundColor: "#000000"
+          image: "./assets/transparent.png",
+          backgroundColor: "#c41111"
         },
-        imageWidth: 200
+        imageWidth: 100
       }
     ],
     "expo-router"
