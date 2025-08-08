@@ -9,6 +9,7 @@ import SignUpForm from "../components/SignUpForm";
 import { useEffect } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   getAuth,
   signInWithCredential,
@@ -24,6 +25,17 @@ export default function SignUpScreen() {
       webClientId: WEB_CLIENT_ID,
     });
   }, []);
+
+  async function onEmailRegister(email: string, password: string) {
+    try {
+      await createUserWithEmailAndPassword(getAuth(), email, password);
+      Alert.alert("Success", "Account created!");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      Alert.alert("Registration Error", errorMessage);
+    }
+  }
 
   async function onGoogleButtonPress() {
     try {
@@ -87,8 +99,8 @@ export default function SignUpScreen() {
             <View className="flex-1 h-px bg-gray-300" />
           </View>
         </View>
-        <View className="items-center justify-end bg-white pt-2">
-          <SignUpForm />
+        <View className="items-center justify-end -mt-16 bg-white">
+          <SignUpForm onRegister={onEmailRegister} />
         </View>
       </View>
     </>
