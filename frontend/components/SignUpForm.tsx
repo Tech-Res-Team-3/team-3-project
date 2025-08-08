@@ -1,17 +1,40 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Alert, View, Text, TextInput, TouchableOpacity } from "react-native";
 import { Button } from "./Button";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
-export default function SignUpForm() {
+type SignUpFormProps = {
+  onRegister?: (email: string, password: string) => Promise<void>;
+};
+
+export default function SignUpForm({ onRegister }: SignUpFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agreed, setAgreed] = useState(false);
 
-  const handleSignUp = () => {
-    // Handle sign up logic here
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
+    }
+    if (!agreed) {
+      Alert.alert("Error", "You must agree to the terms and conditions.");
+      return;
+    }
+    if (onRegister) {
+      await onRegister(email, password);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setAgreed(false);
+    }
   };
 
   return (
