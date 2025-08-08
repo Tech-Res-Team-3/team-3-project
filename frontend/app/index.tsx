@@ -1,5 +1,11 @@
-import { useState } from "react";
-import { View, Image, ImageBackground, Text, Pressable } from "react-native";
+import { use, useEffect, useState } from "react";
+import {
+  View,
+  Image,
+  ImageBackground,
+  Text,
+  Pressable,
+} from "react-native";
 import { Link } from "expo-router";
 import { Button } from "../components/Button";
 

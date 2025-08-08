@@ -57,28 +57,28 @@ export default function SignUpScreen() {
   return (
     <>
       <View className="flex-1 justify-around h-full bg-white">
-        <View className="items-center justify-center bg-white pt-6">
+        <View className="items-center justify-center bg-white pt-20">
           <Text className="text-black text-2xl font-semibold">
             Sign Up to Continue
           </Text>
-          <View className="flex flex-row gap-6 mt-8">
+          <View className="flex flex-row gap-6 mt-6">
             <SocialLoginButton
               className="bg-gray-100 p-3"
-              icon={<AppleIcon size={30} />}
+              icon={<AppleIcon size={28} />}
               onPress={onAppleButtonPress}
-              size={30}
+              size={28}
             />
             <SocialLoginButton
               className="bg-gray-100 p-3"
-              icon={<GoogleIcon size={30} />}
+              icon={<GoogleIcon size={28} />}
               onPress={onGoogleButtonPress}
-              size={30}
+              size={28}
             />
             <SocialLoginButton
               className="bg-gray-100 p-3"
-              icon={<FacebookIcon size={30} />}
+              icon={<FacebookIcon size={28} />}
               onPress={onFacebookButtonPress}
-              size={30}
+              size={28}
             />
           </View>
           <View className="flex flex-row w-5/6 items-center gap-3 mt-8">
@@ -87,7 +87,7 @@ export default function SignUpScreen() {
             <View className="flex-1 h-px bg-gray-300" />
           </View>
         </View>
-        <View className="items-center justify-end -mt-16 bg-white">
+        <View className="items-center justify-end bg-white pt-2">
           <SignUpForm />
         </View>
       </View>
