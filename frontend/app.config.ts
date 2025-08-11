@@ -2,6 +2,7 @@ import { ExpoConfig } from "expo/config";
 import 'tsx/cjs';
 
 const config: ExpoConfig = {
+  backgroundColor: "#c41111",
   name: "Rao Rentals",
   slug: "raorentals",
   version: "1.0.0",
@@ -32,18 +33,6 @@ const config: ExpoConfig = {
   },
   plugins: [
     "./plugins/withCustomGradle",
-    [
-      "expo-splash-screen",
-      {
-        backgroundColor: "#c41111",
-        image: "./assets/transparent.png",
-        dark: {
-          image: "./assets/transparent.png",
-          backgroundColor: "#c41111"
-        },
-        imageWidth: 100
-      }
-    ],
     "expo-router"
   ],
   extra: {

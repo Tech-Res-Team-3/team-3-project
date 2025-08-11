@@ -1,29 +1,38 @@
-import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, Animated } from "react-native";
 import LottieView from "lottie-react-native";
+import { useRouter } from "expo-router";
 
 const LOTTIE_DURATION = 2830; // ms
 const EXTRA_DELAY = 1000; // ms to keep splash after animation
 
-export default function AppSplash({ onFinish }: { onFinish: () => void }) {
+export default function SplashScreenScreen() {
   const animation = useRef<LottieView>(null);
   const [animationFinished, setAnimationFinished] = useState(false);
+  const opacity = useRef(new Animated.Value(1)).current;
+  const router = useRouter();
 
   useEffect(() => {
-    SplashScreen.hideAsync();
     animation.current?.play();
   }, []);
 
   useEffect(() => {
     if (animationFinished) {
-      const timer = setTimeout(onFinish, EXTRA_DELAY);
+      const timer = setTimeout(() => {
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }).start(() => {
+          router.replace("/"); // Navigate to index after fade out
+        });
+      }, EXTRA_DELAY);
       return () => clearTimeout(timer);
     }
-  }, [animationFinished, onFinish]);
+  }, [animationFinished, router, opacity]);
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { opacity }]}>
       <LottieView
         ref={animation}
         source={require("../assets/animations/rao-rentals.json")}
@@ -32,7 +41,7 @@ export default function AppSplash({ onFinish }: { onFinish: () => void }) {
         style={styles.lottie}
         onAnimationFinish={() => setAnimationFinished(true)}
       />
-    </View>
+    </Animated.View>
   );
 }
 
