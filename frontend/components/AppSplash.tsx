@@ -1,16 +1,26 @@
-import React, { useEffect, useRef } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+import React, { useEffect, useRef, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
+
+const LOTTIE_DURATION = 2830; // ms
+const EXTRA_DELAY = 1000; // ms to keep splash after animation
 
 export default function AppSplash({ onFinish }: { onFinish: () => void }) {
   const animation = useRef<LottieView>(null);
+  const [animationFinished, setAnimationFinished] = useState(false);
 
   useEffect(() => {
+    SplashScreen.hideAsync();
     animation.current?.play();
-    // Set a timer for the animation duration (e.g., 2.8s)
-    const timer = setTimeout(onFinish, 2830);
-    return () => clearTimeout(timer);
-  }, [onFinish]);
+  }, []);
+
+  useEffect(() => {
+    if (animationFinished) {
+      const timer = setTimeout(onFinish, EXTRA_DELAY);
+      return () => clearTimeout(timer);
+    }
+  }, [animationFinished, onFinish]);
 
   return (
     <View style={styles.container}>
@@ -20,6 +30,7 @@ export default function AppSplash({ onFinish }: { onFinish: () => void }) {
         autoPlay={false}
         loop={false}
         style={styles.lottie}
+        onAnimationFinish={() => setAnimationFinished(true)}
       />
     </View>
   );
