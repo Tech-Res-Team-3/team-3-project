@@ -1,20 +1,9 @@
 import { use, useEffect, useState } from "react";
-import {
-  View,
-  Image,
-  ImageBackground,
-  Text,
-  Pressable,
-} from "react-native";
+import { View, Image, ImageBackground, Text, Pressable } from "react-native";
 import { Link } from "expo-router";
 import { Button } from "../components/Button";
 
 export default function HomeScreen() {
-  const [btnColor, setBtnColor] = useState("bg-ruby");
-
-  const handleTouch = () => {
-    setBtnColor(btnColor === "bg-ruby" ? "bg-ruby/20" : "bg-ruby");
-  };
   return (
     <>
       <ImageBackground
@@ -43,17 +32,18 @@ export default function HomeScreen() {
             <Link href="/signup" asChild>
               <Button
                 title="Sign Up"
-                className={btnColor}
+                className={`bg-ruby`}
                 textClassName="text-white"
               ></Button>
             </Link>
 
-            <Button
-              title="Login"
-              onPress={handleTouch}
-              className={`bg-white border-2 border-ruby text-ruby`}
-              textClassName="text-ruby"
-            ></Button>
+            <Link href="/login" asChild>
+              <Button
+                title="Login"
+                className={`bg-white border-2 border-ruby`}
+                textClassName="text-ruby"
+              ></Button>
+            </Link>
           </View>
         </View>
       </ImageBackground>
