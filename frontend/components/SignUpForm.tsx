@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Alert, View, Text, TextInput, TouchableOpacity } from "react-native";
 import { Button } from "./Button";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 type SignUpFormProps = {
   onRegister?: (email: string, password: string) => Promise<void>;
@@ -123,9 +124,11 @@ export default function SignUpForm({ onRegister }: SignUpFormProps) {
       <Text className="text-xl font-semibold self-center pt-4">
         Already have an account?
       </Text>
-      <Text className="text-ruby text-lg font-bold self-center pb-16">
-        Login
-      </Text>
+      <Link href="/login" replace asChild>
+        <Text className="text-ruby text-lg font-bold self-center pb-16">
+          Login
+        </Text>
+      </Link>
     </View>
   );
 }
