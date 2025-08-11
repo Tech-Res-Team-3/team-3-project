@@ -1,4 +1,4 @@
-import { View, Text, Button, Alert } from "react-native";
+import { View, Text, Alert } from "react-native";
 import {
   AppleIcon,
   FacebookIcon,
@@ -6,7 +6,7 @@ import {
 } from "../components/icons/SocialIcons";
 import SocialLoginButton from "../components/SocialLoginButton";
 import LogInForm from "../components/LogInForm";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import {
   signInWithEmailAndPassword,
@@ -14,17 +14,31 @@ import {
   getAuth,
   signInWithCredential,
 } from "@react-native-firebase/auth";
+import { useRouter } from "expo-router";
 
 // Replace this with your actual webClientId from google-services.json
 const WEB_CLIENT_ID =
   "823838304957-v1b5g3nd18k1249qpd6vrtheq0a44632.apps.googleusercontent.com";
 
 export default function LogInScreen() {
+  const router = useRouter();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: WEB_CLIENT_ID,
     });
-  }, []);
+
+    const unsubscribe = getAuth().onAuthStateChanged((user) => {
+      if (user) {
+        router.replace("/(app)");
+      } else {
+        setCheckingAuth(false);
+      }
+    });
+
+    return unsubscribe;
+  }, [router]);
 
   async function onEmailLogin(email: string, password: string) {
     try {
@@ -64,6 +78,14 @@ export default function LogInScreen() {
 
   async function onFacebookButtonPress() {
     /* Facebook Sign-In Logic */
+  }
+
+  if (checkingAuth) {
+    return (
+      <View className="flex-1 justify-center items-center bg-white">
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   return (
