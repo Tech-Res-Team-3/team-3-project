@@ -33,6 +33,7 @@ const config: ExpoConfig = {
   },
   plugins: [
     "./plugins/withCustomGradle",
+    "./plugins/withGoogleServicesJson",
     "expo-router"
   ],
   extra: {
