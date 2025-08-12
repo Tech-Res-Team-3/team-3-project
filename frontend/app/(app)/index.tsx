@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   Dimensions,
   StyleSheet,
 } from "react-native";
+import { Switch } from "react-native-switch";
 import { Button } from "../../components/Button";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { BellIcon } from "../../components/icons/BellIcon";
@@ -18,6 +20,9 @@ export default function MainAppScreen() {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [isEnabled, setIsEnabled] = useState(true);
+  const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
+    useState(true);
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged((userState) => {
@@ -67,46 +72,119 @@ export default function MainAppScreen() {
 
       {/* Two stacked views at the top (each about 1/6 of height, together ~1/3) */}
       <View
-        className="w-4/5 bg-white rounded-2xl mb-2 justify-center items-center"
-        style={[
-          styles.shadow,
-          { marginTop: height * 0.13, height: height * 0.165 },
-        ]}
+        className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
+        style={[styles.shadow, { marginTop: height * 0.1 }]}
       >
-        <Text className="font-bold text-lg">Top Section 1</Text>
+        <Text className="font-semibold text-2xl self-start px-6">
+          City, Address, Airport
+        </Text>
+        <TextInput
+          className="border-none rounded-full bg-gray-100 w-11/12 px-6 py-5"
+          placeholder="Los Angeles, CA"
+          placeholderTextColor="#d1d5db"
+        />
       </View>
       <View
-        className="w-4/5 bg-white rounded-2xl mb-4 justify-center items-center"
-        style={[styles.shadow, { height: height * 0.165 }]}
+        className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
+        style={[styles.shadow]}
       >
-        <Text className="font-bold text-lg">Top Section 2</Text>
+        <Text className="font-semibold text-2xl self-start px-6">When?</Text>
+        <TextInput
+          className="border-none rounded-full bg-gray-100 w-11/12 px-6 py-5"
+          placeholder="Dec 17, 2025 - Dec 19, 2025"
+          placeholderTextColor="#d1d5db"
+        />
       </View>
 
       {/* Transparent section (about 10% height) */}
       <View
-        className="w-4/5 justify-center items-center mb-2"
-        style={{ height: height * 0.1, backgroundColor: "transparent" }}
+        className="w-3/4 justify-center py-6"
+        style={{ backgroundColor: "transparent" }}
       >
-        <Text className="text-xl text-gray-800">City, Address, Airport</Text>
+        <View className="flex flex-row justify-between">
+          <Text className="text-xl text-gray-800">
+            Driver's age is 25 or above:
+          </Text>
+          <Switch
+            value={isEnabled}
+            onValueChange={setIsEnabled}
+            disabled={false}
+            circleSize={30}
+            barHeight={30}
+            circleBorderWidth={2}
+            circleBorderActiveColor="#c41111"
+            circleBorderInactiveColor="#d1d5db"
+            backgroundActive={"#c41111"}
+            backgroundInactive={"#d1d5db"}
+            circleActiveColor={"#fff"}
+            circleInActiveColor={"#fff"}
+            changeValueImmediately={true}
+            renderActiveText={false}
+            renderInActiveText={false}
+            switchLeftPx={3}
+            switchRightPx={3}
+            switchBorderRadius={30}
+            switchWidthMultiplier={1.5}
+          />
+        </View>
+
+        <Text className="text-md text-gray-400">
+          In order to carry on you need to verify your age
+        </Text>
       </View>
 
       {/* Main box with shadow (about 40% height) */}
       <View
-        className="w-4/5 bg-white rounded-2xl justify-center items-center"
+        className="w-5/6 bg-white rounded-2xl justify-center items-center"
         style={[
           styles.shadowMain,
-          { height: height * 0.38, marginBottom: height * 0.04 },
+          { height: height * 0.3, marginBottom: height * 0.04 },
         ]}
       >
-        <Text className="text-lg text-gray-500">Main Content Box</Text>
+        {/* Header section for the map */}
+        <View className="w-full flex-row items-center justify-between px-6 py-3 border-b border-gray-100">
+          <Text className="text-2xl font-semibold text-gray-800">
+            Current Location
+          </Text>
+          <Switch
+            value={isCurrentLocationEnabled}
+            onValueChange={setIsCurrentLocationEnabled}
+            circleSize={30}
+            barHeight={30}
+            circleBorderWidth={2}
+            circleBorderActiveColor="#c41111"
+            circleBorderInactiveColor="#d1d5db"
+            backgroundActive={"#c41111"}
+            backgroundInactive={"#d1d5db"}
+            circleActiveColor={"#fff"}
+            circleInActiveColor={"#fff"}
+            changeValueImmediately={true}
+            renderActiveText={false}
+            renderInActiveText={false}
+            switchLeftPx={3}
+            switchRightPx={3}
+            switchBorderRadius={30}
+            switchWidthMultiplier={1.5}
+          />
+        </View>
+
+        {/* Map content placeholder */}
+        <View className="flex-1 justify-center items-center w-full">
+          <Text className="text-lg text-gray-500">Map Content</Text>
+        </View>
       </View>
 
       {/* Fixed bottom button */}
       <View
         className="absolute w-full bg-white justify-center items-center"
-        style={[styles.shadowBottom, { bottom: 0, height: height / 6 }]}
+        style={[styles.shadowBottom, { bottom: 0, height: height / 8 }]}
       >
-        <Button title="View Rentals" onPress={() => {}} className="w-5/6" />
+        <Button
+          title="View Rentals"
+          onPress={() => {}}
+          className="w-11/12 bg-ruby"
+          textClassName="text-white"
+        />
       </View>
     </View>
   );
@@ -120,31 +198,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "#888",
+    shadowOffset: { width: 2, height: 4 },
     shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowRadius: 10,
+    elevation: 12,
   },
   shadow: {
-    shadowColor: "#000",
+    shadowColor: "#CCC",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 6,
-    elevation: 5,
+    elevation: 10,
   },
   shadowMain: {
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.13,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowColor: "#CCC",
+    shadowOffset: { width: 6, height: 2 },
+    shadowOpacity: 0,
+    shadowRadius: 1,
+    elevation: 10,
   },
   shadowBottom: {
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
+    shadowColor: "#CCC",
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
-    elevation: 8,
+    elevation: 10,
   },
 });
