@@ -7,6 +7,8 @@ import {
   StyleSheet,
 } from "react-native";
 import { Button } from "../../components/Button";
+import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
+import { BellIcon } from "../../components/icons/BellIcon";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 
@@ -53,13 +55,13 @@ export default function MainAppScreen() {
         style={{ top: 40, left: 30, width: width - 60 }}
       >
         <TouchableOpacity style={styles.circleButton}>
-          <Text style={{ fontSize: 22 }}>≡</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.circleButton}>
-          <Text style={{ fontSize: 22 }}>🔔</Text>
+          <HamburgerIcon size={30} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.circleButton} onPress={handleLogout}>
           <Text style={{ fontSize: 18, color: "#c00" }}>Logout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.circleButton}>
+          <BellIcon size={30} />
         </TouchableOpacity>
       </View>
 
