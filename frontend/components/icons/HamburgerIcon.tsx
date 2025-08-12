@@ -1,0 +1,43 @@
+// components/icons/HamburgerIcon.tsx
+import React from "react";
+import Svg, { Path } from "react-native-svg";
+
+export function HamburgerIcon({ size = 100, color = "#c41111" }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M2,5v2h20v-2zM2,11v2h20v-2zM2,17v2h20v-2z" fill={color} />
+    </Svg>
+  );
+}
+
+{
+  /* <svg
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="100"
+  height="100"
+  viewBox="0,0,256,256"
+>
+  <g
+    fill="#c41111"
+    fill-rule="nonzero"
+    stroke="none"
+    stroke-width="1"
+    stroke-linecap="butt"
+    stroke-linejoin="miter"
+    stroke-miterlimit="10"
+    stroke-dasharray=""
+    stroke-dashoffset="0"
+    font-family="none"
+    font-weight="none"
+    font-size="none"
+    text-anchor="none"
+    style="mix-blend-mode: normal"
+  >
+    <g transform="scale(10.66667,10.66667)">
+      <path d="M2,5v2h20v-2zM2,11v2h20v-2zM2,17v2h20v-2z"></path>
+    </g>
+  </g>
+</svg>; */
+}
