@@ -3,7 +3,7 @@ import {
   AppleIcon,
   FacebookIcon,
   GoogleIcon,
-} from "../components/icons/SocialIcons";
+} from "../components/icons/social/SocialIcons";
 import SocialLoginButton from "../components/SocialLoginButton";
 import LogInForm from "../components/LogInForm";
 import React, { useEffect, useState } from "react";
