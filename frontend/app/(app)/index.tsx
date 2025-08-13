@@ -8,49 +8,22 @@ import {
   StyleSheet,
 } from "react-native";
 import { Switch } from "react-native-switch";
+import DashboardMenuButton from "../../components/DashboardMenuButton";
 import { Button } from "../../components/Button";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { BellIcon } from "../../components/icons/BellIcon";
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 
 const { height, width } = Dimensions.get("window");
 
 export default function MainAppScreen() {
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [isEnabled, setIsEnabled] = useState(true);
   const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
     useState(true);
 
-  useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged((userState) => {
-      setUser(userState);
-      setLoading(false);
-      if (!userState) {
-        router.replace("/login");
-      }
-    });
-    return unsubscribe;
-  }, []);
-
-  const handleLogout = async () => {
-    await auth().signOut();
-    // The onAuthStateChanged listener will handle redirecting to login
-  };
-
-  if (loading) {
-    return (
-      <View className="flex-1 bg-gray-100 justify-center items-center">
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
+  
 
   return (
     <View className="flex-1 bg-gray-100 items-center">
@@ -59,12 +32,13 @@ export default function MainAppScreen() {
         className="absolute flex-row justify-between z-10"
         style={{ top: 40, left: 30, width: width - 60 }}
       >
-        <TouchableOpacity style={styles.circleButton}>
-          <HamburgerIcon size={30} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.circleButton} onPress={handleLogout}>
-          <Text style={{ fontSize: 18, color: "#c00" }}>Logout</Text>
-        </TouchableOpacity>
+        <DashboardMenuButton
+          className="bg-white rounded-full p-2"
+          style={styles.circleButton}
+          icon={<HamburgerIcon size={30} />}
+          onPress={() => router.push("/dashboard")}
+          size={45}
+        />
         <TouchableOpacity style={styles.circleButton}>
           <BellIcon size={30} />
         </TouchableOpacity>
