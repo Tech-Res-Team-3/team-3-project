@@ -37,8 +37,10 @@ const config: ExpoConfig = {
     "expo-router"
   ],
   extra: {
+    API_URL: process.env.API_URL,
     router: {},
     eas: {
+
       projectId: "8325b167-585a-494a-b40e-f2d3505daa22"
     }
   }
