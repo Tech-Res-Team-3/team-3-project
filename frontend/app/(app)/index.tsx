@@ -13,6 +13,7 @@ import { Button } from "../../components/Button";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { BellIcon } from "../../components/icons/BellIcon";
 import { useRouter } from "expo-router";
+import { useLoadingStore } from "../../stores/loadingStore";
 
 const { height, width } = Dimensions.get("window");
 
@@ -23,7 +24,12 @@ export default function MainAppScreen() {
   const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
     useState(true);
 
-  
+  const handleNotificationsPress = () => {
+    useLoadingStore.getState().setLoading(true);
+    setTimeout(() => {
+      useLoadingStore.getState().setLoading(false);
+    }, 3000);
+  };
 
   return (
     <View className="flex-1 bg-gray-100 items-center">
@@ -39,7 +45,10 @@ export default function MainAppScreen() {
           onPress={() => router.push("/dashboard")}
           size={45}
         />
-        <TouchableOpacity style={styles.circleButton}>
+        <TouchableOpacity
+          onPress={handleNotificationsPress}
+          style={styles.circleButton}
+        >
           <BellIcon size={30} />
         </TouchableOpacity>
       </View>
