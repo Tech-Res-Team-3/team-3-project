@@ -2,8 +2,12 @@ import "../styles/global.css";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { View, Text } from "react-native";
 import { useEffect, useState } from "react";
-import auth from "@react-native-firebase/auth";
+import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import { useAuthStore } from "../stores/authStore";
+import Constants from "expo-constants";
+
+const API_URL = Constants.expoConfig?.extra?.API_URL || "http://localhost:3333";
 
 export default function RootLayout() {
   const router = useRouter();
@@ -12,17 +16,17 @@ export default function RootLayout() {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(async (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(getAuth(), async (firebaseUser) => {
       setUser(firebaseUser);
       setCheckingAuth(false);
 
       if (firebaseUser) {
         // Get the latest idToken
         const idToken = await firebaseUser.getIdToken();
-        console.log("ID Token:", idToken);
+        console.log("User logged in:", firebaseUser.email);
 
         // Send to backend
-        await fetch("http://10.0.0.48:3333/users/sync", {
+        await fetch(`${API_URL}/users/sync`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -31,9 +35,17 @@ export default function RootLayout() {
           body: JSON.stringify({}),
         })
           .then((res) =>
-            res.json().then((data) => console.log("Backend response:", data))
+            res.json().then((data) => {
+              console.log("Backend response:", data);
+              if (data.user) {
+                useAuthStore.getState().setUser(data.user);
+              }
+            })
           )
           .catch((err) => console.log("Fetch error:", err));
+      } else {
+        console.log("User logged out, clearing Zustand user");
+        useAuthStore.getState().clearUser();
       }
 
       // Only redirect if trying to access a protected route

@@ -2,8 +2,9 @@ import React from "react";
 import { View, Text, ScrollView, Image } from "react-native";
 import { Button } from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Link, usePathname } from "expo-router";
+import { Link, usePathname, useRouter } from "expo-router";
 import auth from "@react-native-firebase/auth";
+import { useAuthStore } from "../../../stores/authStore";
 import DashboardMenuButton from "../../../components/DashboardMenuButton";
 import * as DashboardIcons from "../../../components/icons/dashboard/DashboardIcons";
 
@@ -54,16 +55,16 @@ const menuItems = [
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
+  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
 
-  // Dummy user data
-  const user = {
-    name: "Ryan O'Connor",
-    joinDate: "Joined Jan 2024",
-    rating: 4.9,
-    trips: 27,
-    verifiedDriver: true,
-    photoUrl: require("../../../assets/rao-app-icon.png"),
-  };
+  React.useEffect(() => {
+    if (!user) {
+      router.replace("/login");
+    }
+  }, [user, router]);
+
+  if (!user) return null;
 
   // Dummy functions
   const handleSwitchToHost = () => {};
@@ -86,14 +87,23 @@ export default function DashboardScreen() {
         <View className="w-full flex-row items-center justify-between">
           <View className="flex-row items-center">
             <Image
-              source={user.photoUrl}
+              source={
+                user?.photoUrl
+                  ? { uri: user.photoUrl }
+                  : require("../../../assets/rao-app-icon.png")
+              }
               className="w-16 h-16 rounded-full border-2 border-ruby"
             />
             <View className="ml-4">
               <Text className="text-xl font-bold text-gray-900">
-                {user.name}
+                {user?.firstName || user?.email || "User"}
               </Text>
-              <Text className="text-md text-gray-500">{user.joinDate}</Text>
+              <Text className="text-md text-gray-500">
+                Joined{" "}
+                {user?.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString()
+                  : ""}
+              </Text>
             </View>
           </View>
           <View className="p-2">
@@ -103,19 +113,25 @@ export default function DashboardScreen() {
         </View>
         <View className="self-start flex-row items-center w-full mt-1 gap-4">
           <Text className="text-md text-yellow-500 font-semibold mr-2">
-            ★ {user.rating}
+            ★ {user?.rating ?? 0}
           </Text>
-          <Text className="text-md text-gray-500">{user.trips} trips</Text>
-          {user.verifiedDriver && (
+          <Text className="text-md text-gray-500">
+            {user?.tripsCompleted ?? 0} trips
+          </Text>
+          {user?.verifiedDriver ? (
             <Text className="ml-2 text-md text-green-600 font-semibold">
               Verified Driver
+            </Text>
+          ) : (
+            <Text className="ml-2 text-md text-red-600 font-semibold">
+              Unverified Driver
             </Text>
           )}
         </View>
         <Button
           title="View Profile"
-          className="self-start mt-4 w-1/3 px-0 py-2 bg-ruby"
-          textClassName="text-white text-sm"
+          className="self-start mt-4 w-1/4 px-0 py-[5] bg-ruby"
+          textClassName="text-white text-xs"
           onPress={handleViewProfile}
         />
       </View>

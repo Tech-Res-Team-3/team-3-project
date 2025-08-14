@@ -1,18 +1,39 @@
-import { create } from 'zustand'; interface User {
-    id: string; email: string; name: string;
+import { create } from 'zustand';
+
+export interface User {
+    id: number;
+    firebaseUid: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    phone?: string | null;
+    photoUrl?: string | null;
+    createdAt?: Date;
+    rating?: number;
+    tripsCompleted?: number;
+    verifiedDriver?: boolean;
+    // ...add other fields as needed
 }
+
 interface AuthState {
-    user: User | null; isLoading: boolean; login: (email: string, password: string) => Promise<void>; logout: () => void;
+    user: User | null;
+    isLoading: boolean;
+    setUser: (user: User) => void;
+    clearUser: () => void;
+    setLoading: (loading: boolean) => void;
 }
+
 export const useAuthStore = create<AuthState>((set) => ({
-    user: null, isLoading: false, login: async (email: string, password: string) => {
-        set({ isLoading: true }); try {
-            // API call logic here      const user = await authenticateUser(email, password);      set({ user, isLoading: false });    } catch (error) {
-            set({ isLoading: false }); throw new Error('Error occurred');
-        } catch {
-            /* error logic */
-        }
-    }, logout: () => {
-        set({ user: null });
-    },
+    user: null,
+    isLoading: false,
+    setUser: (user) =>
+        set({
+            user: {
+                ...user,
+                createdAt: user.createdAt ? new Date(user.createdAt) : undefined,
+            },
+        }),
+    clearUser: () => set({ user: null }),
+    setLoading: (isLoading) => set({ isLoading }),
 }));
