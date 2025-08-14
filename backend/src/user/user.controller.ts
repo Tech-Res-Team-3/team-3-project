@@ -13,6 +13,7 @@ export class UserController {
     @UseGuards(FirebaseAuthGuard)
     @Post('sync')
     async syncUser(@CurrentUser() user: FirebaseUser, @Body() body: SyncUserDto) {
+        console.log("Received /users/sync request", { user, body });
         const newUser = await this.userService.upsertUser({
             firebaseUid: user.uid,
             email: user.email,
