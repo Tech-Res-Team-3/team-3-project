@@ -6,6 +6,7 @@ import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useAuthStore } from "../stores/authStore";
 import Constants from "expo-constants";
+import GlobalLoading from "../components/GlobalLoading";
 
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://localhost:3333";
 
@@ -67,6 +68,7 @@ export default function RootLayout() {
 
   return (
     <View className="flex-1 bg-white">
+      <GlobalLoading />
       <Stack
         screenOptions={{
           headerShown: false,
