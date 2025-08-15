@@ -1,5 +1,5 @@
 import "../styles/global.css";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, usePathname, useRouter, useSegments } from "expo-router";
 import { View, Text } from "react-native";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
@@ -7,18 +7,26 @@ import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useAuthStore } from "../stores/authStore";
 import Constants from "expo-constants";
 import GlobalLoading from "../components/GlobalLoading";
+import { useLoadingStore } from "../stores/loadingStore";
+import { useProfileCompleteStore } from "../stores/profileCompleteStore"; //delete when done testing!!
 
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://localhost:3333";
 
 export default function RootLayout() {
+  const pathname = usePathname();
   const router = useRouter();
   const segments = useSegments();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [firebaseUser, setFirebaseUser] =
+    useState<FirebaseAuthTypes.User | null>(null);
+  const user = useAuthStore((state) => state.user);
+  const profileComplete = useProfileCompleteStore(
+    (state) => state.profileComplete
+  );
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), async (firebaseUser) => {
-      setUser(firebaseUser);
+      setFirebaseUser(firebaseUser);
       setCheckingAuth(false);
 
       if (firebaseUser) {
@@ -58,13 +66,27 @@ export default function RootLayout() {
     return unsubscribe;
   }, [router, segments]);
 
-  if (checkingAuth) {
-    return (
-      <View className="flex-1 justify-center items-center bg-white">
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  // useEffect(() => {
+  //   // Only run after auth check is done and user is logged in
+  //   if (user && !user.profileComplete && pathname !== "/complete-profile") {
+  //     router.replace("/complete-profile");
+  //   }
+  // }, [user, pathname, router]);
+
+  useEffect(() => {
+    if (!profileComplete && pathname !== "/complete-profile") {
+      router.replace("/complete-profile");
+    }
+  }, [profileComplete, pathname, router]);
+
+  useEffect(() => {
+    // Show global loading only if not on splash
+    if (checkingAuth && pathname !== "/") {
+      useLoadingStore.getState().setLoading(true);
+    } else {
+      useLoadingStore.getState().setLoading(false);
+    }
+  }, [checkingAuth, pathname]);
 
   return (
     <View className="flex-1 bg-white">
