@@ -8,16 +8,32 @@ import {
   Image,
   Dimensions,
   StyleSheet,
+  Modal,
+  FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../../components/Button";
-import { useAuthStore } from "../../stores/authStore";
 import { useRouter } from "expo-router";
 import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
 
 const { height } = Dimensions.get("window");
 
-const languageOptions = ["English", "Spanish", "French", "German", "Chinese"];
+const languageOptions = [
+  "English US",
+  "English UK",
+  "Greek",
+  "Arabic",
+  "Urdu",
+  "French",
+  "Hindi",
+  "Russian",
+  "German",
+  "Chinese",
+  "Spanish",
+  "Japanese",
+  "Korean",
+  "Portuguese",
+];
 
 export default function CompleteProfileScreen() {
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
@@ -28,15 +44,20 @@ export default function CompleteProfileScreen() {
   const [homeAddress, setHomeAddress] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
   const [workAddress, setWorkAddress] = useState("");
-  const [language, setLanguage] = useState<string | null>(null);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   const defaultPhoto = require("../../assets/profile-placeholder.png");
 
   const router = useRouter();
 
-  const handleSelectLanguage = (lang: string) => {
-    setLanguage(lang);
+  const handleToggleLanguage = (lang: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
+    );
+  };
+
+  const handleSaveLanguages = () => {
     setShowLanguageModal(false);
   };
 
@@ -161,36 +182,84 @@ export default function CompleteProfileScreen() {
           className="bg-gray-100 rounded-xl px-4 py-3 flex-row items-center justify-between border border-gray-300 mb-2"
           onPress={() => setShowLanguageModal(true)}
         >
-          <Text className={language ? "text-gray-900" : "text-gray-400"}>
-            {language || "Select language"}
+          <Text
+            className={
+              selectedLanguages.length ? "text-gray-900" : "text-gray-400"
+            }
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {selectedLanguages.length
+              ? selectedLanguages.length <= 2
+                ? selectedLanguages.join(", ")
+                : `${selectedLanguages.slice(0, 2).join(", ")}  + ${selectedLanguages.length - 2} more`
+              : "Select languages"}
           </Text>
           <Ionicons name="chevron-down" size={20} color="#aaa" />
         </TouchableOpacity>
-        {/* Simple language modal/dropdown */}
-        {showLanguageModal && (
-          <View style={styles.languageModal}>
-            {languageOptions.map((lang) => (
-              <TouchableOpacity
-                key={lang}
-                style={styles.languageOption}
-                onPress={() => handleSelectLanguage(lang)}
-              >
-                <Text className="text-base">{lang}</Text>
-              </TouchableOpacity>
-            ))}
+
+        {/* Modal for multi-select languages */}
+        <Modal
+          visible={showLanguageModal}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setShowLanguageModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text className="text-lg font-bold mb-4 text-ruby">
+                Select Languages
+              </Text>
+              <FlatList
+                data={languageOptions}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    className="flex-row items-center py-2"
+                    onPress={() => handleToggleLanguage(item)}
+                  >
+                    <Ionicons
+                      name={
+                        selectedLanguages.includes(item)
+                          ? "checkbox"
+                          : "square-outline"
+                      }
+                      size={24}
+                      color={
+                        selectedLanguages.includes(item) ? "#c41111" : "#aaa"
+                      }
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text className="text-base">{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+              <Button
+                title="Save"
+                onPress={handleSaveLanguages}
+                className="bg-ruby mt-4"
+                textClassName="text-white"
+              />
+              <Button
+                title="Cancel"
+                onPress={() => setShowLanguageModal(false)}
+                className="bg-gray-300 mt-2"
+                textClassName="text-gray-800"
+              />
+            </View>
           </View>
-        )}
+        </Modal>
       </View>
 
       {/* Save/Continue Button */}
-      <View className="w-[90%] mt-5">
+      <View className="w-full mt-5">
         <Button
           title="Save Profile"
           onPress={() => {
             useProfileCompleteStore.getState().toggleProfileComplete();
             router.replace("/(app)");
           }}
-          className="bg-ruby"
+          className="bg-ruby self-center"
           textClassName="text-white"
         />
       </View>
@@ -199,22 +268,21 @@ export default function CompleteProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  languageModal: {
-    position: "absolute",
-    top: 50,
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 10,
-    zIndex: 10,
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  languageOption: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+  modalContent: {
+    width: "85%",
+    maxHeight: "70%",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 10,
   },
 });

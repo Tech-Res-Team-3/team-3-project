@@ -7,7 +7,7 @@ interface ProfileCompleteState {
 }
 
 export const useProfileCompleteStore = create<ProfileCompleteState>((set) => ({
-    profileComplete: false, // default value
+    profileComplete: true, // default value
     setProfileComplete: (value) => set({ profileComplete: value }),
     toggleProfileComplete: () =>
         set((state) => ({ profileComplete: !state.profileComplete })),
