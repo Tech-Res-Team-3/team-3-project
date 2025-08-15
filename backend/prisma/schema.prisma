@@ -31,6 +31,7 @@ model User {
   tripsCompleted  Int?     @default(0)
   stripeAccountId String?  @db.VarChar(100)
 }
+
 enum Role {
   GUEST
   HOST
