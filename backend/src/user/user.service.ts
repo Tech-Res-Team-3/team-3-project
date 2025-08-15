@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { FirebaseUser } from 'src/user/types';
+import { CurrentUser } from 'src/user/decorators';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async upsertUser(data: {
     firebaseUid: string;
@@ -33,5 +35,18 @@ export class UserService {
         role: data.role,
       },
     });
+  }
+
+  async login(@CurrentUser() user) {
+    if (!user.role) {
+      throw new UnauthorizedException(
+        'User does not exist. Please create an account',
+      );
+    }
+
+    return {
+      message: 'Login Successful',
+      user,
+    };
   }
 }

@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { FirebaseUser } from '../types';
+import { AuthenticatedUser } from '../types';
 
 export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): FirebaseUser | null => {
+  (_data: unknown, ctx: ExecutionContext): AuthenticatedUser | null => {
     const request = ctx.switchToHttp().getRequest();
     return request.user || null;
   },
