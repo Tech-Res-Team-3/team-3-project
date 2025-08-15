@@ -8,6 +8,7 @@ import { useAuthStore } from "../stores/authStore";
 import Constants from "expo-constants";
 import GlobalLoading from "../components/GlobalLoading";
 import { useLoadingStore } from "../stores/loadingStore";
+import { useProfileCompleteStore } from "../stores/profileCompleteStore"; //delete when done testing!!
 
 const API_URL = Constants.expoConfig?.extra?.API_URL || "http://localhost:3333";
 
@@ -16,11 +17,16 @@ export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [firebaseUser, setFirebaseUser] =
+    useState<FirebaseAuthTypes.User | null>(null);
+  const user = useAuthStore((state) => state.user);
+  const profileComplete = useProfileCompleteStore(
+    (state) => state.profileComplete
+  );
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), async (firebaseUser) => {
-      setUser(firebaseUser);
+      setFirebaseUser(firebaseUser);
       setCheckingAuth(false);
 
       if (firebaseUser) {
@@ -59,6 +65,19 @@ export default function RootLayout() {
 
     return unsubscribe;
   }, [router, segments]);
+
+  // useEffect(() => {
+  //   // Only run after auth check is done and user is logged in
+  //   if (user && !user.profileComplete && pathname !== "/complete-profile") {
+  //     router.replace("/complete-profile");
+  //   }
+  // }, [user, pathname, router]);
+
+  useEffect(() => {
+    if (!profileComplete && pathname !== "/complete-profile") {
+      router.replace("/complete-profile");
+    }
+  }, [profileComplete, pathname, router]);
 
   useEffect(() => {
     // Show global loading only if not on splash

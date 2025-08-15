@@ -13,6 +13,7 @@ export interface User {
     rating?: number;
     tripsCompleted?: number;
     verifiedDriver?: boolean;
+    profileComplete?: boolean;
     // ...add other fields as needed
 }
 
@@ -32,6 +33,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             user: {
                 ...user,
                 createdAt: user.createdAt ? new Date(user.createdAt) : undefined,
+                profileComplete: user.profileComplete ?? false,
             },
         }),
     clearUser: () => set({ user: null }),

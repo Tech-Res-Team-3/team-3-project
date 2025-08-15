@@ -14,6 +14,7 @@ import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { BellIcon } from "../../components/icons/BellIcon";
 import { useRouter } from "expo-router";
 import { useLoadingStore } from "../../stores/loadingStore";
+import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
 
 const { height, width } = Dimensions.get("window");
 
@@ -45,6 +46,14 @@ export default function MainAppScreen() {
           onPress={() => router.push("/dashboard")}
           size={45}
         />
+        <TouchableOpacity
+          onPress={() =>
+            useProfileCompleteStore.getState().toggleProfileComplete()
+          }
+          style={styles.circleButton}
+        >
+          <Text className="text-ruby">X</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={handleNotificationsPress}
           style={styles.circleButton}
