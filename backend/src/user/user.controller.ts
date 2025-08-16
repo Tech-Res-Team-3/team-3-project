@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
 import { SyncUserDto } from './dto/sync-user.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
-import type { AuthenticatedUser, FirebaseUser } from './types';
+import type { AuthenticatedUser } from './types';
 
 @Controller('users')
 export class UserController {
@@ -11,19 +11,16 @@ export class UserController {
 
   @UseGuards(FirebaseAuthGuard)
   @Post('sync')
-  async syncUser(@CurrentUser() user: FirebaseUser, @Body() body: SyncUserDto) {
-    console.log('Received /users/sync request', { user, body });
-    const newUser = await this.userService.upsertUser({
+  async syncUser(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() body: SyncUserDto,
+  ) {
+    const dbUser = await this.userService.upsertUser({
       firebaseUid: user.uid,
       email: user.email,
+      displayName: user.name,
       role: body.role === 'ADMIN' ? 'ADMIN' : 'GUEST',
     });
-    return { user: newUser };
-  }
-
-  @UseGuards(FirebaseAuthGuard)
-  @Post('login')
-  async login(@CurrentUser() user: AuthenticatedUser) {
-    return this.userService.login(user);
+    return { message: 'User synced', user: dbUser };
   }
 }
