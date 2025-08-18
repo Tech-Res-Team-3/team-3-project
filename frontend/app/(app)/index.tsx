@@ -15,7 +15,12 @@ import { BellIcon } from "../../components/icons/BellIcon";
 import { useRouter } from "expo-router";
 import { useLoadingStore } from "../../stores/loadingStore";
 import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Constants from "expo-constants";
+import MapView, { Marker } from "react-native-maps";
+import GlobalLoading from "../../components/GlobalLoading";
 
+const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
 const { height, width } = Dimensions.get("window");
 
 export default function MainAppScreen() {
@@ -24,6 +29,12 @@ export default function MainAppScreen() {
   const [isEnabled, setIsEnabled] = useState(true);
   const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
     useState(true);
+  const [region, setRegion] = useState({
+    latitude: 34.0522,
+    longitude: -118.2437,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
 
   const handleNotificationsPress = () => {
     useLoadingStore.getState().setLoading(true);
@@ -33,152 +44,224 @@ export default function MainAppScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-100 items-center">
-      {/* Top circle buttons */}
-      <View
-        className="absolute flex-row justify-between z-10"
-        style={{ top: 40, left: 30, width: width - 60 }}
-      >
-        <DashboardMenuButton
-          className="bg-white rounded-full p-2"
-          style={styles.circleButton}
-          icon={<HamburgerIcon size={30} />}
-          onPress={() => router.push("/dashboard")}
-          size={45}
-        />
-        <TouchableOpacity
-          onPress={() =>
-            useProfileCompleteStore.getState().toggleProfileComplete()
-          }
-          style={styles.circleButton}
+    <>
+      <GlobalLoading />
+      <View className="flex-1 bg-gray-100 items-center">
+        {/* Top circle buttons */}
+        <View
+          className="absolute flex-row justify-between z-10"
+          style={{ top: 40, left: 30, width: width - 60 }}
         >
-          <Text className="text-ruby">X</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleNotificationsPress}
-          style={styles.circleButton}
+          <DashboardMenuButton
+            className="bg-white rounded-full p-2"
+            style={styles.circleButton}
+            icon={<HamburgerIcon size={30} />}
+            onPress={() => router.push("/dashboard")}
+            size={45}
+          />
+          <TouchableOpacity
+            onPress={() =>
+              useProfileCompleteStore.getState().toggleProfileComplete()
+            }
+            style={styles.circleButton}
+          >
+            <Text className="text-ruby">X</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleNotificationsPress}
+            style={styles.circleButton}
+          >
+            <BellIcon size={30} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Two stacked views at the top (each about 1/6 of height, together ~1/3) */}
+        <View
+          className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
+          style={[styles.shadow, { marginTop: height * 0.1 }]}
         >
-          <BellIcon size={30} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Two stacked views at the top (each about 1/6 of height, together ~1/3) */}
-      <View
-        className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
-        style={[styles.shadow, { marginTop: height * 0.1 }]}
-      >
-        <Text className="font-semibold text-2xl self-start px-6">
-          City, Address, Airport
-        </Text>
-        <TextInput
-          className="border-none rounded-full bg-gray-100 w-11/12 px-6 py-5"
-          placeholder="Los Angeles, CA"
-          placeholderTextColor="#d1d5db"
-        />
-      </View>
-      <View
-        className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
-        style={[styles.shadow]}
-      >
-        <Text className="font-semibold text-2xl self-start px-6">When?</Text>
-        <TextInput
-          className="border-none rounded-full bg-gray-100 w-11/12 px-6 py-5"
-          placeholder="Dec 17, 2025 - Dec 19, 2025"
-          placeholderTextColor="#d1d5db"
-        />
-      </View>
-
-      {/* Transparent section (about 10% height) */}
-      <View
-        className="w-3/4 justify-center py-6"
-        style={{ backgroundColor: "transparent" }}
-      >
-        <View className="flex flex-row justify-between">
-          <Text className="text-xl text-gray-800">
-            Driver's age is 25 or above:
+          <Text className="font-semibold text-2xl self-start px-6">
+            City, Address, Airport
           </Text>
-          <Switch
-            value={isEnabled}
-            onValueChange={setIsEnabled}
-            disabled={false}
-            circleSize={30}
-            barHeight={30}
-            circleBorderWidth={2}
-            circleBorderActiveColor="#c41111"
-            circleBorderInactiveColor="#d1d5db"
-            backgroundActive={"#c41111"}
-            backgroundInactive={"#d1d5db"}
-            circleActiveColor={"#fff"}
-            circleInActiveColor={"#fff"}
-            changeValueImmediately={true}
-            renderActiveText={false}
-            renderInActiveText={false}
-            switchLeftPx={3}
-            switchRightPx={3}
-            switchBorderRadius={30}
-            switchWidthMultiplier={1.5}
+          <GooglePlacesAutocomplete
+            placeholder="Los Angeles, CA"
+            placeholderTextColor="#d1d5db"
+            onPress={(data, details = null) => {
+              if (details && details.geometry && details.geometry.location) {
+                const { lat, lng } = details.geometry.location;
+                setRegion({
+                  latitude: lat,
+                  longitude: lng,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                });
+              }
+            }}
+            fetchDetails={true}
+            query={{
+              key: GOOGLE_MAPS_API_KEY,
+              language: "en",
+            }}
+            onFail={(error) => console.error(error)}
+            enablePoweredByContainer={false}
+            styles={{
+              container: {
+                flex: 0,
+                alignSelf: "stretch",
+                minHeight: 60, // Ensures the input is visible
+                zIndex: 10, // Makes sure dropdown is above other elements
+              },
+              textInputContainer: {
+                width: "100%",
+                minHeight: 48,
+                backgroundColor: "transparent",
+                paddingHorizontal: 6,
+                borderTopWidth: 0, // Remove top border
+                borderBottomWidth: 0, // Remove bottom border
+                borderWidth: 0, // Remove any border
+                elevation: 0, // Remove shadow on Android
+                shadowOpacity: 0,
+              },
+              textInput: {
+                borderRadius: 24,
+                backgroundColor: "#f3f4f6",
+                fontSize: 16,
+                paddingHorizontal: 20, // Increase for more padding
+                paddingLeft: 20,
+                color: "#222",
+                minHeight: 48,
+                borderWidth: 0,
+              },
+              listView: {
+                backgroundColor: "#fff",
+                borderRadius: 12,
+                borderWidth: 0,
+                marginTop: 4,
+                zIndex: 20,
+              },
+            }}
+          />
+        </View>
+        <View
+          className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
+          style={[styles.shadow]}
+        >
+          <Text className="font-semibold text-2xl self-start px-6">When?</Text>
+          <TextInput
+            className="border-none rounded-full bg-gray-100 w-11/12 px-6 py-5"
+            placeholder="Dec 17, 2025 - Dec 19, 2025"
+            placeholderTextColor="#d1d5db"
           />
         </View>
 
-        <Text className="text-md text-gray-400">
-          In order to carry on you need to verify your age
-        </Text>
-      </View>
+        {/* Transparent section (about 10% height) */}
+        <View
+          className="w-3/4 justify-center py-6"
+          style={{ backgroundColor: "transparent" }}
+        >
+          <View className="flex flex-row justify-between">
+            <Text className="text-xl text-gray-800">
+              Driver's age is 25 or above:
+            </Text>
+            <Switch
+              value={isEnabled}
+              onValueChange={setIsEnabled}
+              disabled={false}
+              circleSize={30}
+              barHeight={30}
+              circleBorderWidth={2}
+              circleBorderActiveColor="#c41111"
+              circleBorderInactiveColor="#d1d5db"
+              backgroundActive={"#c41111"}
+              backgroundInactive={"#d1d5db"}
+              circleActiveColor={"#fff"}
+              circleInActiveColor={"#fff"}
+              changeValueImmediately={true}
+              renderActiveText={false}
+              renderInActiveText={false}
+              switchLeftPx={3}
+              switchRightPx={3}
+              switchBorderRadius={30}
+              switchWidthMultiplier={1.5}
+            />
+          </View>
 
-      {/* Main box with shadow (about 40% height) */}
-      <View
-        className="w-5/6 bg-white rounded-2xl justify-center items-center"
-        style={[
-          styles.shadowMain,
-          { height: height * 0.3, marginBottom: height * 0.04 },
-        ]}
-      >
-        {/* Header section for the map */}
-        <View className="w-full flex-row items-center justify-between px-6 py-3 border-b border-gray-100">
-          <Text className="text-2xl font-semibold text-gray-800">
-            Current Location
+          <Text className="text-md text-gray-400">
+            In order to carry on you need to verify your age
           </Text>
-          <Switch
-            value={isCurrentLocationEnabled}
-            onValueChange={setIsCurrentLocationEnabled}
-            circleSize={30}
-            barHeight={30}
-            circleBorderWidth={2}
-            circleBorderActiveColor="#c41111"
-            circleBorderInactiveColor="#d1d5db"
-            backgroundActive={"#c41111"}
-            backgroundInactive={"#d1d5db"}
-            circleActiveColor={"#fff"}
-            circleInActiveColor={"#fff"}
-            changeValueImmediately={true}
-            renderActiveText={false}
-            renderInActiveText={false}
-            switchLeftPx={3}
-            switchRightPx={3}
-            switchBorderRadius={30}
-            switchWidthMultiplier={1.5}
+        </View>
+
+        {/* Main box with shadow (about 40% height) */}
+        <View
+          className="w-5/6 bg-white rounded-2xl justify-center items-center"
+          style={[
+            styles.shadowMain,
+            { height: height * 0.3, marginBottom: height * 0.04 },
+          ]}
+        >
+          {/* Header section for the map */}
+          <View className="w-full flex-row items-center justify-between px-6 py-3 border-b border-gray-100">
+            <Text className="text-2xl font-semibold text-gray-800">
+              Current Location
+            </Text>
+            <Switch
+              value={isCurrentLocationEnabled}
+              onValueChange={setIsCurrentLocationEnabled}
+              circleSize={30}
+              barHeight={30}
+              circleBorderWidth={2}
+              circleBorderActiveColor="#c41111"
+              circleBorderInactiveColor="#d1d5db"
+              backgroundActive={"#c41111"}
+              backgroundInactive={"#d1d5db"}
+              circleActiveColor={"#fff"}
+              circleInActiveColor={"#fff"}
+              changeValueImmediately={true}
+              renderActiveText={false}
+              renderInActiveText={false}
+              switchLeftPx={3}
+              switchRightPx={3}
+              switchBorderRadius={30}
+              switchWidthMultiplier={1.5}
+            />
+          </View>
+
+          {/* Map content placeholder */}
+          <View className="flex-1 justify-center items-center w-full">
+            <MapView
+              style={{ width: "100%", height: "100%", borderRadius: 16 }}
+              region={region}
+              scrollEnabled={isCurrentLocationEnabled}
+              zoomEnabled={isCurrentLocationEnabled}
+              pitchEnabled={isCurrentLocationEnabled}
+              rotateEnabled={isCurrentLocationEnabled}
+            >
+              <Marker
+                coordinate={{
+                  latitude: region.latitude,
+                  longitude: region.longitude,
+                }}
+                image={require("../../assets/rao-icon-medium.png")}
+                opacity={0.7}
+              />
+            </MapView>
+          </View>
+        </View>
+
+        {/* Fixed bottom button */}
+        <View
+          className="absolute w-full bg-white justify-center items-center"
+          style={[styles.shadowBottom, { bottom: 0, height: height / 8 }]}
+        >
+          <Button
+            title="View Rentals"
+            onPress={() => {}}
+            className="w-11/12 bg-ruby"
+            textClassName="text-white"
           />
         </View>
-
-        {/* Map content placeholder */}
-        <View className="flex-1 justify-center items-center w-full">
-          <Text className="text-lg text-gray-500">Map Content</Text>
-        </View>
       </View>
-
-      {/* Fixed bottom button */}
-      <View
-        className="absolute w-full bg-white justify-center items-center"
-        style={[styles.shadowBottom, { bottom: 0, height: height / 8 }]}
-      >
-        <Button
-          title="View Rentals"
-          onPress={() => {}}
-          className="w-11/12 bg-ruby"
-          textClassName="text-white"
-        />
-      </View>
-    </View>
+    </>
   );
 }
 

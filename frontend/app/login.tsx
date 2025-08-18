@@ -15,6 +15,8 @@ import {
   signInWithCredential,
 } from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
+import { useLoadingStore } from "../stores/loadingStore";
+import GlobalLoading from "../components/GlobalLoading";
 
 // Replace this with your actual webClientId from google-services.json
 const WEB_CLIENT_ID =
@@ -25,6 +27,7 @@ export default function LogInScreen() {
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
+    useLoadingStore.getState().setLoading(true);
     GoogleSignin.configure({
       webClientId: WEB_CLIENT_ID,
     });
@@ -34,6 +37,7 @@ export default function LogInScreen() {
         router.replace("/(app)");
       } else {
         setCheckingAuth(false);
+        useLoadingStore.getState().setLoading(false);
       }
     });
 
@@ -80,16 +84,9 @@ export default function LogInScreen() {
     /* Facebook Sign-In Logic */
   }
 
-  if (checkingAuth) {
-    return (
-      <View className="flex-1 justify-center items-center bg-white">
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
   return (
     <>
+      <GlobalLoading />
       <View className="flex-1 justify-center h-full bg-white gap-10">
         <View className="items-center justify-center bg-white pt-8">
           <Text className="text-black text-2xl font-semibold">
