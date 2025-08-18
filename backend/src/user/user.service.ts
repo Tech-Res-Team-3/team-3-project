@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async upsertUser(data: {
     firebaseUid: string;
@@ -11,11 +11,12 @@ export class UserService {
     displayName?: string;
     role: 'GUEST' | 'ADMIN';
   }) {
-    const [firstName, lastName] = data.displayName
+    const [firstName, lastNameRaw] = data.displayName
       ? data.displayName.split(' ')
       : data.email
         ? [data.email.split('@')[0], '']
         : ['Unknown', 'User'];
+    const lastName = lastNameRaw ?? '';
 
     return this.prisma.user.upsert({
       where: { firebaseUid: data.firebaseUid },
