@@ -23,6 +23,11 @@ const config: ExpoConfig = {
       foregroundImage: "./assets/rao-app-icon.png",
       backgroundColor: "#ffffff"
     },
+    config: {
+      googleMaps: {
+        apiKey: process.env.GOOGLE_MAPS_API_KEY
+      },
+    },
     edgeToEdgeEnabled: true,
     package: "com.raorentals.app"
   },
@@ -38,6 +43,7 @@ const config: ExpoConfig = {
   ],
   extra: {
     API_URL: process.env.API_URL,
+    GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
     router: {},
     eas: {
 
