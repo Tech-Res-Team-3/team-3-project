@@ -18,7 +18,15 @@ import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
 import MapView, { Marker } from "react-native-maps";
+import DateTimePicker, {
+  DateType,
+  useDefaultStyles,
+} from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
 import GlobalLoading from "../../components/GlobalLoading";
+
+dayjs.locale("en");
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
 const { height, width } = Dimensions.get("window");
@@ -35,6 +43,10 @@ export default function MainAppScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+  const defaultStyles = useDefaultStyles();
+  const [startDate, setStartDate] = useState<DateType>();
+  const [endDate, setEndDate] = useState<DateType>();
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleNotificationsPress = () => {
     useLoadingStore.getState().setLoading(true);
@@ -147,11 +159,18 @@ export default function MainAppScreen() {
           style={[styles.shadow]}
         >
           <Text className="font-semibold text-2xl self-start px-6">When?</Text>
-          <TextInput
+          <TouchableOpacity
             className="border-none rounded-full bg-gray-100 w-11/12 px-6 py-5"
-            placeholder="Dec 17, 2025 - Dec 19, 2025"
-            placeholderTextColor="#d1d5db"
-          />
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text style={{ color: "#222" }}>
+              {startDate && endDate
+                ? `${dayjs(startDate).format("MMM D, YYYY")} - ${dayjs(endDate).format("MMM D, YYYY")}`
+                : startDate
+                  ? `${dayjs(startDate).format("MMM D, YYYY")} - ...`
+                  : "Select date range"}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Transparent section (about 10% height) */}
@@ -261,6 +280,48 @@ export default function MainAppScreen() {
           />
         </View>
       </View>
+      {showDatePicker && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width,
+            height,
+            backgroundColor: "rgba(0,0,0,0.3)",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 16,
+              padding: 16,
+              width: "90%"
+            }}
+          >
+            <DateTimePicker
+              mode="range"
+              startDate={startDate}
+              endDate={endDate}
+              onChange={({ startDate, endDate }) => {
+                setStartDate(startDate);
+                setEndDate(endDate);
+              }}
+              min={2}
+              max={15}
+              styles={defaultStyles}
+            />
+            <Button
+              title="Done"
+              onPress={() => setShowDatePicker(false)}
+              className="mt-4"
+            />
+          </View>
+        </View>
+      )}
     </>
   );
 }
