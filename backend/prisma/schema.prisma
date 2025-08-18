@@ -15,8 +15,8 @@ datasource db {
 
 model User {
   id              Int      @id  @default(autoincrement())
-  firebaseUid      String   @unique @db.VarChar(128)
-  firstName        String   @db.VarChar(150)
+  firebaseUid     String   @unique @db.VarChar(128)
+  firstName       String   @db.VarChar(150)
   lastName        String?   @db.VarChar(150)
   email           String   @unique @db.VarChar(150)
   phone           String?  @db.VarChar(14)
@@ -24,9 +24,10 @@ model User {
   role            Role     @default(GUEST)
   driverLicense   DriverLicense?
   address         Address?
+  language        Language?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  verifiedDriver   Boolean  @default(false)
+  verifiedDriver  Boolean  @default(false)
   rating          Int?     @default(0)
   tripsCompleted  Int?     @default(0)
   stripeAccountId String?  @db.VarChar(100)
@@ -45,7 +46,7 @@ model DriverLicense {
   expiration  DateTime
   frontImage  String   @db.VarChar(2048)
   backImage   String   @db.VarChar(2048)
-  verified     Boolean  @default(false)
+  verified    Boolean  @default(false)
   userId      Int      @unique
   user        User     @relation(fields: [userId], references: [id])
 }
@@ -68,4 +69,6 @@ model Language {
   code        String   @unique @db.VarChar(10)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  userId      Int      @unique
+  user        User     @relation(fields: [userId], references: [id])
 }
