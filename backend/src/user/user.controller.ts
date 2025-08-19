@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
 import { SyncUserDto } from './dto/sync-user.dto';
@@ -7,6 +7,10 @@ import type { AuthenticatedUser } from './types';
 
 @Controller('users')
 export class UserController {
+  @Get()
+  public getUsers() {
+    return this.userService.getUsers();}
+
   constructor(private userService: UserService) {}
 
   @UseGuards(FirebaseAuthGuard)
