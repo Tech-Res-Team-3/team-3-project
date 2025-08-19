@@ -5,6 +5,10 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) { }
 
+  async getUsers() {
+    return this.prisma.user.findMany();
+  }
+
   async upsertUser(data: {
     firebaseUid: string;
     email: string;
