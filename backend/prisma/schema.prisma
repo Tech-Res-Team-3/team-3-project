@@ -74,7 +74,3 @@ model Language {
   userId      Int      @unique
   user        User     @relation(fields: [userId], references: [id])
 }
-
-model Adress {
-  id          Int      @id @default(autoincrement())
-}
