@@ -59,6 +59,9 @@ model Address {
   state       String   @db.VarChar(30)
   zip         Int      @db.Integer
   country     String   @db.VarChar(100)
+  placeId     String?  @unique @db.VarChar(100)
+  latitude    Float    @default(0.0)
+  longitude   Float    @default(0.0)
   userId      Int      @unique
   user        User     @relation(fields: [userId], references: [id])
 }
@@ -66,7 +69,6 @@ model Address {
 model Language {
   id          Int      @id @default(autoincrement())
   name        String   @db.VarChar(100)
-  code        String   @unique @db.VarChar(10)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      Int      @unique
