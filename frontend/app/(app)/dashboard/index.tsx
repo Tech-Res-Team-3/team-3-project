@@ -1,11 +1,18 @@
 import React from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import {
+  Pressable,
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
 import { Button } from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link, usePathname, useRouter } from "expo-router";
 import auth from "@react-native-firebase/auth";
 import { useAuthStore } from "../../../stores/authStore";
-import DashboardMenuButton from "../../../components/DashboardMenuButton";
+// import DashboardMenuButton from "../../../components/DashboardMenuButton";
 import * as DashboardIcons from "../../../components/icons/dashboard/DashboardIcons";
 
 // Update your menu items and icons as needed
@@ -130,7 +137,7 @@ export default function DashboardScreen() {
         </View>
         <Button
           title="View Profile"
-          className="self-start mt-4 w-1/4 px-0 py-[5] bg-ruby"
+          className="self-start mt-4 w-1/3 px-0 py-[5] bg-ruby"
           textClassName="text-white text-xs"
           onPress={handleViewProfile}
         />
@@ -144,29 +151,24 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
       >
         {menuItems.map((item) => {
-          const isActive = pathname === item.route;
           return (
             <Link key={item.label} href={item.route} asChild>
-              <View
+              <TouchableOpacity
+                activeOpacity={0.4} // You can adjust this value as needed
                 className={`
-                  self-center flex-row items-center bg-white w-11/12 rounded-xl px-6 py-5 mb-3
-                  
-                  ${isActive ? "border-2 border-ruby bg-ruby/10" : ""}
-                `}
-                style={{ shadowColor: "#DDD", elevation: 8 }}
+      self-center flex-row items-center bg-white w-11/12 rounded-xl px-6 py-5 mb-3`}
+                style={{
+                  shadowColor: "#DDD",
+                  elevation: 8,
+                }}
               >
                 <View className="mr-4">
-                  <DashboardMenuButton
-                    icon={<item.icon size={26} color="#c41111" />}
-                    size={24}
-                  />
+                  <item.icon size={26} color="#c41111" />
                 </View>
-                <Text
-                  className={`text-lg font-semibold ${isActive ? "text-ruby" : "text-gray-800"}`}
-                >
+                <Text className={`text-lg font-semibold text-gray-800`}>
                   {item.label}
                 </Text>
-              </View>
+              </TouchableOpacity>
             </Link>
           );
         })}

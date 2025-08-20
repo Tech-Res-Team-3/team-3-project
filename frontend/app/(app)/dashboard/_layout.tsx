@@ -25,7 +25,7 @@ export default function DashboardLayout() {
           }}
         />
         <Drawer.Screen
-          name="notification"
+          name="notifications"
           options={{
             drawerLabel: "Notification Settings",
             title: "Notification Settings",
@@ -53,14 +53,14 @@ export default function DashboardLayout() {
           }}
         />
         <Drawer.Screen
-          name="travel"
+          name="travel-credit"
           options={{
             drawerLabel: "Travel Credit",
             title: "Travel Credit",
           }}
         />
         <Drawer.Screen
-          name="rao"
+          name="how-it-works"
           options={{
             drawerLabel: "How Rao Rentals Works",
             title: "How Rao Rentals Works",
