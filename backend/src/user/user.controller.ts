@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
 import { SyncUserDto } from './dto/sync-user.dto';
@@ -9,7 +9,8 @@ import type { AuthenticatedUser } from './types';
 export class UserController {
   @Get()
   public getUsers() {
-    return this.userService.getUsers();}
+    return this.userService.getUsers();
+  }
 
   constructor(private userService: UserService) {}
 
@@ -26,5 +27,11 @@ export class UserController {
       role: body.role === 'ADMIN' ? 'ADMIN' : 'GUEST',
     });
     return { message: 'User synced', user: dbUser };
+  }
+
+  @Patch('promote-to-host')
+  async promoteToHost(@CurrentUser() user: AuthenticatedUser) {
+    const updatedUser = await this.userService.promoteToHost(user.uid);
+    return { message: 'User promoted to host', user: updatedUser };
   }
 }
