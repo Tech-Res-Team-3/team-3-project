@@ -1,1 +1,0 @@
-// TODO: Create Rentals Screen

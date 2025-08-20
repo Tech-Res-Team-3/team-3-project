@@ -14,6 +14,7 @@ import {
   getAuth,
   signInWithCredential,
 } from "@react-native-firebase/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Replace this with your actual webClientId from google-services.json
 const WEB_CLIENT_ID =
@@ -68,8 +69,8 @@ export default function SignUpScreen() {
 
   return (
     <>
-      <View className="flex-1 justify-around h-full bg-white">
-        <View className="items-center justify-center bg-white pt-20">
+      <SafeAreaView className="flex-1 justify-around h-full bg-white">
+        <View className="items-center justify-center bg-white">
           <Text className="text-black text-2xl font-semibold">
             Sign Up to Continue
           </Text>
@@ -102,7 +103,7 @@ export default function SignUpScreen() {
         <View className="items-center justify-end -mt-16 bg-white">
           <SignUpForm onRegister={onEmailRegister} />
         </View>
-      </View>
+      </SafeAreaView>
     </>
   );
 }

@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Pressable,
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Button } from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link, usePathname, useRouter } from "expo-router";
@@ -14,6 +7,9 @@ import auth from "@react-native-firebase/auth";
 import { useAuthStore } from "../../../stores/authStore";
 // import DashboardMenuButton from "../../../components/DashboardMenuButton";
 import * as DashboardIcons from "../../../components/icons/dashboard/DashboardIcons";
+import { useEffect } from "react";
+import firestore from "@react-native-firebase/firestore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Update your menu items and icons as needed
 const menuItems = [
@@ -64,6 +60,35 @@ export default function DashboardScreen() {
   const pathname = usePathname();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  console.log(user);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const firebaseUser = auth().currentUser;
+      if (firebaseUser) {
+        const userDoc = await firestore()
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .get();
+        const updatedUser = userDoc.data();
+        if (updatedUser) {
+          console.log(user);
+          useAuthStore.getState().setUser({
+            id: updatedUser.id ?? firebaseUser.uid,
+            email: updatedUser.email ?? firebaseUser.email ?? "",
+            firstName: updatedUser.firstName ?? "",
+            lastName: updatedUser.lastName ?? "",
+            role: updatedUser.role ?? "user",
+            photoUrl: updatedUser.photoUrl ?? "",
+            firebaseUid: firebaseUser.uid,
+          });
+        }
+      }
+    };
+    console.log(user);
+    fetchUser();
+    console.log(user);
+  }, []);
 
   React.useEffect(() => {
     if (!user) {
@@ -79,12 +104,13 @@ export default function DashboardScreen() {
     await auth().signOut();
   };
   const handleEditProfile = () => {};
-  const handleViewProfile = () => {};
+  const handleViewProfile = () => {
+    router.push("/dashboard/profile-photo");
+  };
 
   return (
-    <View
+    <SafeAreaView
       className="flex-1 bg-gray-100 items-center"
-      style={{ paddingTop: insets.top }}
     >
       {/* Top Profile Section */}
       <View
@@ -175,20 +201,20 @@ export default function DashboardScreen() {
       </ScrollView>
 
       {/* Bottom Buttons */}
-      <View className="w-11/12 flex-col items-center space-y-4 my-6 gap-6 pb-4">
+      <View className="w-11/12 flex-col items-center space-y-4 my-6 gap-6">
         <Button
           title="Switch To Host"
-          className="bg-ruby"
+          className="bg-ruby w-11/12"
           textClassName="text-white"
           onPress={handleSwitchToHost}
         />
         <Button
           title="Logout"
-          className="bg-white border-2 border-ruby"
+          className="bg-white w-11/12 border-2 border-ruby"
           textClassName="text-ruby"
           onPress={handleLogout}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

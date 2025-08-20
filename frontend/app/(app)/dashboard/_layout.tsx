@@ -80,6 +80,13 @@ export default function DashboardLayout() {
             title: "Legal",
           }}
         />
+        <Drawer.Screen
+          name="profile-photo"
+          options={{
+            drawerLabel: "Profile Photo",
+            title: "Profile Photo",
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );
