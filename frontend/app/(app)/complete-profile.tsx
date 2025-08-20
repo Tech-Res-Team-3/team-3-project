@@ -259,7 +259,7 @@ export default function CompleteProfileScreen() {
             useProfileCompleteStore.getState().toggleProfileComplete();
             router.replace("/(app)");
           }}
-          className="bg-ruby self-center"
+          className="bg-ruby self-center w-11/12"
           textClassName="text-white"
         />
       </View>

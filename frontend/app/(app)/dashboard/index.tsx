@@ -1,12 +1,15 @@
 import React from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Button } from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link, usePathname, useRouter } from "expo-router";
 import auth from "@react-native-firebase/auth";
 import { useAuthStore } from "../../../stores/authStore";
-import DashboardMenuButton from "../../../components/DashboardMenuButton";
+// import DashboardMenuButton from "../../../components/DashboardMenuButton";
 import * as DashboardIcons from "../../../components/icons/dashboard/DashboardIcons";
+import { useEffect } from "react";
+import firestore from "@react-native-firebase/firestore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Update your menu items and icons as needed
 const menuItems = [
@@ -57,6 +60,35 @@ export default function DashboardScreen() {
   const pathname = usePathname();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  console.log(user);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const firebaseUser = auth().currentUser;
+      if (firebaseUser) {
+        const userDoc = await firestore()
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .get();
+        const updatedUser = userDoc.data();
+        if (updatedUser) {
+          console.log(user);
+          useAuthStore.getState().setUser({
+            id: updatedUser.id ?? firebaseUser.uid,
+            email: updatedUser.email ?? firebaseUser.email ?? "",
+            firstName: updatedUser.firstName ?? "",
+            lastName: updatedUser.lastName ?? "",
+            role: updatedUser.role ?? "user",
+            photoUrl: updatedUser.photoUrl ?? "",
+            firebaseUid: firebaseUser.uid,
+          });
+        }
+      }
+    };
+    console.log(user);
+    fetchUser();
+    console.log(user);
+  }, []);
 
   React.useEffect(() => {
     if (!user) {
@@ -72,12 +104,13 @@ export default function DashboardScreen() {
     await auth().signOut();
   };
   const handleEditProfile = () => {};
-  const handleViewProfile = () => {};
+  const handleViewProfile = () => {
+    router.push("/dashboard/profile-photo");
+  };
 
   return (
-    <View
+    <SafeAreaView
       className="flex-1 bg-gray-100 items-center"
-      style={{ paddingTop: insets.top }}
     >
       {/* Top Profile Section */}
       <View
@@ -130,7 +163,7 @@ export default function DashboardScreen() {
         </View>
         <Button
           title="View Profile"
-          className="self-start mt-4 w-1/4 px-0 py-[5] bg-ruby"
+          className="self-start mt-4 w-1/3 px-0 py-[5] bg-ruby"
           textClassName="text-white text-xs"
           onPress={handleViewProfile}
         />
@@ -144,49 +177,44 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
       >
         {menuItems.map((item) => {
-          const isActive = pathname === item.route;
           return (
             <Link key={item.label} href={item.route} asChild>
-              <View
+              <TouchableOpacity
+                activeOpacity={0.4} // You can adjust this value as needed
                 className={`
-                  self-center flex-row items-center bg-white w-11/12 rounded-xl px-6 py-5 mb-3
-                  
-                  ${isActive ? "border-2 border-ruby bg-ruby/10" : ""}
-                `}
-                style={{ shadowColor: "#DDD", elevation: 8 }}
+      self-center flex-row items-center bg-white w-11/12 rounded-xl px-6 py-5 mb-3`}
+                style={{
+                  shadowColor: "#DDD",
+                  elevation: 8,
+                }}
               >
                 <View className="mr-4">
-                  <DashboardMenuButton
-                    icon={<item.icon size={26} color="#c41111" />}
-                    size={24}
-                  />
+                  <item.icon size={26} color="#c41111" />
                 </View>
-                <Text
-                  className={`text-lg font-semibold ${isActive ? "text-ruby" : "text-gray-800"}`}
-                >
+                <Text className={`text-lg font-semibold text-gray-800`}>
                   {item.label}
                 </Text>
-              </View>
+              </TouchableOpacity>
             </Link>
           );
         })}
       </ScrollView>
 
       {/* Bottom Buttons */}
-      <View className="w-11/12 flex-col items-center space-y-4 my-6 gap-6 pb-4">
+      <View className="w-11/12 flex-col items-center space-y-4 my-6 gap-6">
         <Button
           title="Switch To Host"
-          className="bg-ruby"
+          className="bg-ruby w-11/12"
           textClassName="text-white"
           onPress={handleSwitchToHost}
         />
         <Button
           title="Logout"
-          className="bg-white border-2 border-ruby"
+          className="bg-white w-11/12 border-2 border-ruby"
           textClassName="text-ruby"
           onPress={handleLogout}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

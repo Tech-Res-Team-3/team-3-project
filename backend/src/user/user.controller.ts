@@ -39,4 +39,10 @@ export class UserController {
     });
     return { message: 'User synced', user: dbUser };
   }
+
+  @Patch('promote-to-host')
+  async promoteToHost(@CurrentUser() user: AuthenticatedUser) {
+    const updatedUser = await this.userService.promoteToHost(user.uid);
+    return { message: 'User promoted to host', user: updatedUser };
+  }
 }

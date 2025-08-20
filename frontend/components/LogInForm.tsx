@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, View, Text, TextInput } from "react-native";
 import { Link } from "expo-router";
 import { Button } from "./Button";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type LogInFormProps = {
   onLogin?: (email: string, password: string) => Promise<void>;
@@ -25,7 +26,7 @@ export default function LogInForm({ onLogin, onSignUpPress }: LogInFormProps) {
   };
 
   return (
-    <View className="w-full mx-auto bg-white">
+    <SafeAreaView className="w-full mx-auto bg-white">
       <View className="justify-center px-5 pb-16">
         <View className="mb-3">
           <Text className="mb-2 text-lg font-semibold text-gray-400">
@@ -62,7 +63,7 @@ export default function LogInForm({ onLogin, onSignUpPress }: LogInFormProps) {
       <Button
         title="Login"
         onPress={handleLogIn}
-        className="bg-ruby self-center"
+        className="bg-ruby self-center w-11/12"
         textClassName="text-white"
       />
       <View className="pt-20">
@@ -75,6 +76,6 @@ export default function LogInForm({ onLogin, onSignUpPress }: LogInFormProps) {
           </Text>
         </Link>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

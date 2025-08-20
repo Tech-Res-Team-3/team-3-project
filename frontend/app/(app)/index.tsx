@@ -25,6 +25,7 @@ import DateTimePicker, {
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import GlobalLoading from "../../components/GlobalLoading";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 dayjs.locale("en");
 
@@ -58,11 +59,10 @@ export default function MainAppScreen() {
   return (
     <>
       <GlobalLoading />
-      <View className="flex-1 bg-gray-100 items-center">
+      <SafeAreaView className="flex-1 bg-gray-100 items-center">
         {/* Top circle buttons */}
         <View
-          className="absolute flex-row justify-between z-10"
-          style={{ top: 40, left: 30, width: width - 60 }}
+          className="flex-row justify-between w-11/12 mb-6"
         >
           <DashboardMenuButton
             className="bg-white rounded-full p-2"
@@ -89,8 +89,8 @@ export default function MainAppScreen() {
 
         {/* Two stacked views at the top (each about 1/6 of height, together ~1/3) */}
         <View
-          className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
-          style={[styles.shadow, { marginTop: height * 0.1 }]}
+          className="flex flex-col w-11/12 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
+          style={[styles.shadow,]}
         >
           <Text className="font-semibold text-2xl self-start px-6">
             City, Address, Airport
@@ -155,7 +155,7 @@ export default function MainAppScreen() {
           />
         </View>
         <View
-          className="flex flex-col w-5/6 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
+          className="flex flex-col w-11/12 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
           style={[styles.shadow]}
         >
           <Text className="font-semibold text-2xl self-start px-6">When?</Text>
@@ -175,7 +175,7 @@ export default function MainAppScreen() {
 
         {/* Transparent section (about 10% height) */}
         <View
-          className="w-3/4 justify-center py-6"
+          className="w-5/6 justify-center py-6"
           style={{ backgroundColor: "transparent" }}
         >
           <View className="flex flex-row justify-between">
@@ -212,7 +212,7 @@ export default function MainAppScreen() {
 
         {/* Main box with shadow (about 40% height) */}
         <View
-          className="w-5/6 bg-white rounded-2xl justify-center items-center"
+          className="w-11/12 bg-white rounded-2xl justify-center items-center"
           style={[
             styles.shadowMain,
             { height: height * 0.3, marginBottom: height * 0.04 },
@@ -279,7 +279,7 @@ export default function MainAppScreen() {
             textClassName="text-white"
           />
         </View>
-      </View>
+      </SafeAreaView>
       {showDatePicker && (
         <View
           style={{
@@ -299,7 +299,7 @@ export default function MainAppScreen() {
               backgroundColor: "#fff",
               borderRadius: 16,
               padding: 16,
-              width: "90%"
+              width: "90%",
             }}
           >
             <DateTimePicker
