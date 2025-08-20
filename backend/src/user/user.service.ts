@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getUsers() {
     return this.prisma.user.findMany();
@@ -37,6 +37,20 @@ export class UserService {
         lastName,
         role: data.role,
       },
+    });
+  }
+
+  async promoteToHost(firebaseUid: string) {
+    const user = await this.prisma.user.findUnique({ where: { firebaseUid } });
+
+    if (!user) throw new Error('User not found');
+    if (user.role !== 'GUEST') {
+      throw new Error('Only GUEST users can be promoted to HOST');
+    }
+
+    return this.prisma.user.update({
+      where: { firebaseUid },
+      data: { role: 'HOST' },
     });
   }
 }
