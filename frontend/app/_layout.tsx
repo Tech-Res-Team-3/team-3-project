@@ -1,4 +1,5 @@
 import "../styles/global.css";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack, usePathname, useRouter, useSegments } from "expo-router";
 import { View, Text } from "react-native";
 import { useEffect, useState } from "react";
@@ -89,19 +90,21 @@ export default function RootLayout() {
   }, [checkingAuth, pathname]);
 
   return (
-    <View className="flex-1 bg-white">
-      <GlobalLoading />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="index" options={{ animation: "fade" }} />
-        <Stack.Screen name="home" />
-        <Stack.Screen name="signup" />
-        <Stack.Screen name="login" />
-        <Stack.Screen name="(app)" />
-      </Stack>
-    </View>
+    <SafeAreaProvider>
+      <View className="flex-1 bg-white">
+        <GlobalLoading />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="index" options={{ animation: "fade" }} />
+          <Stack.Screen name="home" />
+          <Stack.Screen name="signup" />
+          <Stack.Screen name="login" />
+          <Stack.Screen name="(app)" />
+        </Stack>
+      </View>
+    </SafeAreaProvider>
   );
 }
