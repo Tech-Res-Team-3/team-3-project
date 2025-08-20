@@ -1,0 +1,7 @@
+PATCH http://localhost:3333/users/43512
+Content-Type: application/json
+{
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "1234567890"
+}

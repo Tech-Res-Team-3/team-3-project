@@ -1,4 +1,18 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Put, Delete, Body } from '@nestjs/common';
 
-@Controller('address')
-export class AddressController {}
+@Controller('addresses')
+export class AddressController {
+
+    @Get()
+    getAddresses() {
+        // Implementation for getting addresses
+        return "Successfully fetched addresses";
+    }
+
+    @Post()
+    createAddress(
+        @Body() body: any,
+    ) {
+        return "Address created successfully";
+    }
+}

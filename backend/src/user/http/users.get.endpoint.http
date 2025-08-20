@@ -1,1 +1,3 @@
-GET http://localhost:3333/users
+GET http://localhost:3333/users/43512
+?limit=10
+&offset=20
