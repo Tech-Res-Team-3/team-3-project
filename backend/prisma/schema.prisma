@@ -75,6 +75,6 @@ model Language {
   user        User     @relation(fields: [userId], references: [id])
 }
 
-model Adress {
-  id          Int      @id @default(autoincrement())
+model Vehicle{
+  id           Int      @id @default(autoincrement())
 }
