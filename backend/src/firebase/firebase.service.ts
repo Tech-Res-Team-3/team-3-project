@@ -4,6 +4,8 @@ import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
+  public auth: admin.auth.Auth;
+  public storage: admin.storage.Storage;
   constructor(private readonly configService: ConfigService) {}
 
   onModuleInit() {
@@ -19,12 +21,8 @@ export class FirebaseService implements OnModuleInit {
         storageBucket: this.configService.get<string>('FIREBASE_BUCKET_URL'),
       });
     }
-  }
-  get auth() {
-    return admin.auth();
-  }
 
-  get storage() {
-    return admin.storage().bucket();
+    this.auth = admin.auth();
+    this.storage = admin.storage();
   }
 }
