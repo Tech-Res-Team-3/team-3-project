@@ -14,23 +14,31 @@ datasource db {
 }
 
 model User {
-  id              Int      @id  @default(autoincrement())
-  firebaseUid     String   @unique @db.VarChar(128)
-  firstName       String   @db.VarChar(150)
-  lastName        String?   @db.VarChar(150)
-  email           String   @unique @db.VarChar(150)
-  phone           String?  @db.VarChar(14)
-  photoUrl        String?  @db.VarChar(2048)
-  role            Role     @default(GUEST)
-  driverLicense   DriverLicense?
-  address         Address?
-  language        Language?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  verifiedDriver  Boolean  @default(false)
-  rating          Int?     @default(0)
-  tripsCompleted  Int?     @default(0)
-  stripeAccountId String?  @db.VarChar(100)
+  id                  Int               @id  @default(autoincrement())
+  firebaseUid          String            @unique @db.VarChar(128)
+  firstName            String            @db.VarChar(150)
+  lastName            String?           @db.VarChar(150)
+  email               String            @unique @db.VarChar(320)
+  phone               String?           @db.VarChar(15)
+  photoUrl            String?           @db.VarChar(2048)
+  role                Role              @default(GUEST)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  verifiedDriver       Boolean           @default(false)
+  rating              Int               @default(0)
+  tripsCompleted      Int               @default(0)
+  stripeAccountId     String?           @db.VarChar(100)
+
+  addresses           Address[]
+  driverLicenses      DriverLicense[]
+  languages           Language[]
+  vehicles            Vehicle[]
+  trips               Trip[]
+  bookings            Booking[]
+  invoices            Invoice[]
+
+  @@index([role])
+  @@index([createdAt])
 }
 
 enum Role {
@@ -40,41 +48,146 @@ enum Role {
 }
 
 model DriverLicense {
-  id          Int      @id @default(autoincrement())
-  number      String   @unique @db.VarChar(100)
-  state       String   @db.VarChar(100)
-  expiration  DateTime
-  frontImage  String   @db.VarChar(2048)
-  backImage   String   @db.VarChar(2048)
-  verified    Boolean  @default(false)
-  userId      Int      @unique
-  user        User     @relation(fields: [userId], references: [id])
+  id                  Int               @id @default(autoincrement())
+  licenseNumber       String            @unique @db.VarChar(100)
+  state               String            @db.VarChar(100)
+  expiration          DateTime          @db.Date
+  frontImage          String            @db.VarChar(2048)
+  backImage           String            @db.VarChar(2048)
+  verified             Boolean           @default(false)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  userId              Int              
+  user                User              @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([state])
+  @@index([verified])
 }
 
 model Address {
-  id          Int      @id @default(autoincrement())
-  street      String   @db.VarChar(255)
-  apartment   String?  @db.VarChar(50)
-  city        String   @db.VarChar(50)
-  state       String   @db.VarChar(30)
-  zip         Int      @db.Integer
-  country     String   @db.VarChar(100)
-  placeId     String?  @unique @db.VarChar(100)
-  latitude    Float    @default(0.0)
-  longitude   Float    @default(0.0)
-  userId      Int      @unique
-  user        User     @relation(fields: [userId], references: [id])
+  id                  Int               @id @default(autoincrement())
+  street              String            @db.VarChar(255)
+  apartment           String?           @db.VarChar(50)
+  city                String            @db.VarChar(50)
+  state               String            @db.VarChar(30)
+  zip                 Int               @db.Integer
+  country             String            @db.VarChar(100)
+  placeId             String?           @unique @db.VarChar(100)
+  latitude            Float             @default(0.0)
+  longitude           Float             @default(0.0)
+
+  userId              Int               
+  user                User              @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([city, state])
+  @@index([latitude, longitude])
 }
 
 model Language {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(100)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      Int      @unique
-  user        User     @relation(fields: [userId], references: [id])
+  id                  Int               @id @default(autoincrement())
+  name                String            @db.VarChar(100)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  userId              Int
+  user                User              @relation(fields: [userId], references: [id])
 }
 
-model Vehicle{
-  id           Int      @id @default(autoincrement())
+model Vehicle {
+  id                  Int               @id @default(autoincrement())
+  make                String
+  model               String
+  year                Int
+  licensePlate        String
+  color               String
+  seats               Int               @default(5)
+  type                String
+  vehicleImage        String
+  verified             Boolean           @default(false)
+  rating              Float             @default(0)
+
+  userId              Int
+  user                User              @relation(fields: [userId], references: [id])
+  trips               Trip[]
+
+  @@index([userId])
+  @@index([make, model])
+  @@index([licensePlate])
+}
+
+model Trip {
+  id                  Int               @id @default(autoincrement())
+  startLocation       String
+  endLocation         String
+  startAt             DateTime          
+  endAt               DateTime          
+  status              Status            @default(SCHEDULED)
+  price               Float
+  discount            Float             @default(0)
+  rating              Float             @default(0)
+
+  userId              Int
+  user                User              @relation(fields: [userId], references: [id])
+  vehicleId           Int
+  vehicle             Vehicle           @relation(fields: [vehicleId], references: [id])
+  bookings            Booking[]
+  invoices            Invoice[]
+
+  @@index([userId])
+  @@index([vehicleId])
+  @@index([status])
+  @@index([startAt, endAt])
+}
+
+enum Status {
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  CANCELED
+}
+
+model Booking {
+  id                  Int               @id @default(autoincrement())
+  bookedAt            DateTime          @default(now())
+  stripeId            String?
+  status              BookingStatus     @default(PENDING)
+
+  userId              Int
+  user                User              @relation(fields: [userId], references: [id])
+  tripId              Int
+  trip                Trip              @relation(fields: [tripId], references: [id])
+
+  @@index([userId])
+  @@index([tripId])
+  @@index([status])
+  @@index([bookedAt])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+}
+
+model Invoice {
+  id                Int                @id @default(autoincrement())
+  basePrice         Float
+  discount          Float              @default(0)
+  extrasTotal       Float              @default(0)
+  tax               Float
+  feesTotal         Float
+  milageFee         Float
+  lateFee           Float              @default(0)
+  totalPrice        Float
+
+  userId            Int
+  user              User               @relation(fields: [userId], references: [id])
+  tripId            Int
+  trip              Trip               @relation(fields: [tripId], references: [id])
+
+  @@index([userId])
+  @@index([tripId])
 }
