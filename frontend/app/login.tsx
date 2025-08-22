@@ -45,10 +45,12 @@ export default function LogInScreen() {
   }, [router]);
 
   async function onEmailLogin(email: string, password: string) {
+    useLoadingStore.getState().setLoading(true);
     try {
       await signInWithEmailAndPassword(getAuth(), email, password);
       Alert.alert("Success", "Logged in!");
     } catch (error) {
+      useLoadingStore.getState().setLoading(false);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       Alert.alert("Login Error", errorMessage);
@@ -118,7 +120,7 @@ export default function LogInScreen() {
             <View className="flex-1 h-px bg-gray-300" />
           </View>
         </View>
-        <View className="items-center justify-end bg-white pt-10">
+        <View className="items-center justify-end bg-white">
           <LogInForm onLogin={onEmailLogin} />
         </View>
       </View>

@@ -5,3 +5,4 @@ export class SyncUserDto {
     @IsOptional()
     role: string;
 }
+
