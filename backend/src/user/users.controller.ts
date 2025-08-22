@@ -7,13 +7,14 @@ import type { AuthenticatedUser } from './types';
 import { PatchUserDto } from './dto/patch-user.dto';
 import { GetUsersParamDto } from './dto/get-users-param.dto';
 
+@UseGuards(FirebaseAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService
   ) {}
   
-  @Get('/{:id}')
+  @Get('{/:id}')
   getUsers(
     @Param() getUsersParamDto: GetUsersParamDto,
     @Query('limit', new DefaultValuePipe(15), ParseIntPipe) limit: number,
@@ -39,8 +40,6 @@ export class UsersController {
     console.log(`Deleting user with ID: ${id}`);
     return { message: `User with ID ${id} deleted successfully` };
   }
-  
-
 
   @UseGuards(FirebaseAuthGuard)
   @Post('sync')

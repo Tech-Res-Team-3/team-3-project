@@ -7,6 +7,7 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Module({
   providers: [UsersService, PrismaService, FirebaseService],
-  controllers: [UsersController]
+  controllers: [UsersController],
+  exports: [UsersService],
 })
 export class UsersModule {}

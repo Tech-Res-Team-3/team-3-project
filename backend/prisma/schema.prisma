@@ -76,7 +76,7 @@ model Address {
   country             String            @db.VarChar(100)
   placeId             String?           @unique @db.VarChar(100)
   latitude            Float             @default(0.0)
-  longitude           Float             @default(0.0)
+  longitude           Float            @default(0.0)
 
   userId              Int               
   user                User              @relation(fields: [userId], references: [id])
