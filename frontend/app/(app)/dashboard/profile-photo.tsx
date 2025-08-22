@@ -15,9 +15,10 @@ import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import storage from "@react-native-firebase/storage";
 import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
 import { useAuthStore } from "../../../stores/authStore";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useImageUpload } from "../../../hooks";
+import axios from "axios";
 
 const DEFAULT_FOLDERS = ["profile_photos", "vehicles"];
 
@@ -32,7 +33,9 @@ export default function ProfilePhotoManagerScreen() {
   const [loading, setLoading] = useState(false);
 
   const user = auth().currentUser;
+  const zustandUser = useAuthStore((state) => state.user);
   const router = useRouter();
+  const { getSignedUrl, uploadToSignedUrl, saveImage } = useImageUpload();
 
   // Fetch folders on mount
   useEffect(() => {
@@ -104,21 +107,31 @@ export default function ProfilePhotoManagerScreen() {
     }
     setLoading(true);
     try {
+      // 1. Get file blob
       const response = await fetch(imageUri);
       const blob = await response.blob();
       const filename = `${Date.now()}.jpg`;
-      const ref = storage().ref(
-        `users/${user.uid}/${selectedFolder}/${filename}`
+
+      // 2. Get signed upload URL from backend
+      const {
+        url: signedUrl,
+        filePath,
+        publicUrl,
+      } = await getSignedUrl(
+        `users/${user.uid}/${selectedFolder}`,
+        filename,
+        "image/jpeg"
       );
-      await ref.put(blob);
+
+      // 3. Upload file to Firebase Storage using signed URL
+      await uploadToSignedUrl(signedUrl, blob, "image/jpeg");
+
+      // 4. Notify backend to save image path in DB
+      await saveImage(filePath);
+
       setImageUri(null);
-      // Refresh photo list
-      const result = await ref.parent?.listAll();
-      const urls = result
-        ? await Promise.all(result.items.map((item) => item.getDownloadURL()))
-        : [];
-      setPhotos(urls);
       Alert.alert("Success", "Photo uploaded!");
+      // Optionally, refresh photo list here
     } catch (err) {
       Alert.alert(
         "Upload Error",
@@ -197,25 +210,12 @@ export default function ProfilePhotoManagerScreen() {
 
   // Set photo as profile
   const setAsProfilePhoto = async (photoUrl: string) => {
-    if (!user) return;
+    if (!zustandUser) {
+      Alert.alert("Error", "User not loaded.");
+      return;
+    }
     try {
-      await firestore()
-        .collection("users")
-        .doc(user.uid)
-        .set({ photoUrl }, { merge: true });
-      const userDoc = await firestore().collection("users").doc(user.uid).get();
-      const updatedUser = userDoc.data();
-      if (updatedUser) {
-        useAuthStore.getState().setUser({
-          id: updatedUser.id ?? user.uid,
-          email: updatedUser.email ?? user.email ?? "",
-          firstName: updatedUser.firstName ?? "",
-          lastName: updatedUser.lastName ?? "",
-          role: updatedUser.role ?? "user",
-          photoUrl: updatedUser.photoUrl ?? "",
-          firebaseUid: user.uid,
-        });
-      }
+      await axios.patch(`/users/${zustandUser.id}`, { photoUrl });
       Alert.alert("Profile Photo Updated!");
       setViewPhoto(null);
       router.replace("/dashboard");

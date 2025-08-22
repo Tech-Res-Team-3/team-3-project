@@ -1,17 +1,15 @@
 import "../styles/global.css";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack, usePathname, useRouter, useSegments } from "expo-router";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useAuthStore } from "../stores/authStore";
-import Constants from "expo-constants";
 import GlobalLoading from "../components/GlobalLoading";
 import { useLoadingStore } from "../stores/loadingStore";
-import { useProfileCompleteStore } from "../stores/profileCompleteStore"; //delete when done testing!!
-
-const API_URL = Constants.expoConfig?.extra?.API_URL || "http://localhost:3333";
+import { useProfileCompleteStore } from "../stores/profileCompleteStore";
+import { useUserSync } from "../hooks"; // Import your hook
 
 export default function RootLayout() {
   const pathname = usePathname();
@@ -24,6 +22,7 @@ export default function RootLayout() {
   const profileComplete = useProfileCompleteStore(
     (state) => state.profileComplete
   );
+  const { syncUser } = useUserSync();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), async (firebaseUser) => {
@@ -31,28 +30,12 @@ export default function RootLayout() {
       setCheckingAuth(false);
 
       if (firebaseUser) {
-        // Get the latest idToken
-        const idToken = await firebaseUser.getIdToken();
-        console.log("User logged in:", firebaseUser.email);
-
-        // Send to backend
-        await fetch(`${API_URL}/users/sync`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({}),
-        })
-          .then((res) =>
-            res.json().then((data) => {
-              console.log("Backend response:", data);
-              if (data.user) {
-                useAuthStore.getState().setUser(data.user);
-              }
-            })
-          )
-          .catch((err) => console.log("Fetch error:", err));
+        // Clean: just call your hook!
+        try {
+          await syncUser();
+        } catch (err) {
+          console.log("User sync error:", err);
+        }
       } else {
         console.log("User logged out, clearing Zustand user");
         useAuthStore.getState().clearUser();
@@ -65,14 +48,7 @@ export default function RootLayout() {
     });
 
     return unsubscribe;
-  }, [router, segments]);
-
-  // useEffect(() => {
-  //   // Only run after auth check is done and user is logged in
-  //   if (user && !user.profileComplete && pathname !== "/complete-profile") {
-  //     router.replace("/complete-profile");
-  //   }
-  // }, [user, pathname, router]);
+  }, [router, segments, syncUser]);
 
   useEffect(() => {
     if (!profileComplete && pathname !== "/complete-profile") {
