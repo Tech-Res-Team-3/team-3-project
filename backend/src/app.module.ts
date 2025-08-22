@@ -1,32 +1,29 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FirebaseModule } from './firebase/firebase.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { UsersController } from './user/users.controller';
-import { UsersService } from './user/providers/users.service';
-import { AddressesModule } from './address/addresses.module';
-import { UsersModule } from './user/users.module';
+import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
+import { AddressModule } from './address/address.module';
+import { FileStorageModule } from './file-storage/file-storage.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    FirebaseModule, 
-    PrismaModule, 
-    AddressesModule, 
-    UsersModule,
-
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    FirebaseModule,
+    PrismaModule,
+    AddressModule,
+    FileStorageModule,
+    UserModule,
   ],
-  controllers: [
-    UsersController, 
-    AppController,
-
-  ],
-  providers: [
-    AppService, 
-    PrismaService, 
-    UsersService,
-
-  ],
+  controllers: [UserController, AppController],
+  providers: [AppService],
 })
 export class AppModule {}
