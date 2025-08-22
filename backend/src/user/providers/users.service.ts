@@ -72,6 +72,6 @@ export class UsersService {
   }
   
   async deleteUser(firebaseUid: string) {
-    return this.prisma.user.delete({ where: { firebaseUid } });
+    return this.prisma.user.delete({ where: { firebaseUid  } });
   }
 }

@@ -1,4 +1,12 @@
 POST http://localhost:3333/addresses
 Content-Type: application/json
 
-{}
+{
+    "street": "123 Main St",
+    "city": "Springfield",
+    "state": "IL",
+    "zip": 62701,
+    "country": "USA",
+    "latitude": 39.7817,
+    "longitude": -89.6501
+}

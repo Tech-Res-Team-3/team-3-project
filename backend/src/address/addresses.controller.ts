@@ -1,26 +1,23 @@
-import { Controller, Get, Post, Patch, Put, Delete, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Put, Delete, Body, UseGuards, Req, Param } from '@nestjs/common';
 import { AddressesService } from './providers/addresses.service';
 import { GetAddressesDto } from './dto/get-addresses.dto';
+import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
+import { CreateAddressDto } from './dto/create-addresses.dto';
 
+// @UseGuards(FirebaseAuthGuard)
 @Controller('addresses')
 export class AddressesController {
     constructor(
         private readonly addressesService: AddressesService
-
     ) {}
 
-    @Get()
+    @Get('{/:firebaseUid}')
     getAddresses(
         @Body() getAddressesDto: GetAddressesDto,
+        @Param('firebaseUid') firebaseUid: string
     ) {
         // Implementation for getting addresses
-        return "Successfully fetched addresses";
+        return this.addressesService.getAddresses(firebaseUid);
     }
 
-    @Post()
-    createAddress(
-        @Body() body: any,
-    ) {
-        return "Address created successfully";
-    }
 }

@@ -1,29 +1,32 @@
-import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNumber, IsString, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class GetAddressesDto {
-  @IsOptional()
   @IsString()
   @MaxLength(255)
-  street?: string;
+  street: string;
 
-  @IsOptional()
   @IsString()
   @MaxLength(100)
-  city?: string;
+  city: string;
 
-  @IsOptional()
   @IsString()
   @MaxLength(100)
-  state?: string;
+  state: string;
 
-  @IsOptional()
   @IsString()
-  @MaxLength(20)
-  postalCode?: string;
+  @MinLength(2)
+  country: string;
 
-  @IsOptional()
-  latitude?: number;
-
-  @IsOptional()
-  longitude?: number;
+  @IsNumber()
+  @Type(() => Number)
+  zip: number;
+  
+  @IsNumber()
+  @Type(() => Number)
+  latitude: number;
+  
+  @IsNumber()
+  @Type(() => Number)
+  longitude: number;
 }
