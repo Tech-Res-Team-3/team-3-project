@@ -46,8 +46,8 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
   
-  async getUserById(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async getUserById(firebaseUid: string) {
+    return this.prisma.user.findUnique({ where: { firebaseUid } });
   }
   
   async updateUser (firebaseUid: string, data: any) {
@@ -71,7 +71,7 @@ export class UsersService {
     });
   }
   
-  async deleteUser(id: number) {
-    return this.prisma.user.delete({ where: { id } });
+  async deleteUser(firebaseUid: string) {
+    return this.prisma.user.delete({ where: { firebaseUid } });
   }
 }
