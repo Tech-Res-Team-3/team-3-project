@@ -24,7 +24,7 @@ export interface Vehicle {
     seatbeltType: SeatbeltType;
     condition: Condition;
     value: number;
-    VIN: string;
+    vin: string;
     mileage: number;
     transmission: Transmission;
     salesTaxPaid: boolean;
