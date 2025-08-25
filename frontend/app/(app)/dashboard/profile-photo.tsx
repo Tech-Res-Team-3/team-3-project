@@ -17,7 +17,7 @@ import storage from "@react-native-firebase/storage";
 import auth from "@react-native-firebase/auth";
 import { useAuthStore } from "../../../stores/authStore";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useImageUpload } from "../../../hooks";
+import { useImageUpload } from "../../../hooks/auth";
 import axios from "axios";
 
 const DEFAULT_FOLDERS = ["profile_photos", "vehicles"];

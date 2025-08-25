@@ -9,7 +9,7 @@ import { useAuthStore } from "../stores/authStore";
 import GlobalLoading from "../components/GlobalLoading";
 import { useLoadingStore } from "../stores/loadingStore";
 import { useProfileCompleteStore } from "../stores/profileCompleteStore";
-import { useUserSync } from "../hooks"; // Import your hook
+import { useUserSync } from "../hooks/auth"; // Import your hook
 
 export default function RootLayout() {
   const pathname = usePathname();
