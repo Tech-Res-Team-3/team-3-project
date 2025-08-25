@@ -1,21 +1,6 @@
 import { create } from 'zustand';
+import { User } from '../types/user';
 
-export interface User {
-    id: number;
-    firebaseUid: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    phone?: string | null;
-    photoUrl?: string | null;
-    createdAt?: Date;
-    rating?: number;
-    tripsCompleted?: number;
-    verifiedDriver?: boolean;
-    profileComplete?: boolean;
-    // ...add other fields as needed
-}
 
 interface AuthState {
     user: User | null;
@@ -28,14 +13,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     isLoading: false,
-    setUser: (user) =>
-        set({
-            user: {
-                ...user,
-                createdAt: user.createdAt ? new Date(user.createdAt) : undefined,
-                profileComplete: user.profileComplete ?? false,
-            },
-        }),
+    setUser: (user) => set({ user }),
     clearUser: () => set({ user: null }),
     setLoading: (isLoading) => set({ isLoading }),
 }));

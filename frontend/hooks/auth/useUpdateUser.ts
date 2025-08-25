@@ -1,5 +1,5 @@
-import axios from "../utils/axios";
-import { useAuthStore } from "../stores/authStore";
+import axios from "../../utils/axios";
+import { useAuthStore } from "../../stores/authStore";
 
 export const useUpdateUser = () => {
     const setUser = useAuthStore((state) => state.setUser);
