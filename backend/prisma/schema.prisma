@@ -28,6 +28,7 @@ model User {
   rating              Int               @default(0)
   tripsCompleted      Int               @default(0)
   stripeAccountId     String?           @db.VarChar(100)
+  isActive            Boolean           @default(true)
 
   addresses           Address[]
   driverLicenses      DriverLicense[]
@@ -82,8 +83,8 @@ model Address {
   userId              Int               
   user                User              @relation(fields: [userId], references: [id])
 
-  vehicleId           Int
-  vehicle             Vehicle           @relation(fields: [vehicleId], references: [id])
+  vehicleId           Int?
+  vehicle             Vehicle?          @relation(fields: [vehicleId], references: [id])
 
   @@index([userId])
   @@index([city, state])
