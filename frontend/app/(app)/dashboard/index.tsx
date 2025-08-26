@@ -3,13 +3,16 @@ import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Button } from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link, usePathname, useRouter } from "expo-router";
-import auth from "@react-native-firebase/auth";
+import { getAuth } from "@react-native-firebase/auth";
+import { signOut } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 import { useAuthStore } from "../../../stores/authStore";
+import { useLoadingStore } from "../../../stores/loadingStore";
 // import DashboardMenuButton from "../../../components/DashboardMenuButton";
 import * as DashboardIcons from "../../../components/icons/dashboard/DashboardIcons";
-import { useEffect } from "react";
-import firestore from "@react-native-firebase/firestore";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LogoutConfirmationModal from "../../../components/LogoutConfirmationModal";
 
 // Update your menu items and icons as needed
 const menuItems = [
@@ -60,37 +63,10 @@ export default function DashboardScreen() {
   const pathname = usePathname();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  console.log(user);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const firebaseUser = auth().currentUser;
-      if (firebaseUser) {
-        const userDoc = await firestore()
-          .collection("users")
-          .doc(firebaseUser.uid)
-          .get();
-        const updatedUser = userDoc.data();
-        if (updatedUser) {
-          console.log(user);
-          useAuthStore.getState().setUser({
-            id: updatedUser.id ?? firebaseUser.uid,
-            email: updatedUser.email ?? firebaseUser.email ?? "",
-            firstName: updatedUser.firstName ?? "",
-            lastName: updatedUser.lastName ?? "",
-            role: updatedUser.role ?? "user",
-            photoUrl: updatedUser.photoUrl ?? "",
-            firebaseUid: firebaseUser.uid,
-          });
-        }
-      }
-    };
-    console.log(user);
-    fetchUser();
-    console.log(user);
-  }, []);
-
-  React.useEffect(() => {
+    // User data is already synced in _layout.tsx, just check if we need to redirect
     if (!user) {
       router.replace("/login");
     }
@@ -101,17 +77,77 @@ export default function DashboardScreen() {
   // Dummy functions
   const handleSwitchToHost = () => {};
   const handleLogout = async () => {
-    await auth().signOut();
+    try {
+      console.log("Starting logout process...");
+
+      // Set loading immediately
+      useLoadingStore.getState().setLoading(true);
+
+      // Clear user data from Zustand store immediately
+      useAuthStore.getState().clearUser();
+      console.log("Cleared Zustand user data");
+
+      // Sign out from Firebase - let the root _layout.tsx handle navigation
+      const app = getApp();
+      const auth = getAuth(app);
+      await signOut(auth);
+      console.log(
+        "Firebase signOut completed - navigation will be handled by root layout"
+      );
+
+      // Don't navigate here - let the root _layout.tsx auth listener handle it
+    } catch (error) {
+      console.log("Logout error:", error);
+      // On error, clear loading and try fallback navigation
+      useLoadingStore.getState().setLoading(false);
+
+      setTimeout(() => {
+        try {
+          if (router && router.replace) {
+            router.replace("/");
+            console.log("Fallback navigation to home after logout error");
+          }
+        } catch (navError) {
+          console.log("Fallback navigation error:", navError);
+        }
+      }, 100);
+    }
   };
   const handleEditProfile = () => {};
   const handleViewProfile = () => {
     router.push("/dashboard/profile-photo");
   };
 
+  const handleLogoutConfirm = async () => {
+    console.log("Starting logout process...");
+    setShowLogoutModal(false);
+    useLoadingStore.getState().setLoading(true);
+
+    try {
+      // Clear Zustand state first
+      useAuthStore.getState().clearUser();
+      console.log("Cleared Zustand user data");
+
+      // Sign out from Firebase
+      const app = getApp();
+      const auth = getAuth(app);
+      await signOut(auth);
+      console.log(
+        "Firebase signOut completed - navigation will be handled by root layout"
+      );
+    } catch (error) {
+      console.log("Logout error:", error);
+      useLoadingStore.getState().setLoading(false);
+    }
+  };
+
+  const handleLogoutCancel = () => {
+    console.log("Logout cancelled by user");
+    setShowLogoutModal(false);
+  };
+
   return (
-    <SafeAreaView
-      className="flex-1 bg-gray-100 items-center"
-    >
+    <SafeAreaView className="flex-1 bg-gray-100 items-center">
       {/* Top Profile Section */}
       <View
         className="w-11/12 bg-white rounded-xl px-6 pt-8 pb-6 items-center"
@@ -212,9 +248,14 @@ export default function DashboardScreen() {
           title="Logout"
           className="bg-white w-11/12 border-2 border-ruby"
           textClassName="text-ruby"
-          onPress={handleLogout}
+          onPress={() => setShowLogoutModal(true)}
         />
       </View>
+      <LogoutConfirmationModal
+        visible={showLogoutModal}
+        onConfirm={handleLogoutConfirm}
+        onCancel={handleLogoutCancel}
+      />
     </SafeAreaView>
   );
 }
