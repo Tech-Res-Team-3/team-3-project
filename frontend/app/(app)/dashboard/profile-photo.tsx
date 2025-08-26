@@ -13,8 +13,9 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import storage from "@react-native-firebase/storage";
-import auth from "@react-native-firebase/auth";
+import { getStorage, ref, listAll, uploadString, deleteObject } from "@react-native-firebase/storage";
+import { getAuth } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 import { useAuthStore } from "../../../stores/authStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useImageUpload } from "../../../hooks/auth";
@@ -32,7 +33,7 @@ export default function ProfilePhotoManagerScreen() {
   const [viewPhoto, setViewPhoto] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const user = auth().currentUser;
+  const user = getAuth(getApp()).currentUser;
   const zustandUser = useAuthStore((state) => state.user);
   const router = useRouter();
   const { getSignedUrl, uploadToSignedUrl, saveImage } = useImageUpload();
@@ -43,8 +44,10 @@ export default function ProfilePhotoManagerScreen() {
     const fetchFolders = async () => {
       setLoading(true);
       try {
-        const ref = storage().ref(`users/${user.uid}`);
-        const result = await ref.listAll();
+        const app = getApp();
+        const storage = getStorage(app);
+        const storageRef = ref(storage, `users/${user.uid}`);
+        const result = await listAll(storageRef);
         const folderNames = [
           ...DEFAULT_FOLDERS,
           ...result.prefixes
@@ -66,8 +69,10 @@ export default function ProfilePhotoManagerScreen() {
     const fetchPhotos = async () => {
       setLoading(true);
       try {
-        const ref = storage().ref(`users/${user.uid}/${selectedFolder}`);
-        const result = await ref.listAll();
+        const app = getApp();
+        const storage = getStorage(app);
+        const storageRef = ref(storage, `users/${user.uid}/${selectedFolder}`);
+        const result = await listAll(storageRef);
         const urls = await Promise.all(
           result.items.map((item) => item.getDownloadURL())
         );
@@ -147,11 +152,11 @@ export default function ProfilePhotoManagerScreen() {
     setLoading(true);
     try {
       // Firebase Storage has no "create folder" API, so we upload a dummy file and delete it
-      const dummyRef = storage().ref(
-        `users/${user.uid}/${newFolderName}/.init`
-      );
-      await dummyRef.putString("init");
-      await dummyRef.delete();
+      const app = getApp();
+      const storage = getStorage(app);
+      const dummyRef = ref(storage, `users/${user.uid}/${newFolderName}/.init`);
+      await uploadString(dummyRef, "init");
+      await deleteObject(dummyRef);
       setFolders((prev) => [...prev, newFolderName]);
       setShowAddFolder(false);
       setNewFolderName("");
@@ -179,16 +184,18 @@ export default function ProfilePhotoManagerScreen() {
           onPress: async () => {
             setLoading(true);
             try {
-              const ref = storage().ref(`users/${user.uid}/${folderName}`);
-              const result = await ref.listAll();
+              const app = getApp();
+              const storage = getStorage(app);
+              const storageRef = ref(storage, `users/${user.uid}/${folderName}`);
+              const result = await listAll(storageRef);
               // Delete all files in the folder
-              await Promise.all(result.items.map((item) => item.delete()));
+              await Promise.all(result.items.map((item) => deleteObject(item)));
               // Delete all subfolders recursively (if any)
               await Promise.all(
                 result.prefixes.map(async (prefix) => {
-                  const subResult = await prefix.listAll();
+                  const subResult = await listAll(prefix);
                   await Promise.all(
-                    subResult.items.map((item) => item.delete())
+                    subResult.items.map((item) => deleteObject(item))
                   );
                 })
               );

@@ -14,6 +14,7 @@ import {
   getAuth,
   signInWithCredential,
 } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Replace this with your actual webClientId from google-services.json
@@ -29,7 +30,9 @@ export default function SignUpScreen() {
 
   async function onEmailRegister(email: string, password: string) {
     try {
-      await createUserWithEmailAndPassword(getAuth(), email, password);
+      const app = getApp();
+      const auth = getAuth(app);
+      await createUserWithEmailAndPassword(auth, email, password);
       Alert.alert("Success", "Account created!");
     } catch (error) {
       const errorMessage =
@@ -49,7 +52,9 @@ export default function SignUpScreen() {
       if (!idToken) throw new Error("No ID token found");
 
       const googleCredential = GoogleAuthProvider.credential(idToken);
-      await signInWithCredential(getAuth(), googleCredential);
+      const app = getApp();
+      const auth = getAuth(app);
+      await signInWithCredential(auth, googleCredential);
 
       Alert.alert("Success", "Signed in with Google!");
     } catch (error) {
