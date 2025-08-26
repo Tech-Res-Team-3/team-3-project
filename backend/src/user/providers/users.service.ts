@@ -47,11 +47,18 @@ export class UsersService {
   }
 
   async getUserById(firebaseUid: string) {
-    return this.prisma.user.findUnique({ where: { firebaseUid } });
+    return this.prisma.user.findUnique({ 
+      where: { firebaseUid },
+      include: { addresses: true } 
+    });
   }
 
   async updateUser(firebaseUid: string, data: PatchUserDto) {
-    const user = await this.prisma.user.findUnique({ where: { firebaseUid } });
+    const user = await this.prisma.user.update({
+       where: { firebaseUid },
+       data,
+       include: { addresses: true }
+      });
 
     if (!user) throw new Error('User not found');
     return this.prisma.user.update({
@@ -71,7 +78,5 @@ export class UsersService {
     });
   }
 
-  async deleteUser(firebaseUid: string) {
-    return this.prisma.user.delete({ where: { firebaseUid } });
-  }
+  
 }

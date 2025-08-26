@@ -6,25 +6,46 @@ import { UsersService } from 'src/user/providers/users.service';
 
 @Injectable()
 export class AddressesService {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private prisma: PrismaService
+    ) {}
     
-    
-    getAddresses(firebaseUid: string){
-        const user = this.usersService.getUserById(firebaseUid);
+    async createAddress(firebaseUid: string, dto: CreateAddressDto) {
+        const user = await this.usersService.getUserById(firebaseUid!);
 
-        return [
-            {
-                user: user,
-                address: '123 Main St',
-                city: 'Springfield',
-                state: 'IL',
-                zip: 62701,
-                country: 'USA',
-               longitude: -89.6501,
-                latitude: 39.7817
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        return this.prisma.address.create({
+            data: {
+                ...dto,
+                userId: user.id
             },
-        ]
+        });
     }
 
+
+    async getAddresses(firebaseUid: string){
+        const user = await this.usersService.getUserById(firebaseUid);
+
+        return user?.addresses ?? []; 
+    }
+
+    async updateAddress(id: number, updateAddressDto: Partial<CreateAddressDto>) {
+        const address = await this.prisma.address.update({
+            where: { id },
+            data: updateAddressDto
+        });
+
+        return address;
+    }
+
+    async deleteAddress(id: number) {
+        await this.prisma.address.delete({
+            where: { id }
+        });
+    }
     
 }
