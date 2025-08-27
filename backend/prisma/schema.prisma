@@ -152,8 +152,8 @@ enum Condition {
 }
 
 enum Transmission {
-    AUTOMATIC
-    MANUAL
+  AUTOMATIC
+  MANUAL
 }
 
 model Trip {
