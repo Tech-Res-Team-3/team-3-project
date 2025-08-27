@@ -3,12 +3,12 @@ import { AddressesController } from './addresses.controller';
 import { AddressesService } from './providers/addresses.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { UserModule } from 'src/user/user.module';
 import { UsersService } from 'src/user/providers/users.service';
+import { UsersModule } from 'src/user/users.module';
 
 @Module({
-  imports: [PrismaModule, UserModule],
+  imports: [PrismaModule, UsersModule],
   controllers: [AddressesController],
-  providers: [AddressesService, FirebaseService, UsersService]
+  providers: [AddressesService, FirebaseService,]
 })
 export class AddressesModule {}

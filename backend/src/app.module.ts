@@ -10,6 +10,7 @@ import { UsersService } from './user/providers/users.service';
 import { AddressesModule } from './address/addresses.module';
 import { FileStorageModule } from './file-storage/file-storage.module';
 import { UserModule } from './user/user.module';
+import { DriversLicensesModule } from './drivers-licenses/drivers-licenses.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from './user/user.module';
     AddressesModule,
     FileStorageModule,
     UserModule,
+    DriversLicensesModule,
   ],
   controllers: [UsersController, AppController],
   providers: [AppService, UsersService],
