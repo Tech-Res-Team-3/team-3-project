@@ -251,7 +251,6 @@ export default function RootLayout() {
           <Stack.Screen name="home" />
           <Stack.Screen name="signup" />
           <Stack.Screen name="login" />
-          <Stack.Screen name="(app)" />
         </Stack>
       </View>
     </SafeAreaProvider>

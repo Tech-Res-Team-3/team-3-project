@@ -9,6 +9,5 @@ export const usePromoteToHost = () => {
         if (res.data.user) setUser(res.data.user);
         return res.data.user;
     };
-
     return { promoteToHost };
 };
