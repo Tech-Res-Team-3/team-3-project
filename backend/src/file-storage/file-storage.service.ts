@@ -5,12 +5,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FileStorageService {
-  private storage;
+  private bucket;
   constructor(
     private readonly prisma: PrismaService,
     private readonly firebaseService: FirebaseService,
   ) {
-    this.storage = this.firebaseService.storage;
+    this.bucket = this.firebaseService.bucket;
   }
 
   async getSignedUrl(
@@ -23,7 +23,7 @@ export class FileStorageService {
     const fileName = `${uniqueSuffix}.${extension}`;
 
     const filePath = folder ? `${folder}/${fileName}` : fileName;
-    const file = this.storage.file(filePath);
+    const file = this.bucket.file(filePath);
 
     const [url] = await file.getSignedUrl({
       action,
