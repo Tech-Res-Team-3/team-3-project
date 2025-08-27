@@ -45,7 +45,6 @@ export class UsersController {
     return { message: `User with ID ${id} deleted successfully` };
   }
 
-  @UseGuards(FirebaseAuthGuard)
   @Post('sync')
   async syncUser(
     @CurrentUser() user: AuthenticatedUser,

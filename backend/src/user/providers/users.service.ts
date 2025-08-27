@@ -26,7 +26,6 @@ export class UsersService {
         email: data.email,
         firstName,
         lastName,
-        role: data.role,
       },
       create: {
         firebaseUid: data.firebaseUid,
