@@ -62,19 +62,29 @@ const guestMenuItems = [
 
 const hostMenuItems = [
   {
-    label: "Notification Settings",
-    route: "/dashboard/notifications",
-    icon: DashboardIcons.NotificationIcon,
-  },
-  {
     label: "Vehicle Settings",
     route: "/dashboard/vehicle-settings",
     icon: DashboardIcons.VehicleIcon,
   },
   {
+    label: "Notification Settings",
+    route: "/dashboard/notifications",
+    icon: DashboardIcons.NotificationIcon,
+  },
+  {
     label: "Messages",
     route: "/dashboard/messages",
     icon: DashboardIcons.MessagesIcon,
+  },
+  {
+    label: "Password",
+    route: "/dashboard/password",
+    icon: DashboardIcons.LockIcon,
+  },
+  {
+    label: "Activity",
+    route: "/dashboard/activity",
+    icon: DashboardIcons.PuzzleIcon,
   },
   {
     label: "Transaction History",
@@ -115,6 +125,21 @@ const hostMenuItems = [
     label: "Goals",
     route: "/dashboard/goals",
     icon: DashboardIcons.TargetIcon,
+  },
+  {
+    label: "How Rao Rentals Works",
+    route: "/dashboard/how-it-works",
+    icon: DashboardIcons.RAORentalsIcon,
+  },
+  {
+    label: "Contact Support",
+    route: "/dashboard/support",
+    icon: DashboardIcons.HeadsetIcon,
+  },
+  {
+    label: "Legal",
+    route: "/dashboard/legal",
+    icon: DashboardIcons.GavelIcon,
   },
 ];
 
