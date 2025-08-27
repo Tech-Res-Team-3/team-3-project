@@ -110,8 +110,8 @@ model Vehicle {
   color               String
   seats               Int               @default(5)
   type                String
-  vehicleImage        String
-  verified            Boolean           @default(false)
+  vehicleImage        String?
+  verified             Boolean           @default(false)
   rating              Float             @default(0)
   hasSeatbelts        Boolean           @default(true)
   seatbeltType        SeatbeltType      @default(BOTH)
@@ -131,7 +131,7 @@ model Vehicle {
 
   trips               Trip[]
 
-  addressId           Int
+  addressId           Int?
   addresses           Address[]
 
   @@index([userId])
