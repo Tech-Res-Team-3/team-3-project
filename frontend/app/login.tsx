@@ -59,7 +59,6 @@ export default function LogInScreen() {
       const app = getApp();
       const auth = getAuth(app);
       await signInWithEmailAndPassword(auth, email, password);
-      Alert.alert("Success", "Logged in!");
       // Don't clear loading here - let _layout.tsx handle navigation and loading
     } catch (error) {
       useLoadingStore.getState().setLoading(false);
@@ -84,7 +83,6 @@ export default function LogInScreen() {
       const auth = getAuth(app);
       await signInWithCredential(auth, googleCredential);
 
-      Alert.alert("Success", "Signed in with Google!");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
