@@ -9,9 +9,7 @@ export class FileStorageService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly firebaseService: FirebaseService,
-  ) {
-    this.bucket = this.firebaseService.bucket;
-  }
+  ) {}
 
   async getSignedUrl(
     originalFileName: string,
@@ -23,6 +21,8 @@ export class FileStorageService {
     const fileName = `${uniqueSuffix}.${extension}`;
 
     const filePath = folder ? `${folder}/${fileName}` : fileName;
+    const bucket = this.firebaseService.bucket;
+    if (!bucket) throw new Error('Firebase bucket not initialized');
     const file = this.bucket.file(filePath);
 
     const [url] = await file.getSignedUrl({
