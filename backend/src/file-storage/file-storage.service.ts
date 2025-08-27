@@ -23,7 +23,7 @@ export class FileStorageService {
     const filePath = folder ? `${folder}/${fileName}` : fileName;
     const bucket = this.firebaseService.bucket;
     if (!bucket) throw new Error('Firebase bucket not initialized');
-    const file = this.bucket.file(filePath);
+    const file = bucket.file(filePath);
 
     const [url] = await file.getSignedUrl({
       action: 'write',

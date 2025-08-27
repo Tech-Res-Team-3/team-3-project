@@ -132,7 +132,8 @@ export default function ProfilePhotoManagerScreen() {
       await uploadToSignedUrl(signedUrl, blob, "image/jpeg");
 
       // 4. Notify backend to save image path in DB
-      await saveImage(filePath);
+      // FIXME: saveImage() requires vehicleId ???
+      // await saveImage(filePath);
 
       setImageUri(null);
       Alert.alert("Success", "Photo uploaded!");
