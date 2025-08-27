@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Patch, Put, Delete, Body, UseGuards, Req, Param } from '@nestjs/common';
 import { AddressesService } from './providers/addresses.service';
-import { GetAddressesDto } from './dto/get-addresses.dto';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
 import { CreateAddressDto } from './dto/create-addresses.dto';
 import { CurrentUser } from 'src/user/decorators';
@@ -9,7 +8,7 @@ import { CurrentUser } from 'src/user/decorators';
 @Controller('addresses')
 export class AddressesController {
     constructor(
-        private readonly addressesService: AddressesService
+        private addressesService: AddressesService
     ) {}
 
     @Post()
