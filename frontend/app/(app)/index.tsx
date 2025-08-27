@@ -6,15 +6,17 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
+  BackHandler,
 } from "react-native";
 import { Switch } from "react-native-switch";
 import DashboardMenuButton from "../../components/DashboardMenuButton";
 import { Button } from "../../components/Button";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { BellIcon } from "../../components/icons/BellIcon";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { useLoadingStore } from "../../stores/loadingStore";
 import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
+import { useAuthStore } from "../../stores/authStore";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
 import MapView, { Marker } from "react-native-maps";
@@ -25,7 +27,12 @@ import DateTimePicker, {
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import GlobalLoading from "../../components/GlobalLoading";
+import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getAuth } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
+import { signOut } from "@react-native-firebase/auth";
+import { useCallback } from "react";
 
 dayjs.locale("en");
 
@@ -34,7 +41,9 @@ const { height, width } = Dimensions.get("window");
 
 export default function MainAppScreen() {
   const [loading, setLoading] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const [isEnabled, setIsEnabled] = useState(true);
   const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
     useState(true);
@@ -48,12 +57,86 @@ export default function MainAppScreen() {
   const [startDate, setStartDate] = useState<DateType>();
   const [endDate, setEndDate] = useState<DateType>();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [hasRedirected, setHasRedirected] = useState(false); // Prevent infinite redirects
+
+  useEffect(() => {
+    console.log("MainAppScreen mounted");
+    console.log("User in main app:", user);
+    
+    // Since (app)/_layout.tsx handles auth guards, we can be more confident here
+    // Just wait for user sync if needed
+    if (!user) {
+      console.log("MainAppScreen: Waiting for user data to sync...");
+      setLoading(false);
+      return;
+    }
+    
+    console.log("MainAppScreen: User data available, ready to render");
+    setLoading(false);
+  }, [user]);
+
+  // Handle back navigation - show logout confirmation modal only when this screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => {
+        console.log("Back button pressed on main app - showing logout confirmation modal");
+        setShowLogoutModal(true);
+        return true; // Prevent default behavior
+      };
+
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+      return () => backHandler.remove();
+    }, [])
+  );
+
+  // Handle logout confirmation
+  const handleLogoutConfirm = async () => {
+    console.log("Starting logout process...");
+    setShowLogoutModal(false);
+    useLoadingStore.getState().setLoading(true);
+    
+    try {
+      // Clear Zustand state first
+      useAuthStore.getState().clearUser();
+      console.log("Cleared Zustand user data");
+      
+      // Sign out from Firebase
+      const app = getApp();
+      const auth = getAuth(app);
+      await signOut(auth);
+      console.log("Firebase signOut completed - navigation will be handled by root layout");
+    } catch (error) {
+      console.log("Logout error:", error);
+      useLoadingStore.getState().setLoading(false);
+    }
+  };
+
+  const handleLogoutCancel = () => {
+    console.log("Logout cancelled by user");
+    setShowLogoutModal(false);
+  };
+
+  // The (app) layout handles Firebase auth, so we just check for Zustand user here
+  if (!user) {
+    console.log("MainAppScreen waiting for user sync");
+    return (
+      <>
+        <GlobalLoading />
+        <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+          <Text className="text-lg text-gray-600">Loading your profile...</Text>
+        </SafeAreaView>
+      </>
+    );
+  }
 
   const handleNotificationsPress = () => {
-    useLoadingStore.getState().setLoading(true);
-    setTimeout(() => {
-      useLoadingStore.getState().setLoading(false);
-    }, 3000);
+    console.log("Notifications button pressed - NOT setting loading state");
+    // Disabled the loading state to prevent infinite loading
+    // useLoadingStore.getState().setLoading(true);
+    // setTimeout(() => {
+    //   useLoadingStore.getState().setLoading(false);
+    // }, 3000);
   };
 
   return (
@@ -322,6 +405,13 @@ export default function MainAppScreen() {
           </View>
         </View>
       )}
+      
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        visible={showLogoutModal}
+        onConfirm={handleLogoutConfirm}
+        onCancel={handleLogoutCancel}
+      />
     </>
   );
 }

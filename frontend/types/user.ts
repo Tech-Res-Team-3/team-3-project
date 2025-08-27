@@ -24,6 +24,7 @@ export interface User {
     tripsCompleted?: number;
     stripeAccountId?: string | null;
     profileComplete?: boolean;
+    isActive?: boolean;
     addresses?: Address[];
     driverLicenses?: DriverLicense[];
     languages?: Language[];

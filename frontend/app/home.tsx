@@ -1,10 +1,32 @@
 import { use, useEffect, useState } from "react";
 import { View, Image, ImageBackground, Text, Pressable } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Button } from "../components/Button";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuthStore } from "../stores/authStore";
+import { getAuth } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  
+  // Check if user is authenticated when they press login button
+  const handleLoginPress = () => {
+    // Check if user is already authenticated
+    const app = getApp();
+    const auth = getAuth(app);
+    const firebaseUser = auth.currentUser;
+    
+    if (firebaseUser && user) {
+      console.log("Authenticated user pressed login, redirecting to /(app)");
+      router.replace("/(app)");
+    } else {
+      console.log("Unauthenticated user pressed login, navigating to /login");
+      router.push("/login");
+    }
+  };
+
   return (
     <>
       <ImageBackground
@@ -38,13 +60,12 @@ export default function HomeScreen() {
               ></Button>
             </Link>
 
-            <Link href="/login" asChild>
-              <Button
-                title="Login"
-                className="bg-white border-2 border-ruby w-11/12"
-                textClassName="text-ruby"
-              ></Button>
-            </Link>
+            <Button
+              title="Login"
+              className="bg-white border-2 border-ruby w-11/12"
+              textClassName="text-ruby"
+              onPress={handleLoginPress}
+            />
           </View>
         </SafeAreaView>
       </ImageBackground>

@@ -14,6 +14,7 @@ import {
   getAuth,
   signInWithCredential,
 } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 import { useRouter } from "expo-router";
 import { useLoadingStore } from "../stores/loadingStore";
 import GlobalLoading from "../components/GlobalLoading";
@@ -27,28 +28,38 @@ export default function LogInScreen() {
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    useLoadingStore.getState().setLoading(true);
+    // Don't set loading immediately - let _layout.tsx handle initial auth check
     GoogleSignin.configure({
       webClientId: WEB_CLIENT_ID,
     });
 
-    const unsubscribe = getAuth().onAuthStateChanged((user) => {
-      if (user) {
-        router.replace("/(app)");
-      } else {
-        setCheckingAuth(false);
-        useLoadingStore.getState().setLoading(false);
-      }
-    });
+    // Quick check if user is already logged in
+    const app = getApp();
+    const auth = getAuth(app);
+    const currentUser = auth.currentUser;
+    
+    if (currentUser) {
+      console.log("User already logged in, redirecting to app");
+      router.replace("/(app)");
+    } else {
+      console.log("No user found, staying on login screen");
+      setCheckingAuth(false);
+    }
 
-    return unsubscribe;
+    // Cleanup function to clear loading when component unmounts
+    return () => {
+      console.log("Login screen unmounting, clearing loading");
+      useLoadingStore.getState().setLoading(false);
+    };
   }, [router]);
 
   async function onEmailLogin(email: string, password: string) {
     useLoadingStore.getState().setLoading(true);
     try {
-      await signInWithEmailAndPassword(getAuth(), email, password);
-      Alert.alert("Success", "Logged in!");
+      const app = getApp();
+      const auth = getAuth(app);
+      await signInWithEmailAndPassword(auth, email, password);
+      // Don't clear loading here - let _layout.tsx handle navigation and loading
     } catch (error) {
       useLoadingStore.getState().setLoading(false);
       const errorMessage =
@@ -68,9 +79,10 @@ export default function LogInScreen() {
       if (!idToken) throw new Error("No ID token found");
 
       const googleCredential = GoogleAuthProvider.credential(idToken);
-      await signInWithCredential(getAuth(), googleCredential);
+      const app = getApp();
+      const auth = getAuth(app);
+      await signInWithCredential(auth, googleCredential);
 
-      Alert.alert("Success", "Signed in with Google!");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
