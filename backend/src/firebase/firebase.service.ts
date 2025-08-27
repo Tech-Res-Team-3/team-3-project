@@ -1,11 +1,13 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
+import { Bucket } from '@google-cloud/storage';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
   public auth: admin.auth.Auth;
-  public storage: admin.storage.Storage;
+  public bucket: Bucket;
+
   constructor(private readonly configService: ConfigService) {}
 
   onModuleInit() {
@@ -17,12 +19,14 @@ export class FirebaseService implements OnModuleInit {
             ?.replace(/\\n/g, '\n'),
           clientEmail: this.configService.get<string>('FIREBASE_CLIENT_EMAIL'),
           projectId: this.configService.get<string>('FIREBASE_PROJECT_ID'),
-        } as Partial<admin.ServiceAccount>),
+        }),
         storageBucket: this.configService.get<string>('FIREBASE_BUCKET_URL'),
       });
     }
 
     this.auth = admin.auth();
-    this.storage = admin.storage();
+    this.bucket = admin
+      .storage()
+      .bucket(this.configService.get<string>('FIREBASE_BUCKET_URL'));
   }
 }
