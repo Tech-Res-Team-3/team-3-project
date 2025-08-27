@@ -26,8 +26,9 @@ export class FileStorageService {
     const file = this.bucket.file(filePath);
 
     const [url] = await file.getSignedUrl({
-      action,
+      action: 'write',
       expires: Date.now() + 15 * 60 * 1000,
+      contentType: 'image/jpeg',
     });
 
     return { url, filePath };
