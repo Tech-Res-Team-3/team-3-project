@@ -24,8 +24,6 @@ export class UsersService {
       where: { firebaseUid: data.firebaseUid },
       update: {
         email: data.email,
-        firstName,
-        lastName,
       },
       create: {
         firebaseUid: data.firebaseUid,

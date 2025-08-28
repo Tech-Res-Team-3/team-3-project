@@ -28,7 +28,7 @@ export default function GlobalLoading() {
   if (!visible) return null;
 
   return (
-    <Animated.View style={[styles.overlay, { opacity: 0.7 }]}>
+    <Animated.View style={[styles.overlay, { opacity }]}>
       <LottieView
         source={require("../assets/animations/rao-loading.json")}
         autoPlay
