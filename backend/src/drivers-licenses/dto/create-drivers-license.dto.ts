@@ -1,5 +1,5 @@
-import { Type } from "class-transformer";
-import { IsAlphanumeric, IsBoolean, IsDate, IsDateString, IsString } from "class-validator";
+import { IsAlphanumeric, IsBoolean, IsDate, IsDateString, IsOptional, IsString, IsUrl, Matches } from "class-validator";
+import { IsValidMMDDYYYYDate } from "../validators/is-valid-mmddyyyy-date.validator";
 
 
 export class CreateDriversLicenseDto {
@@ -10,18 +10,15 @@ export class CreateDriversLicenseDto {
     @IsString()
     issuingState: string;
     
-    @IsDateString()
-    expirationDate: Date;
+    @IsString()
+    @IsValidMMDDYYYYDate()
+    expirationDate: string;
     
-    @IsBoolean()
-    isVerified: boolean;
+    @IsString()
+    @IsUrl()
+    frontImage: string;
     
-    @IsDate()
-    createdAt?: Date;
-    
-    @IsDate()
-    updatedAt?: Date;
-    
-    @Type(() => Number)
-    userId: string;
+    @IsUrl()
+    @IsString()
+    backImage: string;
 }
