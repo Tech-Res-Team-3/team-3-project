@@ -1,7 +1,16 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
 import { VehicleService } from 'src/vehicle/vehicle.service';
-import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { CreateVehicleDto, UpdateVehicleDto } from './dto';
 import { CurrentUser } from 'src/user/decorators';
 
 @UseGuards(FirebaseAuthGuard)
@@ -18,5 +27,18 @@ export class VehicleController {
       user.firebaseUid,
       createVehicleDto,
     );
+  }
+
+  @Patch('/:id')
+  updateVehicle(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatVehicleDto: UpdateVehicleDto,
+  ) {
+    return this.vehicleService.updateVehicle(id, updatVehicleDto);
+  }
+
+  @Get()
+  getMyVehicles(@CurrentUser() user: any) {
+    return this.vehicleService.getMyVehicles(user.firebaseUid);
   }
 }

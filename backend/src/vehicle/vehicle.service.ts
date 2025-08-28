@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { CreateVehicleDto, UpdateVehicleDto } from './dto';
 
 @Injectable()
 export class VehicleService {
@@ -18,5 +18,24 @@ export class VehicleService {
     });
 
     return vehicle;
+  }
+
+  async updateVehicle(id: number, data: UpdateVehicleDto) {
+    const updatedVehicle = await this.prisma.vehicle.update({
+      where: { id },
+      data,
+    });
+
+    return updatedVehicle;
+  }
+
+  async getMyVehicles(firebaseUid: string) {
+    const myVehicles = await this.prisma.vehicle.findMany({
+      where: {
+        user: { firebaseUid },
+      },
+    });
+
+    return myVehicles;
   }
 }
