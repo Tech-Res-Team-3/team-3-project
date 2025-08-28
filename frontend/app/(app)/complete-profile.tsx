@@ -14,8 +14,13 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../../components/Button";
 import { useRouter } from "expo-router";
-import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
+import { useAddresses } from "../../hooks/address/useAddresses";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Constants from "expo-constants";
+import type { Address } from "../../types/address";
+import { Portal } from "@gorhom/portal";
 
+const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
 const { height } = Dimensions.get("window");
 
 const languageOptions = [
@@ -41,15 +46,42 @@ export default function CompleteProfileScreen() {
   const [description, setDescription] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [homeAddress, setHomeAddress] = useState("");
-  const [currentAddress, setCurrentAddress] = useState("");
-  const [workAddress, setWorkAddress] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   const defaultPhoto = require("../../assets/profile-placeholder.png");
 
   const router = useRouter();
+
+  const { addresses, addAddress, updateAddress, removeAddress } =
+    useAddresses();
+
+  const handleAddAddress = () => {
+    addAddress({
+      id: Date.now(), // Temporary ID for frontend
+      street: "",
+      city: "",
+      state: "",
+      zip: 0,
+      country: "",
+      userId: 0,
+    });
+  };
+
+  const handleAddressChange = (
+    id: number,
+    field: string,
+    value: string | number
+  ) => {
+    const address = addresses.find((a) => a.id === id);
+    if (address) {
+      updateAddress({ ...address, [field]: value });
+    }
+  };
+
+  const handleRemoveAddress = (id: number) => {
+    removeAddress(id);
+  };
 
   const handleToggleLanguage = (lang: string) => {
     setSelectedLanguages((prev) =>
@@ -61,10 +93,108 @@ export default function CompleteProfileScreen() {
     setShowLanguageModal(false);
   };
 
+  // Render item for FlatList
+  const renderAddressItem = ({ item: address }: { item: Address }) => (
+    <View style={{ marginBottom: 16 }} pointerEvents="box-none">
+      <Portal>
+        <GooglePlacesAutocomplete
+          placeholder="Search for address"
+          fetchDetails={true}
+          query={{
+            key: GOOGLE_MAPS_API_KEY,
+            language: "en",
+          }}
+          onPress={(data, details = null) => {
+            if (details) {
+              // Parse details to extract address fields
+              const street =
+                details?.address_components?.find((c) =>
+                  c.types.includes("route")
+                )?.long_name || "";
+              const streetNumber =
+                details?.address_components?.find((c) =>
+                  c.types.includes("street_number")
+                )?.long_name || "";
+              const city =
+                details?.address_components?.find((c) =>
+                  c.types.includes("locality")
+                )?.long_name || "";
+              const state =
+                details?.address_components?.find((c) =>
+                  c.types.includes("administrative_area_level_1")
+                )?.short_name || "";
+              const zip =
+                details?.address_components?.find((c) =>
+                  c.types.includes("postal_code")
+                )?.long_name || "";
+              const country =
+                details?.address_components?.find((c) =>
+                  c.types.includes("country")
+                )?.long_name || "";
+
+              handleAddressChange(
+                address.id,
+                "street",
+                `${streetNumber} ${street}`.trim()
+              );
+              handleAddressChange(address.id, "city", city);
+              handleAddressChange(address.id, "state", state);
+              handleAddressChange(address.id, "zip", zip);
+              handleAddressChange(address.id, "country", country);
+              // Optionally store place_id, lat/lng, etc.
+              handleAddressChange(address.id, "placeId", details.place_id);
+              handleAddressChange(
+                address.id,
+                "latitude",
+                details.geometry.location.lat
+              );
+              handleAddressChange(
+                address.id,
+                "longitude",
+                details.geometry.location.lng
+              );
+            }
+          }}
+          styles={{
+            container: { flex: 0, marginBottom: 8 },
+            textInput: {
+              backgroundColor: "#f3f4f6",
+              borderRadius: 12,
+              fontSize: 16,
+              paddingHorizontal: 12,
+              color: "#222",
+              minHeight: 44,
+              borderWidth: 0,
+            },
+            listView: {
+              backgroundColor: "#fff",
+              borderRadius: 12,
+              borderWidth: 0,
+              marginTop: 4,
+              zIndex: 20,
+            },
+          }}
+        />
+      </Portal>
+
+      <TouchableOpacity
+        onPress={() => handleRemoveAddress(address.id)}
+        style={{
+          alignSelf: "flex-end",
+          marginTop: 4,
+          marginBottom: 8,
+        }}
+      >
+        <Text style={{ color: "#c41111" }}>Remove</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <ScrollView
       className="flex-1 bg-gray-100"
       contentContainerStyle={{ alignItems: "center", paddingBottom: 40 }}
+      keyboardShouldPersistTaps="handled"
     >
       {/* Profile Photo Section */}
       <View
@@ -143,120 +273,105 @@ export default function CompleteProfileScreen() {
         />
       </View>
 
-      {/* General Info Section */}
+      {/* Addresses Section */}
       <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
-        <Text className="text-xl font-bold text-ruby mb-3 mt-1">
-          General Info
-        </Text>
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Home Address
-        </Text>
-        <TextInput
-          className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
-          placeholder="123 Main St, Hometown"
-          value={homeAddress}
-          onChangeText={setHomeAddress}
+        <Text className="text-xl font-bold text-ruby mb-3 mt-1">Addresses</Text>
+        <FlatList
+          data={addresses}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderAddressItem}
+          scrollEnabled={false}
+          ListFooterComponent={
+            <Button
+              title="Add Address"
+              onPress={handleAddAddress}
+              className="bg-gray-200 mt-2"
+              textClassName="text-ruby"
+            />
+          }
         />
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Current Address
-        </Text>
-        <TextInput
-          className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
-          placeholder="456 Elm St, Current City"
-          value={currentAddress}
-          onChangeText={setCurrentAddress}
-        />
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Work Address
-        </Text>
-        <TextInput
-          className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
-          placeholder="789 Oak Ave, Work City"
-          value={workAddress}
-          onChangeText={setWorkAddress}
-        />
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Languages
-        </Text>
-        <TouchableOpacity
-          className="bg-gray-100 rounded-xl px-4 py-3 flex-row items-center justify-between border border-gray-300 mb-2"
-          onPress={() => setShowLanguageModal(true)}
-        >
-          <Text
-            className={
-              selectedLanguages.length ? "text-gray-900" : "text-gray-400"
-            }
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {selectedLanguages.length
-              ? selectedLanguages.length <= 2
-                ? selectedLanguages.join(", ")
-                : `${selectedLanguages.slice(0, 2).join(", ")}  + ${selectedLanguages.length - 2} more`
-              : "Select languages"}
-          </Text>
-          <Ionicons name="chevron-down" size={20} color="#aaa" />
-        </TouchableOpacity>
-
-        {/* Modal for multi-select languages */}
-        <Modal
-          visible={showLanguageModal}
-          animationType="slide"
-          transparent
-          onRequestClose={() => setShowLanguageModal(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text className="text-lg font-bold mb-4 text-ruby">
-                Select Languages
-              </Text>
-              <FlatList
-                data={languageOptions}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    className="flex-row items-center py-2"
-                    onPress={() => handleToggleLanguage(item)}
-                  >
-                    <Ionicons
-                      name={
-                        selectedLanguages.includes(item)
-                          ? "checkbox"
-                          : "square-outline"
-                      }
-                      size={24}
-                      color={
-                        selectedLanguages.includes(item) ? "#c41111" : "#aaa"
-                      }
-                      style={{ marginRight: 12 }}
-                    />
-                    <Text className="text-base">{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-              <Button
-                title="Save"
-                onPress={handleSaveLanguages}
-                className="bg-ruby mt-4"
-                textClassName="text-white"
-              />
-              <Button
-                title="Cancel"
-                onPress={() => setShowLanguageModal(false)}
-                className="bg-gray-300 mt-2"
-                textClassName="text-gray-800"
-              />
-            </View>
-          </View>
-        </Modal>
       </View>
+
+      <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
+        Languages
+      </Text>
+      <TouchableOpacity
+        className="bg-gray-100 rounded-xl px-4 py-3 flex-row items-center justify-between border border-gray-300 mb-2"
+        onPress={() => setShowLanguageModal(true)}
+      >
+        <Text
+          className={
+            selectedLanguages.length ? "text-gray-900" : "text-gray-400"
+          }
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {selectedLanguages.length
+            ? selectedLanguages.length <= 2
+              ? selectedLanguages.join(", ")
+              : `${selectedLanguages.slice(0, 2).join(", ")}  + ${selectedLanguages.length - 2} more`
+            : "Select languages"}
+        </Text>
+        <Ionicons name="chevron-down" size={20} color="#aaa" />
+      </TouchableOpacity>
+
+      {/* Modal for multi-select languages */}
+      <Modal
+        visible={showLanguageModal}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowLanguageModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text className="text-lg font-bold mb-4 text-ruby">
+              Select Languages
+            </Text>
+            <FlatList
+              data={languageOptions}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  className="flex-row items-center py-2"
+                  onPress={() => handleToggleLanguage(item)}
+                >
+                  <Ionicons
+                    name={
+                      selectedLanguages.includes(item)
+                        ? "checkbox"
+                        : "square-outline"
+                    }
+                    size={24}
+                    color={
+                      selectedLanguages.includes(item) ? "#c41111" : "#aaa"
+                    }
+                    style={{ marginRight: 12 }}
+                  />
+                  <Text className="text-base">{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <Button
+              title="Save"
+              onPress={handleSaveLanguages}
+              className="bg-ruby mt-4"
+              textClassName="text-white"
+            />
+            <Button
+              title="Cancel"
+              onPress={() => setShowLanguageModal(false)}
+              className="bg-gray-300 mt-2"
+              textClassName="text-gray-800"
+            />
+          </View>
+        </View>
+      </Modal>
 
       {/* Save/Continue Button */}
       <View className="w-full mt-5">
         <Button
           title="Save Profile"
           onPress={() => {
-            useProfileCompleteStore.getState().toggleProfileComplete();
             router.replace("/(app)");
           }}
           className="bg-ruby self-center w-11/12"

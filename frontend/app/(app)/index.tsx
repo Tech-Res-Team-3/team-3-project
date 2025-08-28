@@ -130,6 +130,7 @@ export default function MainAppScreen() {
     );
   }
 
+  // TODO: Create Notifications Screen
   const handleNotificationsPress = () => {
     console.log("Notifications button pressed - NOT setting loading state");
     // Disabled the loading state to prevent infinite loading
@@ -155,9 +156,7 @@ export default function MainAppScreen() {
             size={45}
           />
           <TouchableOpacity
-            onPress={() =>
-              useProfileCompleteStore.getState().toggleProfileComplete()
-            }
+            onPress={() => router.push("/complete-profile")}
             style={styles.circleButton}
           >
             <Text className="text-ruby">X</Text>

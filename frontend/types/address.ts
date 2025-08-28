@@ -9,8 +9,8 @@ export interface Address {
     zip: number;
     country: string;
     placeId?: string | null;
-    latitude: number;
-    longitude: number;
+    latitude?: number;
+    longitude?: number;
     userId: number;
     user?: User;
 }
