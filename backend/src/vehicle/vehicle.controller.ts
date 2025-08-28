@@ -37,7 +37,7 @@ export class VehicleController {
     return this.vehicleService.updateVehicle(id, updatVehicleDto);
   }
 
-  @Get()
+  @Get('/myVehicles')
   getMyVehicles(@CurrentUser() user: any) {
     return this.vehicleService.getMyVehicles(user.firebaseUid);
   }
