@@ -1,7 +1,9 @@
-PATCH http://localhost:3333/users/43512
+PATCH http://localhost:3333/users/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImVmMjQ4ZjQyZjc0YWUwZjk0OTIwYWY5YTlhMDEzMTdlZjJkMzVmZTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmFvLXJlbnRhbHMiLCJhdWQiOiJyYW8tcmVudGFscyIsImF1dGhfdGltZSI6MTc1NjM2MjIxNiwidXNlcl9pZCI6Ik5MQXRSV1BIWm1WRUJxYmd2QjBvV3M3Sm8yeTIiLCJzdWIiOiJOTEF0UldQSFptVkVCcWJndkIwb1dzN0pvMnkyIiwiaWF0IjoxNzU2MzYyMjE2LCJleHAiOjE3NTYzNjU4MTYsImVtYWlsIjoia2Jyb3duQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImticm93bkBleGFtcGxlLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.ZCr58gbPPP09kW7wXdc6BxIp27s6TqxYNkPWG05gGSbWBPZHnlMXxlSj3a8ZMtzrhPrHeS0pPdCAxOMZ9QgkvT2kj3QA29vIkF0dHWxZWb7RD5kimGFy_GSekNAGxt2_HPpVRSvsaJTRQ6hJGhoBoDVT3qNyB1ZA-I2TE5FRWy9ZDtFDCJQCotkkDnNhh0peXkQiNQ9arPjHju4snrxi3MrLxaS1wO4mn4sKM6hTNCRcGlR5PD-_G3DkRxr5-kB8Y7IrsiO07tMzTx9fuybBrrAdIm5ilfTcmZ21IspRPstaNrjx4FQeMflqs0-jf4Nifzjlm33HcIj_hNL8UbUzJw
+
 {
-    "firstName": "Jay",
-    "lastName": "Doe",
-    "phone": "1234567890"
+    "firstName": "Ken",
+    "lastName": "Brown",
+    "phone": "(770)555-1234"
 }

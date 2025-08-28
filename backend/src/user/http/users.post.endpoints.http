@@ -1,0 +1,11 @@
+POST http://localhost:3333/users/sync
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjkyZTg4M2NjNDY2M2E2MzMyYWRhNmJjMWU0N2YzZmY1ZTRjOGI1ZDciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmFvLXJlbnRhbHMiLCJhdWQiOiJyYW8tcmVudGFscyIsImF1dGhfdGltZSI6MTc1NjM1OTY5NCwidXNlcl9pZCI6Ik5MQXRSV1BIWm1WRUJxYmd2QjBvV3M3Sm8yeTIiLCJzdWIiOiJOTEF0UldQSFptVkVCcWJndkIwb1dzN0pvMnkyIiwiaWF0IjoxNzU2MzU5Njk0LCJleHAiOjE3NTYzNjMyOTQsImVtYWlsIjoia2Jyb3duQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImticm93bkBleGFtcGxlLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.MrBPy4ogWTHo6b51pGaW1QEI615gVz2B0-o9uQGG3zz9WkNuls6h8vByXPjXQFfJCivzb6W1ac9w_II-V4kBshrOLXtW3LKbciroWAToWdVNZbY9G83a4zyQwL0yihSUfW9fmL1GZhpsuTWPy_ZCdKAS19WpgUdWWTe9FxnNOCjLlA25-PQEdPJI3hl8enLKxOu2lo0_c4ipKssVttAKO0FqyAmaZSMybNboTG7TW_UNjZITGKBrYmu8HZ8-ITWdSno-evB0fVPhHtO5iYM0f8AgaQ5tOtu9hDgD2XSl7QmqtE-wZjDqokA099ceqyPywK0ZFqlYv64_iU9qVJWKbw
+
+{
+    "firstName": "Kent",
+    "lastName": "Broughton",
+    "email": "kbroughton@example.com",
+    "password": "P@$$w0rd!",
+    "phone": "123-456-7890"
+}

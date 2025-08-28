@@ -1,41 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateAddressDto } from '../dto/create-addresses.dto';
-import { GetUsersParamDto } from 'src/user/dto/get-users-param.dto';
 import { UsersService } from 'src/user/providers/users.service';
 
 @Injectable()
 export class AddressesService {
     constructor(
-        private readonly usersService: UsersService,
+        private usersService: UsersService,
         private prisma: PrismaService
     ) {}
     
-    async createAddress(firebaseUid: string, dto: CreateAddressDto) {
-        const user = await this.usersService.getUserById(firebaseUid!);
-
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        return this.prisma.address.create({
+    async createAddress(
+        firebaseUid: string,
+        dto: CreateAddressDto
+    ) {
+        const address = await this.prisma.address.create({
             data: {
                 ...dto,
-                userId: user.id
-            },
+                user: {
+                    connect: { firebaseUid }
+                }
+            }
         });
+        return address;
     }
 
+    async getAddresses(firebaseUid: string) {
+        const addresses = await this.prisma.address.findMany();
 
-    async getAddresses(firebaseUid: string){
-        const user = await this.usersService.getUserById(firebaseUid);
-
-        return user?.addresses ?? []; 
+        return addresses; 
     }
 
-    async updateAddress(id: number, updateAddressDto: Partial<CreateAddressDto>) {
+    async updateAddress(
+        firebaseUid: string,
+        id: number,
+        updateAddressDto: Partial<CreateAddressDto>
+    ) {
         const address = await this.prisma.address.update({
-            where: { id },
+            where: { id, user: { firebaseUid } },
             data: updateAddressDto
         });
 

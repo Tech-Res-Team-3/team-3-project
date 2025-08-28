@@ -3,28 +3,24 @@ import { AddressesService } from './providers/addresses.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
 import { CreateAddressDto } from './dto/create-addresses.dto';
 import { CurrentUser } from 'src/user/decorators';
+import { UpdateAddressDto } from './dto/update-address.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from 'generated/prisma';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('addresses')
 export class AddressesController {
     constructor(
-        private addressesService: AddressesService
+        private addressesService: AddressesService,
+        private prisma: PrismaService
     ) {}
 
     @Post()
     createAddress(
         @Body() dto: CreateAddressDto,
-        @Req() req: any
-    ) {
-        return this.addressesService.createAddress(req.user.uid, dto);
-    }
-
-    @Get()
-    getAddresses(
         @CurrentUser() user: any
     ) {
-        // Implementation for getting addresses
-        return this.addressesService.getAddresses(user.firebaseUid);
+        return this.addressesService.createAddress(user.uid, dto);
     }
 
     @Get()
@@ -35,8 +31,11 @@ export class AddressesController {
     @Patch('/:id')
     updateAddress(
         @Param('id') id: string,
-        @Body() updateAddressDto: any
-    ) {}
+        @Body() updateAddressDto: UpdateAddressDto,
+        @CurrentUser() user: any,
+    ) {
+        return this.addressesService.updateAddress(user.firebaseUid, parseInt(id), updateAddressDto);
+    }
 
     @Delete('/:id')
     deleteAddress(
