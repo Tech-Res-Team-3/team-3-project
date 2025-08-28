@@ -19,6 +19,10 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Constants from "expo-constants";
 import type { Address } from "../../types/address";
 import { Portal } from "@gorhom/portal";
+import { useUpdateUser } from "../../hooks/auth";
+import { useAuthStore } from "../../stores/authStore";
+import { useLoadingStore } from "../../stores/loadingStore";
+import GlobalLoading from "../../components/GlobalLoading";
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
 const { height } = Dimensions.get("window");
@@ -42,7 +46,8 @@ const languageOptions = [
 
 export default function CompleteProfileScreen() {
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [description, setDescription] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -52,6 +57,8 @@ export default function CompleteProfileScreen() {
   const defaultPhoto = require("../../assets/profile-placeholder.png");
 
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const { updateUser } = useUpdateUser();
 
   const { addresses, addAddress, updateAddress, removeAddress } =
     useAddresses();
@@ -190,195 +197,261 @@ export default function CompleteProfileScreen() {
     </View>
   );
 
+  const [error, setError] = useState<string | null>(null);
+
+  function validateProfile({
+    firstName,
+    lastName,
+    phone,
+  }: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+  }) {
+    if (!firstName.trim()) return "First name is required.";
+    if (!lastName.trim()) return "Last name is required.";
+    if (!phone.trim()) return "Phone number is required.";
+    if (!/^\+?\d{7,15}$/.test(phone.replace(/[\s()-]/g, "")))
+      return "Enter a valid phone number.";
+    return null;
+  }
+
   return (
-    <ScrollView
-      className="flex-1 bg-gray-100"
-      contentContainerStyle={{ alignItems: "center", paddingBottom: 40 }}
-      keyboardShouldPersistTaps="handled"
-    >
-      {/* Profile Photo Section */}
-      <View
-        className="w-[90%] bg-white rounded-2xl p-5 mb-5 items-center shadow"
-        style={{ marginTop: height * 0.06 }}
+    <>
+      {/* {useLoadingStore((state) => state.loading) && <GlobalLoading />} */}
+      <ScrollView
+        className="flex-1 bg-gray-100"
+        contentContainerStyle={{ alignItems: "center", paddingBottom: 40 }}
+        keyboardShouldPersistTaps="handled"
       >
-        <View className="relative">
-          <Image
-            source={profilePhoto ? { uri: profilePhoto } : defaultPhoto}
-            className="w-24 h-24 rounded-full mb-2"
-          />
-          <TouchableOpacity
-            className="absolute bottom-0 right-0 bg-ruby rounded-full p-1.5 border-2 border-white"
-            onPress={() => {
-              /* TODO: Add photo picker logic */
-            }}
-          >
-            <Ionicons name="camera" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
-        <Text className="text-xl font-bold text-ruby mt-1">Profile Photo</Text>
-      </View>
-
-      {/* Basic Info Section */}
-      <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
-        <Text className="text-xl font-bold text-ruby mb-3 mt-1">
-          Basic Info
-        </Text>
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Name
-        </Text>
-        <TextInput
-          className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
-          placeholder="Your Name"
-          value={name}
-          onChangeText={setName}
-        />
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Description
-        </Text>
-        <TextInput
-          className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
-          placeholder="Tell us about yourself"
-          value={description}
-          onChangeText={setDescription}
-          multiline
-          style={{ height: 80 }}
-        />
-      </View>
-
-      {/* Contact Info Section */}
-      <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
-        <Text className="text-xl font-bold text-ruby mb-3 mt-1">
-          Contact Info
-        </Text>
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Phone Number
-        </Text>
-        <TextInput
-          className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
-          placeholder="(555) 123-4567"
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-        />
-        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-          Email
-        </Text>
-        <TextInput
-          className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
-          placeholder="you@email.com"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-      </View>
-
-      {/* Addresses Section */}
-      <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
-        <Text className="text-xl font-bold text-ruby mb-3 mt-1">Addresses</Text>
-        <FlatList
-          data={addresses}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderAddressItem}
-          scrollEnabled={false}
-          ListFooterComponent={
-            <Button
-              title="Add Address"
-              onPress={handleAddAddress}
-              className="bg-gray-200 mt-2"
-              textClassName="text-ruby"
-            />
-          }
-        />
-      </View>
-
-      <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
-        Languages
-      </Text>
-      <TouchableOpacity
-        className="bg-gray-100 rounded-xl px-4 py-3 flex-row items-center justify-between border border-gray-300 mb-2"
-        onPress={() => setShowLanguageModal(true)}
-      >
-        <Text
-          className={
-            selectedLanguages.length ? "text-gray-900" : "text-gray-400"
-          }
-          numberOfLines={1}
-          ellipsizeMode="tail"
+        {/* Profile Photo Section */}
+        <View
+          className="w-[90%] bg-white rounded-2xl p-5 mb-5 items-center shadow"
+          style={{ marginTop: height * 0.06 }}
         >
-          {selectedLanguages.length
-            ? selectedLanguages.length <= 2
-              ? selectedLanguages.join(", ")
-              : `${selectedLanguages.slice(0, 2).join(", ")}  + ${selectedLanguages.length - 2} more`
-            : "Select languages"}
-        </Text>
-        <Ionicons name="chevron-down" size={20} color="#aaa" />
-      </TouchableOpacity>
-
-      {/* Modal for multi-select languages */}
-      <Modal
-        visible={showLanguageModal}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setShowLanguageModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text className="text-lg font-bold mb-4 text-ruby">
-              Select Languages
-            </Text>
-            <FlatList
-              data={languageOptions}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  className="flex-row items-center py-2"
-                  onPress={() => handleToggleLanguage(item)}
-                >
-                  <Ionicons
-                    name={
-                      selectedLanguages.includes(item)
-                        ? "checkbox"
-                        : "square-outline"
-                    }
-                    size={24}
-                    color={
-                      selectedLanguages.includes(item) ? "#c41111" : "#aaa"
-                    }
-                    style={{ marginRight: 12 }}
-                  />
-                  <Text className="text-base">{item}</Text>
-                </TouchableOpacity>
-              )}
+          <View className="relative">
+            <Image
+              source={profilePhoto ? { uri: profilePhoto } : defaultPhoto}
+              className="w-24 h-24 rounded-full mb-2"
             />
-            <Button
-              title="Save"
-              onPress={handleSaveLanguages}
-              className="bg-ruby mt-4"
-              textClassName="text-white"
-            />
-            <Button
-              title="Cancel"
-              onPress={() => setShowLanguageModal(false)}
-              className="bg-gray-300 mt-2"
-              textClassName="text-gray-800"
-            />
+            <TouchableOpacity
+              className="absolute bottom-0 right-0 bg-ruby rounded-full p-1.5 border-2 border-white"
+              onPress={() => {
+                /* TODO: Add photo picker logic */
+              }}
+            >
+              <Ionicons name="camera" size={24} color="#fff" />
+            </TouchableOpacity>
           </View>
+          <Text className="text-xl font-bold text-ruby mt-1">
+            Profile Photo
+          </Text>
         </View>
-      </Modal>
 
-      {/* Save/Continue Button */}
-      <View className="w-full mt-5">
-        <Button
-          title="Save Profile"
-          onPress={() => {
-            router.replace("/(app)");
-          }}
-          className="bg-ruby self-center w-11/12"
-          textClassName="text-white"
-        />
-      </View>
-    </ScrollView>
+        {/* Basic Info Section */}
+        <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
+          <Text className="text-xl font-bold text-ruby mb-3 mt-1">
+            Basic Info
+          </Text>
+          <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
+            First Name
+          </Text>
+          <TextInput
+            className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
+            placeholder="e.g. John"
+            value={firstName}
+            onChangeText={setFirstName}
+          />
+          <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
+            Last Name
+          </Text>
+          <TextInput
+            className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
+            placeholder="e.g. Smith"
+            value={lastName}
+            onChangeText={setLastName}
+          />
+          <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
+            Description
+          </Text>
+          <TextInput
+            className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
+            placeholder="Tell us about yourself"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            style={{ height: 80 }}
+          />
+        </View>
+
+        {/* Contact Info Section */}
+        <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
+          <Text className="text-xl font-bold text-ruby mb-3 mt-1">
+            Contact Info
+          </Text>
+          <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
+            Phone Number
+          </Text>
+          <TextInput
+            className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
+            placeholder="(555) 123-4567"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+          />
+          <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
+            Email
+          </Text>
+          <TextInput
+            className="bg-gray-100 rounded-xl px-4 py-3 text-base mb-2 border border-gray-300 text-gray-900"
+            placeholder="you@email.com"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        {/* Addresses Section */}
+        <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
+          <Text className="text-xl font-bold text-ruby mb-3 mt-1">
+            Addresses
+          </Text>
+          <FlatList
+            data={addresses}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderAddressItem}
+            scrollEnabled={false}
+            ListFooterComponent={
+              <Button
+                title="Add Address"
+                onPress={handleAddAddress}
+                className="bg-gray-200 mt-2"
+                textClassName="text-ruby"
+              />
+            }
+          />
+        </View>
+
+        <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
+          Languages
+        </Text>
+        <TouchableOpacity
+          className="bg-gray-100 rounded-xl px-4 py-3 flex-row items-center justify-between border border-gray-300 mb-2"
+          onPress={() => setShowLanguageModal(true)}
+        >
+          <Text
+            className={
+              selectedLanguages.length ? "text-gray-900" : "text-gray-400"
+            }
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {selectedLanguages.length
+              ? selectedLanguages.length <= 2
+                ? selectedLanguages.join(", ")
+                : `${selectedLanguages.slice(0, 2).join(", ")}  + ${selectedLanguages.length - 2} more`
+              : "Select languages"}
+          </Text>
+          <Ionicons name="chevron-down" size={20} color="#aaa" />
+        </TouchableOpacity>
+
+        {/* Modal for multi-select languages */}
+        <Modal
+          visible={showLanguageModal}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setShowLanguageModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text className="text-lg font-bold mb-4 text-ruby">
+                Select Languages
+              </Text>
+              <FlatList
+                data={languageOptions}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    className="flex-row items-center py-2"
+                    onPress={() => handleToggleLanguage(item)}
+                  >
+                    <Ionicons
+                      name={
+                        selectedLanguages.includes(item)
+                          ? "checkbox"
+                          : "square-outline"
+                      }
+                      size={24}
+                      color={
+                        selectedLanguages.includes(item) ? "#c41111" : "#aaa"
+                      }
+                      style={{ marginRight: 12 }}
+                    />
+                    <Text className="text-base">{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+              <Button
+                title="Save"
+                onPress={handleSaveLanguages}
+                className="bg-ruby mt-4"
+                textClassName="text-white"
+              />
+              <Button
+                title="Cancel"
+                onPress={() => setShowLanguageModal(false)}
+                className="bg-gray-300 mt-2"
+                textClassName="text-gray-800"
+              />
+            </View>
+          </View>
+        </Modal>
+
+        {/* Save/Continue Button */}
+        <View className="w-full mt-5">
+          {error && (
+            <Text
+              style={{ color: "#c41111", marginBottom: 8, textAlign: "center" }}
+            >
+              {error}
+            </Text>
+          )}
+          <Button
+            title="Save Profile"
+            onPress={async () => {
+              setError(null);
+              const validationError = validateProfile({
+                firstName,
+                lastName,
+                phone,
+              });
+              if (validationError) {
+                setError(validationError);
+                return;
+              }
+              useLoadingStore.getState().setLoading(true);
+              if (!user) return;
+              try {
+                await updateUser({
+                  firstName,
+                  lastName,
+                  phone,
+                });
+                router.replace("/(app)");
+              } catch (err) {
+                setError("Failed to update profile. Please try again.");
+                console.error("Failed to update user:", err);
+              } finally {
+                useLoadingStore.getState().setLoading(false);
+              }
+            }}
+            className="bg-ruby self-center w-11/12"
+            textClassName="text-white"
+          />
+        </View>
+      </ScrollView>
+    </>
   );
 }
 

@@ -37,7 +37,7 @@ export default function LogInScreen() {
     const app = getApp();
     const auth = getAuth(app);
     const currentUser = auth.currentUser;
-    
+
     if (currentUser) {
       console.log("User already logged in, redirecting to app");
       router.replace("/(app)");
@@ -46,11 +46,7 @@ export default function LogInScreen() {
       setCheckingAuth(false);
     }
 
-    // Cleanup function to clear loading when component unmounts
-    return () => {
-      console.log("Login screen unmounting, clearing loading");
-      useLoadingStore.getState().setLoading(false);
-    };
+    // Removed cleanup function that was clearing loading on unmount
   }, [router]);
 
   async function onEmailLogin(email: string, password: string) {
@@ -82,7 +78,6 @@ export default function LogInScreen() {
       const app = getApp();
       const auth = getAuth(app);
       await signInWithCredential(auth, googleCredential);
-
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -100,7 +95,7 @@ export default function LogInScreen() {
 
   return (
     <>
-      <GlobalLoading />
+      {/* {useLoadingStore((state) => state.loading) && <GlobalLoading />} */}
       <View className="flex-1 justify-center h-full bg-white gap-10">
         <View className="items-center justify-center bg-white pt-8">
           <Text className="text-black text-2xl font-semibold">

@@ -6,18 +6,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuthStore } from "../stores/authStore";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
+import { useLoadingStore } from "../stores/loadingStore";
 
 export default function HomeScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  
+
   // Check if user is authenticated when they press login button
   const handleLoginPress = () => {
     // Check if user is already authenticated
     const app = getApp();
     const auth = getAuth(app);
     const firebaseUser = auth.currentUser;
-    
+
     if (firebaseUser && user) {
       console.log("Authenticated user pressed login, redirecting to /(app)");
       router.replace("/(app)");

@@ -169,67 +169,26 @@ export default function DashboardScreen() {
     await promoteToHost();
     useLoadingStore.getState().setLoading(false);
   };
-  // const handleLogout = async () => {
-  //   try {
-  //     console.log("Starting logout process...");
-
-  //     // Set loading immediately
-  //     useLoadingStore.getState().setLoading(true);
-
-  //     // Clear user data from Zustand store immediately
-  //     useAuthStore.getState().clearUser();
-  //     console.log("Cleared Zustand user data");
-
-  //     // Sign out from Firebase - let the root _layout.tsx handle navigation
-  //     const app = getApp();
-  //     const auth = getAuth(app);
-  //     await signOut(auth);
-  //     console.log(
-  //       "Firebase signOut completed - navigation will be handled by root layout"
-  //     );
-
-  //     // Don't navigate here - let the root _layout.tsx auth listener handle it
-  //   } catch (error) {
-  //     console.log("Logout error:", error);
-  //     // On error, clear loading and try fallback navigation
-  //     useLoadingStore.getState().setLoading(false);
-
-  //     setTimeout(() => {
-  //       try {
-  //         if (router && router.replace) {
-  //           router.replace("/");
-  //           console.log("Fallback navigation to home after logout error");
-  //         }
-  //       } catch (navError) {
-  //         console.log("Fallback navigation error:", navError);
-  //       }
-  //     }, 100);
-  //   }
-  // };
   const handleEditProfile = () => {};
   const handleViewProfile = () => {
     router.push("/dashboard/profile-photo");
   };
 
   const handleLogoutConfirm = async () => {
-    console.log("Starting logout process...");
+    console.log("[Logout] Initiated");
     setShowLogoutModal(false);
     useLoadingStore.getState().setLoading(true);
+    console.log("[Logout] Loading set to true");
 
     try {
-      // Clear Zustand state first
       useAuthStore.getState().clearUser();
-      console.log("Cleared Zustand user data");
-
-      // Sign out from Firebase
+      console.log("[Logout] Zustand user cleared");
       const app = getApp();
       const auth = getAuth(app);
       await signOut(auth);
-      console.log(
-        "Firebase signOut completed - navigation will be handled by root layout"
-      );
+      console.log("[Logout] Firebase signOut complete");
     } catch (error) {
-      console.log("Logout error:", error);
+      console.error("[Logout] Error:", error);
       useLoadingStore.getState().setLoading(false);
     }
   };
@@ -241,7 +200,7 @@ export default function DashboardScreen() {
 
   return (
     <>
-      {useLoadingStore((state) => state.loading) && <GlobalLoading />}
+      {/* {useLoadingStore((state) => state.loading) && <GlobalLoading />} */}
       <SafeAreaView className="flex-1 bg-gray-100 items-center">
         {/* Top Profile Section */}
         <View
