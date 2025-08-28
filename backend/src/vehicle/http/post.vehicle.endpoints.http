@@ -1,0 +1,25 @@
+POST http://localhost:3333/vehicles
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjkyZTg4M2NjNDY2M2E2MzMyYWRhNmJjMWU0N2YzZmY1ZTRjOGI1ZDciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmFvLXJlbnRhbHMiLCJhdWQiOiJyYW8tcmVudGFscyIsImF1dGhfdGltZSI6MTc1NjM5OTY5NSwidXNlcl9pZCI6IlNWNDdFdUlpMWNhd3ZDd0dZZ0lKWFdET2FJaDEiLCJzdWIiOiJTVjQ3RXVJaTFjYXd2Q3dHWWdJSlhXRE9hSWgxIiwiaWF0IjoxNzU2Mzk5Njk1LCJleHAiOjE3NTY0MDMyOTUsImVtYWlsIjoiY3N0YW5AZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiY3N0YW5AZXhhbXBsZS5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.EN-cT8KZO-iKIGkmPjbK8r8Mag4tfHCoGPFPs-AwEI-dhYfyCeNH5PLWpANGLBm-RmPAM3SVG7ZD-g_aJOS1ztqnn-4jEqQIqCykXzPvKXWlcZb7ukQNsbocsLw51oJbnnhfCPPo_rLl57jj0msVU6h6mdfEPTBvqFWw9r-cC5GqwuausRPh2PF968NVdd2IpKGuRUY5Apxsg8ZcQvBYZPe8ISGg3gDc7MTT9ChjUIGgFmldF8UWXxiCsQx4NhSWvvIar2eKE01OKeYATaajQE1W-5RKTbna6CCnrl8YUgWmeNED6gVIHdg4jmmaCDFUherForoXaoDG8HISje81LQ
+
+{
+  "make": "toyota",
+  "model": "camry",
+  "year": 2020,
+  "licensePlate": "al;sdkf",
+  "color": "white",
+  "type": "sedan",
+  "seats": 5,
+  "hasSeatbelts": true,
+  "value": 20000,
+  "seatbeltType": "BOTH",
+  "condition": "EXCELLENT",
+  "vin": ";alskdfj;alsjkdf;alskf",
+  "mileage": 60000,
+  "transmission": "AUTOMATIC",
+  "salesTaxPaid": true,
+  "trim": "black",
+  "bodyStyle": "sedan",
+  "hasSalvageTitle": true,
+  "extraInfo": "more info"
+}

@@ -14,7 +14,7 @@ import { CreateVehicleDto, UpdateVehicleDto } from './dto';
 import { CurrentUser } from 'src/user/decorators';
 
 @UseGuards(FirebaseAuthGuard)
-@Controller('vehicle')
+@Controller('vehicles')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
@@ -23,10 +23,7 @@ export class VehicleController {
     @CurrentUser() user: any,
     @Body() createVehicleDto: CreateVehicleDto,
   ) {
-    return this.vehicleService.createVehicle(
-      user.firebaseUid,
-      createVehicleDto,
-    );
+    return this.vehicleService.createVehicle(user.uid, createVehicleDto);
   }
 
   @Patch('/:id')
@@ -39,6 +36,6 @@ export class VehicleController {
 
   @Get('/myVehicles')
   getMyVehicles(@CurrentUser() user: any) {
-    return this.vehicleService.getMyVehicles(user.firebaseUid);
+    return this.vehicleService.getMyVehicles(user.uid);
   }
 }
