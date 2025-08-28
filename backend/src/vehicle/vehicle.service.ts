@@ -7,17 +7,20 @@ export class VehicleService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createVehicle(firebaseUid: string, data: CreateVehicleDto) {
-    const vehicle = await this.prisma.vehicle.create({
-      data: {
-        ...data,
-        vehicleImage: data.vehicleImage || '',
-        user: {
-          connect: { firebaseUid },
+    try {
+      return await this.prisma.vehicle.create({
+        data: {
+          ...data,
+          vehicleImage: data.vehicleImage || '',
+          user: {
+            connect: { firebaseUid },
+          },
         },
-      },
-    });
-
-    return vehicle;
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   async updateVehicle(id: number, data: UpdateVehicleDto) {
