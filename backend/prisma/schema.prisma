@@ -171,7 +171,7 @@ model Trip {
   user                User              @relation(fields: [userId], references: [id])
   vehicleId           Int
   vehicle             Vehicle           @relation(fields: [vehicleId], references: [id])
-  bookings            Booking[]
+  bookings            Booking?
   invoices            Invoice[]
 
   @@index([userId])
@@ -195,8 +195,8 @@ model Booking {
 
   userId              Int
   user                User              @relation(fields: [userId], references: [id])
-  tripId              Int?
-  trip                Trip?              @relation(fields: [tripId], references: [id])
+  tripId              Int?              @unique
+  trip                Trip?             @relation(fields: [tripId], references: [id])
 
   @@index([userId])
   @@index([tripId])
