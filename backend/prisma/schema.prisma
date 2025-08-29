@@ -195,8 +195,8 @@ model Booking {
 
   userId              Int
   user                User              @relation(fields: [userId], references: [id])
-  tripId              Int
-  trip                Trip              @relation(fields: [tripId], references: [id])
+  tripId              Int?
+  trip                Trip?              @relation(fields: [tripId], references: [id])
 
   @@index([userId])
   @@index([tripId])
@@ -207,7 +207,7 @@ model Booking {
 enum BookingStatus {
   PENDING
   CONFIRMED
-  DECLINED
+  CANCELED
 }
 
 model Invoice {
