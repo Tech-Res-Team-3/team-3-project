@@ -13,7 +13,11 @@ export class BookingService {
     ) {
         const booking = await this.prisma.booking.create({
             data: { 
-                ...createBookingDto,
+                bookedAt: createBookingDto.bookedAt,
+                status: createBookingDto.status,
+                trip: {
+                    connect: { id: createBookingDto.tripId }
+                },
                 user: {
                     connect: { firebaseUid: uid }
                 }

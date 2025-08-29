@@ -1,0 +1,13 @@
+POST http://localhost:3333/trips
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjkyZTg4M2NjNDY2M2E2MzMyYWRhNmJjMWU0N2YzZmY1ZTRjOGI1ZDciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmFvLXJlbnRhbHMiLCJhdWQiOiJyYW8tcmVudGFscyIsImF1dGhfdGltZSI6MTc1NjQ4NzA4MSwidXNlcl9pZCI6IlNWNDdFdUlpMWNhd3ZDd0dZZ0lKWFdET2FJaDEiLCJzdWIiOiJTVjQ3RXVJaTFjYXd2Q3dHWWdJSlhXRE9hSWgxIiwiaWF0IjoxNzU2NDg3MDgxLCJleHAiOjE3NTY0OTA2ODEsImVtYWlsIjoiY3N0YW5AZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiY3N0YW5AZXhhbXBsZS5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.BpqURsyG2lEfj-Pib-hujqqcUrIsZVJ_FPI-Q57djwgy5SFZ5aTiGbkUgQ8JZVnObB0IWSC8UG3-dxcEqqJKp0sT6UyLYIYID9eLU0TcyxVhc4kkvR06kAbfzliK4ZEAlQi8DQkDD25x7TWSacG2eLVsr3b1ao_xdp2-kr_ORQ3KnHfqSs6K2Rvzi_r28sRhaffDI53UpRNxK5otEKjZzWGwzS-n-fI0TQv7q4mBL5mFY3fRNsn2Zi02d9EWw-9yY35-EylA8IIJbskC0lI96GSfizqClP_tBonl3pI_f98_skZPj3jirzj9Ey-9aGhrVykIcvaxzJoZsrTdGdKSbg
+
+{
+    "startLocation": "New York",
+    "endLocation": "New Jersey",
+    "startAt": "2024-07-01T10:00:00Z",
+    "endAt": "2024-07-01T12:00:00Z",
+    "price": 67.50,
+    "vehicleId": 4,
+    "status": "SCHEDULED"
+}

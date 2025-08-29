@@ -34,7 +34,7 @@ export class CreateTripDto {
   @IsEnum(TripStatus, {
     message: 'Status must be either SCHEDULED, ACTIVE, COMPLETED, or CANCELED',
   })
-  status?: TripStatus;
+  status: TripStatus;
 
   @IsNumber()
   @IsNotEmpty()
