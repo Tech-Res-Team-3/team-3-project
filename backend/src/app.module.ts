@@ -11,7 +11,6 @@ import { FileStorageModule } from './file-storage/file-storage.module';
 import { UserModule } from './user/user.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { DriversLicensesModule } from './drivers-licenses/drivers-licenses.module';
-import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -26,7 +25,7 @@ import { BookingModule } from './booking/booking.module';
     UserModule,
     VehicleModule,
     DriversLicensesModule,
-    BookingModule,
+
   ],
   controllers: [UsersController, AppController],
   providers: [AppService, UsersService],

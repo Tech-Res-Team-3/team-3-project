@@ -11,15 +11,7 @@ export const useLoadingStore = create<{
         const currentLoading = get().loading;
         if (currentLoading !== loading) {
             console.log(`Loading state changed: ${currentLoading} -> ${loading}`);
-            // For immediate updates (like logout), don't defer
-            if (!loading) {
-                set({ loading, lastUpdated: Date.now() });
-            } else {
-                // Use requestAnimationFrame only for setting loading to true
-                requestAnimationFrame(() => {
-                    set({ loading, lastUpdated: Date.now() });
-                });
-            }
+            set({ loading, lastUpdated: Date.now() });
         }
     },
 }));

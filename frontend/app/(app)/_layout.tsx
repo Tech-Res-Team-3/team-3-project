@@ -40,32 +40,29 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          gestureEnabled: true, // Enable gestures for normal navigation
-          animation: 'slide_from_right', // Default animation
+          gestureEnabled: true,
+          animation: 'slide_from_right',
         }}
       >
         <Stack.Screen 
           name="index" 
           options={{
-            gestureEnabled: false, // Only disable for main screen to prevent accidental back
+            gestureEnabled: false, // Disable back gesture for main screen
             headerLeft: () => null,
-            animation: 'none',
+            animation: 'fade',
           }}
         />
         <Stack.Screen 
           name="complete-profile" 
           options={{
-            gestureEnabled: true, // Allow normal back navigation
+            gestureEnabled: true,
           }}
         />
         <Stack.Screen 
           name="dashboard" 
           options={{
-            gestureEnabled: true, // Allow swipe back navigation
-            presentation: 'modal', // Make it behave like a modal
-            animation: 'slide_from_left', // Slide in from left
-            animationDuration: 300, // Smooth animation
-            gestureDirection: 'horizontal', // Allow horizontal swipe back
+            gestureEnabled: true, // Allow normal back navigation
+            animation: 'slide_from_right', // Normal slide animation
           }}
         />
       </Stack>
