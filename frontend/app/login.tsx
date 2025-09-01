@@ -95,7 +95,7 @@ export default function LogInScreen() {
 
   return (
     <>
-      {/* {useLoadingStore((state) => state.loading) && <GlobalLoading />} */}
+      {useLoadingStore((state) => state.loading) && <GlobalLoading />}
       <View className="flex-1 justify-center h-full bg-white gap-10">
         <View className="items-center justify-center bg-white pt-8">
           <Text className="text-black text-2xl font-semibold">
