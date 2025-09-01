@@ -9,19 +9,17 @@ import {
   Dimensions,
   StyleSheet,
   Modal,
-  FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../../components/Button";
 import { useRouter } from "expo-router";
-import { useAddresses } from "../../hooks/address/useAddresses";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
 import type { Address } from "../../types/address";
-import { Portal } from "@gorhom/portal";
 import { useUpdateUser } from "../../hooks/auth";
 import { useAuthStore } from "../../stores/authStore";
 import { useLoadingStore } from "../../stores/loadingStore";
+import { useAddresses } from "../../hooks/address/useAddresses";
 import GlobalLoading from "../../components/GlobalLoading";
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
@@ -53,6 +51,19 @@ export default function CompleteProfileScreen() {
   const [email, setEmail] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const { addAddressAsync } = useAddresses();
+
+  // Single address state, with label for UI
+  const [address, setAddress] = useState<Address & { label?: string }>({
+    id: Date.now(),
+    street: "",
+    city: "",
+    state: "",
+    zip: 0,
+    country: "",
+    userId: 0,
+    label: "",
+  });
 
   const defaultPhoto = require("../../assets/profile-placeholder.png");
 
@@ -60,34 +71,11 @@ export default function CompleteProfileScreen() {
   const user = useAuthStore((state) => state.user);
   const { updateUser } = useUpdateUser();
 
-  const { addresses, addAddress, updateAddress, removeAddress } =
-    useAddresses();
-
-  const handleAddAddress = () => {
-    addAddress({
-      id: Date.now(), // Temporary ID for frontend
-      street: "",
-      city: "",
-      state: "",
-      zip: 0,
-      country: "",
-      userId: 0,
-    });
-  };
-
-  const handleAddressChange = (
-    id: number,
-    field: string,
-    value: string | number
-  ) => {
-    const address = addresses.find((a) => a.id === id);
-    if (address) {
-      updateAddress({ ...address, [field]: value });
-    }
-  };
-
-  const handleRemoveAddress = (id: number) => {
-    removeAddress(id);
+  const handleAddressChange = (field: string, value: string | number) => {
+    setAddress((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleToggleLanguage = (lang: string) => {
@@ -99,103 +87,6 @@ export default function CompleteProfileScreen() {
   const handleSaveLanguages = () => {
     setShowLanguageModal(false);
   };
-
-  // Render item for FlatList
-  const renderAddressItem = ({ item: address }: { item: Address }) => (
-    <View style={{ marginBottom: 16 }} pointerEvents="box-none">
-      <Portal>
-        <GooglePlacesAutocomplete
-          placeholder="Search for address"
-          fetchDetails={true}
-          query={{
-            key: GOOGLE_MAPS_API_KEY,
-            language: "en",
-          }}
-          onPress={(data, details = null) => {
-            if (details) {
-              // Parse details to extract address fields
-              const street =
-                details?.address_components?.find((c) =>
-                  c.types.includes("route")
-                )?.long_name || "";
-              const streetNumber =
-                details?.address_components?.find((c) =>
-                  c.types.includes("street_number")
-                )?.long_name || "";
-              const city =
-                details?.address_components?.find((c) =>
-                  c.types.includes("locality")
-                )?.long_name || "";
-              const state =
-                details?.address_components?.find((c) =>
-                  c.types.includes("administrative_area_level_1")
-                )?.short_name || "";
-              const zip =
-                details?.address_components?.find((c) =>
-                  c.types.includes("postal_code")
-                )?.long_name || "";
-              const country =
-                details?.address_components?.find((c) =>
-                  c.types.includes("country")
-                )?.long_name || "";
-
-              handleAddressChange(
-                address.id,
-                "street",
-                `${streetNumber} ${street}`.trim()
-              );
-              handleAddressChange(address.id, "city", city);
-              handleAddressChange(address.id, "state", state);
-              handleAddressChange(address.id, "zip", zip);
-              handleAddressChange(address.id, "country", country);
-              // Optionally store place_id, lat/lng, etc.
-              handleAddressChange(address.id, "placeId", details.place_id);
-              handleAddressChange(
-                address.id,
-                "latitude",
-                details.geometry.location.lat
-              );
-              handleAddressChange(
-                address.id,
-                "longitude",
-                details.geometry.location.lng
-              );
-            }
-          }}
-          styles={{
-            container: { flex: 0, marginBottom: 8 },
-            textInput: {
-              backgroundColor: "#f3f4f6",
-              borderRadius: 12,
-              fontSize: 16,
-              paddingHorizontal: 12,
-              color: "#222",
-              minHeight: 44,
-              borderWidth: 0,
-            },
-            listView: {
-              backgroundColor: "#fff",
-              borderRadius: 12,
-              borderWidth: 0,
-              marginTop: 4,
-              zIndex: 20,
-            },
-          }}
-        />
-      </Portal>
-
-      <TouchableOpacity
-        onPress={() => handleRemoveAddress(address.id)}
-        style={{
-          alignSelf: "flex-end",
-          marginTop: 4,
-          marginBottom: 8,
-        }}
-      >
-        <Text style={{ color: "#c41111" }}>Remove</Text>
-      </TouchableOpacity>
-    </View>
-  );
 
   const [error, setError] = useState<string | null>(null);
 
@@ -312,25 +203,104 @@ export default function CompleteProfileScreen() {
           />
         </View>
 
-        {/* Addresses Section */}
+        {/* Address Section */}
         <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
-          <Text className="text-xl font-bold text-ruby mb-3 mt-1">
-            Addresses
-          </Text>
-          <FlatList
-            data={addresses}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderAddressItem}
-            scrollEnabled={false}
-            ListFooterComponent={
-              <Button
-                title="Add Address"
-                onPress={handleAddAddress}
-                className="bg-gray-200 mt-2"
-                textClassName="text-ruby"
-              />
-            }
+          <Text className="text-xl font-bold text-ruby mb-3 mt-1">Address</Text>
+          <GooglePlacesAutocomplete
+            placeholder="Search for address"
+            fetchDetails={true}
+            query={{
+              key: GOOGLE_MAPS_API_KEY,
+              language: "en",
+            }}
+            textInputProps={{
+              value: address.label || "",
+              onChangeText: (text) => handleAddressChange("label", text),
+            }}
+            onPress={(data, details = null) => {
+              if (details) {
+                const street =
+                  details?.address_components?.find((c) =>
+                    c.types.includes("route")
+                  )?.long_name || "";
+                const streetNumber =
+                  details?.address_components?.find((c) =>
+                    c.types.includes("street_number")
+                  )?.long_name || "";
+                const city =
+                  details?.address_components?.find((c) =>
+                    c.types.includes("locality")
+                  )?.long_name || "";
+                const state =
+                  details?.address_components?.find((c) =>
+                    c.types.includes("administrative_area_level_1")
+                  )?.short_name || "";
+                const zip =
+                  details?.address_components?.find((c) =>
+                    c.types.includes("postal_code")
+                  )?.long_name || "";
+                const country =
+                  details?.address_components?.find((c) =>
+                    c.types.includes("country")
+                  )?.long_name || "";
+
+                handleAddressChange(
+                  "street",
+                  `${streetNumber} ${street}`.trim()
+                );
+                handleAddressChange("city", city);
+                handleAddressChange("state", state);
+                handleAddressChange("zip", zip);
+                handleAddressChange("country", country);
+                handleAddressChange("placeId", details.place_id);
+                handleAddressChange("latitude", details.geometry.location.lat);
+                handleAddressChange("longitude", details.geometry.location.lng);
+                handleAddressChange("label", data.description);
+              }
+            }}
+            styles={{
+              container: {
+                flex: 0,
+                alignSelf: "stretch",
+                minHeight: 60,
+                zIndex: 10,
+              },
+              textInputContainer: {
+                width: "100%",
+                minHeight: 48,
+                backgroundColor: "transparent",
+                paddingHorizontal: 6,
+                borderTopWidth: 0,
+                borderBottomWidth: 0,
+                borderWidth: 0,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              textInput: {
+                borderRadius: 24,
+                backgroundColor: "#f3f4f6",
+                fontSize: 16,
+                paddingHorizontal: 20,
+                paddingLeft: 20,
+                color: "#222",
+                minHeight: 48,
+                borderWidth: 0,
+              },
+              listView: {
+                backgroundColor: "#fff",
+                borderRadius: 12,
+                borderWidth: 0,
+                marginTop: 4,
+                zIndex: 20,
+              },
+            }}
           />
+          {/* Show the selected address below the input */}
+          {address.label ? (
+            <Text style={{ marginTop: 8, color: "#222", fontSize: 16 }}>
+              {address.label}
+            </Text>
+          ) : null}
         </View>
 
         <Text className="text-base text-gray-800 mb-1 mt-2 font-semibold">
@@ -368,30 +338,27 @@ export default function CompleteProfileScreen() {
               <Text className="text-lg font-bold mb-4 text-ruby">
                 Select Languages
               </Text>
-              <FlatList
-                data={languageOptions}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    className="flex-row items-center py-2"
-                    onPress={() => handleToggleLanguage(item)}
-                  >
-                    <Ionicons
-                      name={
-                        selectedLanguages.includes(item)
-                          ? "checkbox"
-                          : "square-outline"
-                      }
-                      size={24}
-                      color={
-                        selectedLanguages.includes(item) ? "#c41111" : "#aaa"
-                      }
-                      style={{ marginRight: 12 }}
-                    />
-                    <Text className="text-base">{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
+              {languageOptions.map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  className="flex-row items-center py-2"
+                  onPress={() => handleToggleLanguage(item)}
+                >
+                  <Ionicons
+                    name={
+                      selectedLanguages.includes(item)
+                        ? "checkbox"
+                        : "square-outline"
+                    }
+                    size={24}
+                    color={
+                      selectedLanguages.includes(item) ? "#c41111" : "#aaa"
+                    }
+                    style={{ marginRight: 12 }}
+                  />
+                  <Text className="text-base">{item}</Text>
+                </TouchableOpacity>
+              ))}
               <Button
                 title="Save"
                 onPress={handleSaveLanguages}
@@ -437,7 +404,10 @@ export default function CompleteProfileScreen() {
                   firstName,
                   lastName,
                   phone,
+                  // Add other fields as needed
                 });
+                const { label, ...addressToSave } = address;
+                await addAddressAsync(addressToSave);
                 router.replace("/(app)");
               } catch (err) {
                 setError("Failed to update profile. Please try again.");
