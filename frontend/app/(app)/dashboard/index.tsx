@@ -219,7 +219,9 @@ export default function DashboardScreen() {
               />
               <View className="ml-4">
                 <Text className="text-xl font-bold text-gray-900">
-                  {user?.firstName || user?.email || "User"}
+                  {user?.firstName + " " + user?.lastName ||
+                    user?.email ||
+                    "User"}
                 </Text>
                 <Text className="text-md text-gray-500">
                   Joined{" "}

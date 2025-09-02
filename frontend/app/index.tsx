@@ -8,8 +8,8 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <HomeScreen />
       {showSplash && <SplashOverlay onFinish={() => setShowSplash(false)} />}
+      {!showSplash && <HomeScreen />}
     </View>
   );
 }
