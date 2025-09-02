@@ -11,8 +11,16 @@ import { useLoadingStore } from "../stores/loadingStore";
 import { useUserSync } from "../hooks/auth";
 import { PortalProvider } from "@gorhom/portal";
 import { InteractionManager } from "react-native";
+import { useNotificationPermission } from "../hooks/messaging/useNotificationPermssion";
+import { useRegisterFCMToken } from "../hooks/messaging/useRegisterFCMToken";
+import { useFCMListener } from "../hooks/messaging/useFCMListener";
 
 export default function RootLayout() {
+  console.log("App Started");
+  useNotificationPermission();
+  useRegisterFCMToken();
+  useFCMListener();
+
   const router = useRouter();
   const pathname = usePathname();
   const [firebaseUser, setFirebaseUser] = useState<any | null>(null);

@@ -37,6 +37,7 @@ const config: ExpoConfig = {
     favicon: "./assets/favicon.png"
   },
   plugins: [
+    "@notifee/react-native",
     "./plugins/withCustomGradle",
     "./plugins/withGoogleServicesJson",
     "expo-router"
