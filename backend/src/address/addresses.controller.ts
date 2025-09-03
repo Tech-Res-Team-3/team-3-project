@@ -16,8 +16,10 @@ import { CreateAddressDto } from './dto/create-addresses.dto';
 import { CurrentUser } from 'src/user/decorators';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(FirebaseAuthGuard)
+@ApiTags('Addresses')
 @Controller('addresses')
 export class AddressesController {
   constructor(
@@ -30,9 +32,11 @@ export class AddressesController {
     return this.addressesService.createAddress(user.uid, dto);
   }
 
-  @Get()
-  getAllAddresses() {
-    return this.addressesService.getAddresses('all');
+  @Get('/my-addresses')
+  getMyAddresses(
+    @CurrentUser() user: any,
+  ) {
+    return this.addressesService.getMyAddresses(user.uid);
   }
 
   @Patch('/:id')

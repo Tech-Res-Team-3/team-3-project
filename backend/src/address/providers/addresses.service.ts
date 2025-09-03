@@ -25,10 +25,10 @@ export class AddressesService {
         return address;
     }
 
-    async getAddresses(firebaseUid: string) {
-        const addresses = await this.prisma.address.findMany();
+    async getMyAddresses(firebaseUid: string) {
+        const myAddresses = await this.prisma.address.findMany();
 
-        return addresses; 
+        return myAddresses; 
     }
 
     async updateAddress(

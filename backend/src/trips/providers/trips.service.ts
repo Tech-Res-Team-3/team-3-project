@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTripDto, UpdateTripDto } from './dto';
+import { CreateTripDto, UpdateTripDto } from '../dto';
 import { BookingService } from 'src/booking/providers/booking.service';
 import { CreateBookingDto } from 'src/booking/dto/create-booking.dto';
 import { BookingStatus } from 'src/booking/enums/booking-status.enums';
