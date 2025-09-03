@@ -14,6 +14,7 @@ import { InteractionManager } from "react-native";
 import { useNotificationPermission } from "../hooks/messaging/useNotificationPermssion";
 import { useRegisterFCMToken } from "../hooks/messaging/useRegisterFCMToken";
 import { useFCMListener } from "../hooks/messaging/useFCMListener";
+import messaging from "@react-native-firebase/messaging";
 
 export default function RootLayout() {
   console.log("App Started");
