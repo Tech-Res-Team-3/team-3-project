@@ -33,11 +33,16 @@ import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { signOut } from "@react-native-firebase/auth";
 import { useCallback } from "react";
+import notifee, { AndroidStyle } from "@notifee/react-native"; // remove after done testing!!
 
 dayjs.locale("en");
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
 const { height, width } = Dimensions.get("window");
+async function requestPermissionIfNeeded() {
+  const settings = await notifee.requestPermission();
+  // Optionally check settings.authorizationStatus
+}
 
 export default function MainAppScreen() {
   const [loading, setLoading] = useState(true);
@@ -59,10 +64,12 @@ export default function MainAppScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [hasRedirected, setHasRedirected] = useState(false); // Prevent infinite redirects
 
+  requestPermissionIfNeeded();
+
   useEffect(() => {
     console.log("MainAppScreen mounted");
     console.log("User in main app:", user);
-    
+
     // Since (app)/_layout.tsx handles auth guards, we can be more confident here
     // Just wait for user sync if needed
     if (!user) {
@@ -70,7 +77,7 @@ export default function MainAppScreen() {
       setLoading(false);
       return;
     }
-    
+
     console.log("MainAppScreen: User data available, ready to render");
     setLoading(false);
   }, [user]);
@@ -79,12 +86,17 @@ export default function MainAppScreen() {
   useFocusEffect(
     useCallback(() => {
       const backAction = () => {
-        console.log("Back button pressed on main app - showing logout confirmation modal");
+        console.log(
+          "Back button pressed on main app - showing logout confirmation modal"
+        );
         setShowLogoutModal(true);
         return true; // Prevent default behavior
       };
 
-      const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
 
       return () => backHandler.remove();
     }, [])
@@ -95,17 +107,19 @@ export default function MainAppScreen() {
     console.log("Starting logout process...");
     setShowLogoutModal(false);
     useLoadingStore.getState().setLoading(true);
-    
+
     try {
       // Clear Zustand state first
       useAuthStore.getState().clearUser();
       console.log("Cleared Zustand user data");
-      
+
       // Sign out from Firebase
       const app = getApp();
       const auth = getAuth(app);
       await signOut(auth);
-      console.log("Firebase signOut completed - navigation will be handled by root layout");
+      console.log(
+        "Firebase signOut completed - navigation will be handled by root layout"
+      );
     } catch (error) {
       console.log("Logout error:", error);
       useLoadingStore.getState().setLoading(false);
@@ -131,23 +145,33 @@ export default function MainAppScreen() {
   }
 
   // TODO: Create Notifications Screen
-  const handleNotificationsPress = () => {
-    console.log("Notifications button pressed - NOT setting loading state");
-    // Disabled the loading state to prevent infinite loading
-    // useLoadingStore.getState().setLoading(true);
-    // setTimeout(() => {
-    //   useLoadingStore.getState().setLoading(false);
-    // }, 3000);
-  };
+  async function handleTestNotification() {
+    try {
+      await notifee.displayNotification({
+        title: "Test Notification",
+        body: "This is a local test notification!",
+        android: {
+          channelId: "alerts",
+          color: "#c41111",
+          // smallIcon: "ic_stat_name", // Remove or ensure it exists
+          style: {
+            type: AndroidStyle.BIGPICTURE,
+            picture: "https://placekitten.com/400/300",
+          },
+          actions: [{ title: "Action 1", pressAction: { id: "action-1" } }],
+        },
+      });
+    } catch (e) {
+      console.log("Notifee error:", e);
+    }
+  }
 
   return (
     <>
       <GlobalLoading />
       <SafeAreaView className="flex-1 bg-gray-100 items-center">
         {/* Top circle buttons */}
-        <View
-          className="flex-row justify-between w-11/12 mb-6"
-        >
+        <View className="flex-row justify-between w-11/12 mb-6">
           <DashboardMenuButton
             className="bg-white rounded-full p-2"
             style={styles.circleButton}
@@ -162,7 +186,7 @@ export default function MainAppScreen() {
             <Text className="text-ruby">X</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={handleNotificationsPress}
+            onPress={handleTestNotification}
             style={styles.circleButton}
           >
             <BellIcon size={30} />
@@ -172,7 +196,7 @@ export default function MainAppScreen() {
         {/* Two stacked views at the top (each about 1/6 of height, together ~1/3) */}
         <View
           className="flex flex-col w-11/12 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
-          style={[styles.shadow,]}
+          style={[styles.shadow]}
         >
           <Text className="font-semibold text-2xl self-start px-6">
             City, Address, Airport
@@ -404,7 +428,7 @@ export default function MainAppScreen() {
           </View>
         </View>
       )}
-      
+
       {/* Logout Confirmation Modal */}
       <LogoutConfirmationModal
         visible={showLogoutModal}
