@@ -9,12 +9,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
-import { VehicleService } from 'src/vehicle/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './dto';
 import { CurrentUser } from 'src/user/decorators';
+import { VehicleService } from './providers/vehicle.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('vehicles')
+@ApiTags('Vehicles')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 

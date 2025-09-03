@@ -8,13 +8,15 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { TripsService } from './trips.service';
+import { TripsService } from './providers/trips.service';
 import { CurrentUser } from 'src/user/decorators';
 import { CreateTripDto, UpdateTripDto } from './dto';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('trips')
+@ApiTags('Trips')
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 

@@ -12,9 +12,11 @@ import { CreateDriversLicenseDto } from './dto/create-drivers-license.dto';
 import { CurrentUser } from 'src/user/decorators';
 import { UpdateDriversLicenseDto } from './dto/update-drivers-license.dto';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('drivers-licenses')
+@ApiTags('Drivers Licenses')
 export class DriversLicensesController {
   constructor(private driversLicensesService: DriversLicensesService) {}
 

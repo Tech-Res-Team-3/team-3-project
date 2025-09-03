@@ -4,9 +4,11 @@ import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { CurrentUser } from 'src/user/decorators';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('booking')
+@ApiTags('Bookings')
 export class BookingController {
     constructor(
         private readonly bookingService: BookingService,
