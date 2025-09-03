@@ -15,10 +15,12 @@ import { useNotificationPermission } from "../hooks/messaging/useNotificationPer
 import { useRegisterFCMToken } from "../hooks/messaging/useRegisterFCMToken";
 import { useFCMListener } from "../hooks/messaging/useFCMListener";
 import { useSubscribeToAllTopic } from "../hooks/messaging/useSubscribeToAllTopic";
+import { useSetupNotificationChannels } from "../hooks/messaging/useSetupNotificationChannels";
 import messaging from "@react-native-firebase/messaging";
 
 export default function RootLayout() {
   console.log("App Started");
+  useSetupNotificationChannels();
   useSubscribeToAllTopic();
   useNotificationPermission();
   useRegisterFCMToken();
