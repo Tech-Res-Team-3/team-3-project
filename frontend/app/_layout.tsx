@@ -14,10 +14,12 @@ import { InteractionManager } from "react-native";
 import { useNotificationPermission } from "../hooks/messaging/useNotificationPermssion";
 import { useRegisterFCMToken } from "../hooks/messaging/useRegisterFCMToken";
 import { useFCMListener } from "../hooks/messaging/useFCMListener";
+import { useSubscribeToAllTopic } from "../hooks/messaging/useSubscribeToAllTopic";
 import messaging from "@react-native-firebase/messaging";
 
 export default function RootLayout() {
   console.log("App Started");
+  useSubscribeToAllTopic();
   useNotificationPermission();
   useRegisterFCMToken();
   useFCMListener();
