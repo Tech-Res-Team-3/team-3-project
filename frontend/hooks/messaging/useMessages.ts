@@ -1,0 +1,57 @@
+import { useAuthStore } from "../../stores/authStore";
+import { useMessageStore } from "../../stores/messageStore";
+import * as firestoreMessages from "../../utils/firestoreMessages";
+import { useCallback } from "react";
+
+export function useMessages() {
+    const user = useAuthStore((s) => s.user);
+    const setMessages = useMessageStore((s) => s.setMessages);
+    const addMessageToStore = useMessageStore((s) => s.addMessage);
+
+    // Fetch messages for the current user
+    const fetchMessages = useCallback(async () => {
+        if (!user) return;
+        const msgs = await firestoreMessages.fetchUserMessages(user.firebaseUid);
+        setMessages(msgs);
+    }, [user, setMessages]);
+
+    // Create a new message
+    const createMessage = useCallback(
+        async (msg: any) => {
+            if (!user) return;
+            const id = await firestoreMessages.createMessage({
+                ...msg,
+                fromUid: user.firebaseUid,
+            });
+            // Optionally fetch or add to store
+            fetchMessages();
+            return id;
+        },
+        [user, fetchMessages]
+    );
+
+    // Update a message
+    const updateMessage = useCallback(
+        async (id: string, updates: any) => {
+            await firestoreMessages.updateMessage(id, updates);
+            fetchMessages();
+        },
+        [fetchMessages]
+    );
+
+    // Delete a message
+    const deleteMessage = useCallback(
+        async (id: string) => {
+            await firestoreMessages.deleteMessage(id);
+            fetchMessages();
+        },
+        [fetchMessages]
+    );
+
+    return {
+        fetchMessages,
+        createMessage,
+        updateMessage,
+        deleteMessage,
+    };
+}
