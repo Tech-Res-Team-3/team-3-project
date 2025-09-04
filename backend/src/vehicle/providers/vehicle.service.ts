@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVehicleDto, UpdateVehicleDto } from '../dto';
+import { isAscii } from 'buffer';
 
 @Injectable()
 export class VehicleService {
@@ -8,6 +9,16 @@ export class VehicleService {
 
   async createVehicle(firebaseUid: string, data: CreateVehicleDto) {
     try {
+      const user = await this.prisma.user.findUnique({
+        where: { firebaseUid },
+        include: { addresses: true },
+      });
+
+      if (!user) throw new Error('User not found');
+      if (user.addresses.length === 0) throw new Error('User has no address');
+
+      const userAddress = user.addresses[0];
+
       return await this.prisma.vehicle.create({
         data: {
           ...data,
@@ -15,7 +26,11 @@ export class VehicleService {
           user: {
             connect: { firebaseUid },
           },
+          addresses: {
+            connect: { id: userAddress.id },
+          },
         },
+        include: { addresses: true },
       });
     } catch (error) {
       console.error(error);
