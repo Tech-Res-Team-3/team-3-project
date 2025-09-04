@@ -87,25 +87,21 @@ export class VehicleService {
 
         // Address fields
         address_id: number;
-        street: string;
-        apartment: string | null;
-        city: string;
-        state: string;
-        zip: number;
-        country: string;
         latitude: number;
         longitude: number;
         distance: number;
       }[]
     >`
-      SELECT DISTINCT ON v.*
-      FROM "Vehicle" v
-      JOIN "_VehicleAddresses" va ON va."A" = v."id"
-      JOIN "Address" a ON a."id" = va."B"
-      WHERE ST_DWithin(
-        ST_MakePoint(a."longitude", a."latitude")::geography,
-        ST_MakePoint(${lng}, ${lat})::geography,
-        ${radius * 1000}
+      SELECT DISTINCT ON (v.id)
+      v.id AS vehicle_id,
+      v.make, v.model, v.year, v."licensePlate", v.color, v.seats, v.type,
+      v."vehicleImage", v.verified, v.rating, v."hasSeatbelts", v."seatbeltType",
+      v.condition, v.value, v.vin, v.mileage, v.transmission, v."salesTaxPaid",
+      v.trim, v."bodyStyle", v."hasSalvageTitle", v."extraInfo", v."userId",
+      a.latitude, a.longitude,
+      ST_Distance(
+        ST_MakePoint(a.longitude, a.latitude)::geography,
+        ST_MakePoint(${lng}, ${lat})::geography
       ) AS distance
       FROM "Vehicle" v
       JOIN "_VehicleAddresses" va ON va."A" = v.id
@@ -115,8 +111,8 @@ export class VehicleService {
         ST_MakePoint(${lng}, ${lat})::geography,
         ${radius * 1000}
       )
-      ORDER BY distance ASC
-    `;
+      ORDER BY v.id, distance ASC
+  `;
 
     return results.map((r) => ({
       vehicle: {
@@ -147,12 +143,6 @@ export class VehicleService {
       },
       address: {
         id: r.address_id,
-        street: r.street,
-        apartment: r.apartment,
-        city: r.city,
-        state: r.state,
-        zip: r.zip,
-        country: r.country,
         latitude: r.latitude,
         longitude: r.longitude,
       },
