@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
@@ -39,5 +40,14 @@ export class VehicleController {
   @Get('/myVehicles')
   getMyVehicles(@CurrentUser() user: any) {
     return this.vehicleService.getMyVehicles(user.uid);
+  }
+
+  @Get('nearby')
+  async getNearbyVehicles(
+    @Query('lat') lat: number,
+    @Query('lng') lng: number,
+    @Query('radius') radius: number,
+  ) {
+    return this.vehicleService.findVehiclesNearby(lat, lng, radius);
   }
 }
