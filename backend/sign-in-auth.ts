@@ -8,7 +8,7 @@ const app = initializeApp({
 
 const auth = getAuth(app);
 
-signInWithEmailAndPassword(auth, 'cstan@example.com', 'test123').then(
+signInWithEmailAndPassword(auth, 'cam-stanley@example.com', 'test123').then(
   async (userCred) => {
     const token = await userCred.user.getIdToken();
     console.log('Firebase ID Token:', token);
