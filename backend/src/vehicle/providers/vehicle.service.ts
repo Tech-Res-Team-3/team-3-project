@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVehicleDto, UpdateVehicleDto } from '../dto';
-import { isAscii } from 'buffer';
 
+/** Class to connect to Vehicle table in the database. */
 @Injectable()
 export class VehicleService {
+  /** Constructor to initialize PrismaService */
   constructor(private readonly prisma: PrismaService) {}
 
+  /** Create a new vehicle */
   async createVehicle(firebaseUid: string, data: CreateVehicleDto) {
     try {
       const user = await this.prisma.user.findUnique({
@@ -38,6 +40,7 @@ export class VehicleService {
     }
   }
 
+  /** Update an existing vehicle */
   async updateVehicle(id: number, data: UpdateVehicleDto) {
     const updatedVehicle = await this.prisma.vehicle.update({
       where: { id },
@@ -47,6 +50,7 @@ export class VehicleService {
     return updatedVehicle;
   }
 
+  /** Get all vehicles for a currently logged in user */
   async getMyVehicles(firebaseUid: string) {
     const myVehicles = await this.prisma.vehicle.findMany({
       where: {
@@ -57,6 +61,7 @@ export class VehicleService {
     return myVehicles;
   }
 
+  /** Find vehicles nearby a given location within a specified radius (in km) */
   async findVehiclesNearby(lat: number, lng: number, radius: number) {
     const results = await this.prisma.$queryRaw<
       {

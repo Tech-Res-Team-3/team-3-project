@@ -119,6 +119,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Class to connect to Vehicle table in the database.</p>
+
+            </p>
 
 
 
@@ -180,6 +187,8 @@
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Constructor to initialize PrismaService</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -239,14 +248,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="10"
-                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:10</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="12"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:12</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Create a new vehicle</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -320,14 +331,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="60"
-                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:60</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="65"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:65</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Find vehicles nearby a given location within a specified radius (in km)</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -413,14 +426,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="50"
-                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:50</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="54"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:54</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Get all vehicles for a currently logged in user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -482,14 +497,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="41"
-                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:41</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="44"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:44</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Update an existing vehicle</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -550,12 +567,14 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
 import { CreateVehicleDto, UpdateVehicleDto } from &#x27;../dto&#x27;;
-import { isAscii } from &#x27;buffer&#x27;;
 
+/** Class to connect to Vehicle table in the database. */
 @Injectable()
 export class VehicleService {
+  /** Constructor to initialize PrismaService */
   constructor(private readonly prisma: PrismaService) {}
 
+  /** Create a new vehicle */
   async createVehicle(firebaseUid: string, data: CreateVehicleDto) {
     try {
       const user &#x3D; await this.prisma.user.findUnique({
@@ -587,6 +606,7 @@ export class VehicleService {
     }
   }
 
+  /** Update an existing vehicle */
   async updateVehicle(id: number, data: UpdateVehicleDto) {
     const updatedVehicle &#x3D; await this.prisma.vehicle.update({
       where: { id },
@@ -596,6 +616,7 @@ export class VehicleService {
     return updatedVehicle;
   }
 
+  /** Get all vehicles for a currently logged in user */
   async getMyVehicles(firebaseUid: string) {
     const myVehicles &#x3D; await this.prisma.vehicle.findMany({
       where: {
@@ -606,6 +627,7 @@ export class VehicleService {
     return myVehicles;
   }
 
+  /** Find vehicles nearby a given location within a specified radius (in km) */
   async findVehiclesNearby(lat: number, lng: number, radius: number) {
     const results &#x3D; await this.prisma.$queryRaw&lt;
       {

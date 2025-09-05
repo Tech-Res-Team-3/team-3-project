@@ -123,6 +123,13 @@
             </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Controller to manage address-related endpoints</p>
+
+            </p>
 
 
 
@@ -142,6 +149,8 @@
                         <ul class="index-list">
                             <li>
                                     <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                 <a href="#createAddress" >createAddress</a>
                             </li>
                             <li>
@@ -149,6 +158,7 @@
                                 <a href="#deleteAddress" >deleteAddress</a>
                             </li>
                             <li>
+                                    <span class="modifier"></span>
                                     <span class="modifier"></span>
                                 <a href="#getMyAddresses" >getMyAddresses</a>
                             </li>
@@ -180,6 +190,8 @@
                     <a name="createAddress"></a>
                     <span class="name">
                             <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
                         <span ><b>createAddress</b></span>
                         <a href="#createAddress"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -196,20 +208,22 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Post()<br /></code>
+                    <code>@ApiOperation({summary: &#x27;Create a new address for the authenticated user&#x27;, description: &#x27;Creates a new address associated with the current user.&#x27;})<br />@ApiResponse({status: 201, description: &#x27;The address has been successfully created.&#x27;})<br />@Post()<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="31"
-                                    class="link-to-prism">src/address/addresses.controller.ts:31</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="42"
+                                    class="link-to-prism">src/address/addresses.controller.ts:42</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Create a new address for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -290,14 +304,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="56"
-                                    class="link-to-prism">src/address/addresses.controller.ts:56</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="71"
+                                    class="link-to-prism">src/address/addresses.controller.ts:71</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Delete an address by its ID</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -327,7 +343,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>{ message: string; }</code>
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
 
                         </div>
                             <div class="io-description">
@@ -343,6 +359,7 @@
                 <td class="col-md-4">
                     <a name="getMyAddresses"></a>
                     <span class="name">
+                            <span class="modifier"></span>
                             <span class="modifier"></span>
                         <span ><b>getMyAddresses</b></span>
                         <a href="#getMyAddresses"><span class="icon ion-ios-link"></span></a>
@@ -360,14 +377,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Get(&#x27;/my-addresses&#x27;)<br /></code>
+                    <code>@ApiOperation({summary: &#x27;Get addresses of the authenticated user&#x27;, description: &#x27;Retrieves all addresses associated with the current user.&#x27;})<br />@Get(&#x27;/my-addresses&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="36"
-                                    class="link-to-prism">src/address/addresses.controller.ts:36</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="51"
+                                    class="link-to-prism">src/address/addresses.controller.ts:51</a></div>
                         </td>
                     </tr>
 
@@ -442,14 +459,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="43"
-                                    class="link-to-prism">src/address/addresses.controller.ts:43</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="57"
+                                    class="link-to-prism">src/address/addresses.controller.ts:57</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Update an existing address for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -535,29 +554,43 @@ import { CreateAddressDto } from &#x27;./dto/create-addresses.dto&#x27;;
 import { CurrentUser } from &#x27;src/user/decorators&#x27;;
 import { UpdateAddressDto } from &#x27;./dto/update-address.dto&#x27;;
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
-import { ApiTags } from &#x27;@nestjs/swagger&#x27;;
+import { ApiOperation, ApiResponse, ApiTags } from &#x27;@nestjs/swagger&#x27;;
 
+/** Controller to manage address-related endpoints */
 @UseGuards(FirebaseAuthGuard)
 @ApiTags(&#x27;Addresses&#x27;)
 @Controller(&#x27;addresses&#x27;)
 export class AddressesController {
+  /** Constructor to initialize services */
   constructor(
     private addressesService: AddressesService,
     private prisma: PrismaService,
   ) {}
 
+  /** Create a new address for the authenticated user */
+  @ApiOperation({
+    summary: &#x27;Create a new address for the authenticated user&#x27;,
+    description: &#x27;Creates a new address associated with the current user.&#x27;,
+  })
+  @ApiResponse({
+    status: 201,
+    description: &#x27;The address has been successfully created.&#x27;,
+  })
   @Post()
   createAddress(@Body() dto: CreateAddressDto, @CurrentUser() user: any) {
     return this.addressesService.createAddress(user.uid, dto);
   }
 
+  @ApiOperation({
+    summary: &#x27;Get addresses of the authenticated user&#x27;,
+    description: &#x27;Retrieves all addresses associated with the current user.&#x27;,
+  })
   @Get(&#x27;/my-addresses&#x27;)
-  getMyAddresses(
-    @CurrentUser() user: any,
-  ) {
+  getMyAddresses(@CurrentUser() user: any) {
     return this.addressesService.getMyAddresses(user.uid);
   }
 
+  /** Update an existing address for the authenticated user */
   @Patch(&#x27;/:id&#x27;)
   updateAddress(
     @Param(&#x27;id&#x27;) id: string,
@@ -571,9 +604,10 @@ export class AddressesController {
     );
   }
 
+  /** Delete an address by its ID */
   @Delete(&#x27;/:id&#x27;)
   deleteAddress(@Param(&#x27;id&#x27;) id: string) {
-    return { message: &#x60;Address with id ${id} deleted&#x60; };
+    return this.addressesService.deleteAddress(parseInt(id));
   }
 }
 </code></pre>

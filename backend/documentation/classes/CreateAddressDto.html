@@ -123,6 +123,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>DTO for creating an address</p>
+
+            </p>
 
 
 
@@ -223,10 +230,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/address/dto/create-addresses.dto.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="21" class="link-to-prism">src/address/dto/create-addresses.dto.ts:21</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>City name</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -260,10 +273,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="21" class="link-to-prism">src/address/dto/create-addresses.dto.ts:21</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/address/dto/create-addresses.dto.ts:31</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Country name</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -297,10 +316,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/address/dto/create-addresses.dto.ts:29</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/address/dto/create-addresses.dto.ts:41</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Latitude coordinate</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -334,10 +359,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/address/dto/create-addresses.dto.ts:33</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/address/dto/create-addresses.dto.ts:46</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Longitude coordinate</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -371,10 +402,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/address/dto/create-addresses.dto.ts:17</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/address/dto/create-addresses.dto.ts:26</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>State name</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -408,10 +445,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/address/dto/create-addresses.dto.ts:9</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/address/dto/create-addresses.dto.ts:16</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Street address</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -445,10 +488,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/address/dto/create-addresses.dto.ts:25</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/address/dto/create-addresses.dto.ts:36</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>ZIP code</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -464,41 +513,54 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { GetUsersParamDto } from &#x27;src/user/dto/get-users-param.dto&#x27;;
-import { IntersectionType } from &#x27;@nestjs/swagger&#x27;;
-import { IsNumber, IsOptional, IsString, MaxLength, MinLength } from &#x27;class-validator&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { IntersectionType } from &#x27;@nestjs/swagger&#x27;;
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from &#x27;class-validator&#x27;;
 import { Type } from &#x27;class-transformer&#x27;;
 
-export class CreateAddressDto{
+/** DTO for creating an address */
+export class CreateAddressDto {
+  /** Street address */
   @IsString()
   @MaxLength(255)
   street: string;
 
+  /** City name */
   @IsString()
   @MaxLength(100)
   city: string;
 
+  /** State name */
   @IsString()
   @MaxLength(100)
   state: string;
 
+  /** Country name */
   @IsString()
   @MinLength(2)
   country: string;
 
+  /** ZIP code */
   @IsNumber()
   @Type(() &#x3D;&gt; Number)
   zip: number;
-  
+
+  /** Latitude coordinate */
   @IsOptional()
   @IsNumber()
   latitude: number;
-  
+
+  /** Longitude coordinate */
   @IsOptional()
   @IsNumber()
   longitude: number;
-
-}</code></pre>
+}
+</code></pre>
     </div>
 </div>
 
