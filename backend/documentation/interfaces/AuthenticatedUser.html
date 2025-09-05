@@ -126,6 +126,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Interface representing an authenticated user, extending FirebaseUser.</p>
+
+            </p>
 
             <p class="comment">
                 <h3>Extends</h3>
@@ -206,6 +213,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Optional database ID of the user, can be null.</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -239,6 +252,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Role of the user, can be &#39;ADMIN&#39;, &#39;GUEST&#39;, or null.</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
             </section>
@@ -248,8 +267,11 @@
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { FirebaseUser } from &#x27;src/user/types/firebase-user.type&#x27;;
 
+/** Interface representing an authenticated user, extending FirebaseUser. */
 export interface AuthenticatedUser extends FirebaseUser {
+  /** Role of the user, can be &#x27;ADMIN&#x27;, &#x27;GUEST&#x27;, or null. */
   role: &#x27;ADMIN&#x27; | &#x27;GUEST&#x27; | null;
+  /** Optional database ID of the user, can be null. */
   dbId?: number | null;
 }
 </code></pre>

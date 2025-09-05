@@ -123,6 +123,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>DTO for getting users with optional filtering by uid.</p>
+
+            </p>
 
 
 
@@ -197,10 +204,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/user/dto/get-users-param.dto.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/user/dto/get-users-param.dto.ts:18</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>User ID to filter by.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -220,8 +233,13 @@
 import { Type } from &quot;class-transformer&quot;;
 import { IsIn, IsInt, IsOptional, IsString } from &quot;class-validator&quot;;
 
-
+/**
+ * DTO for getting users with optional filtering by uid.
+ */
 export class GetUsersParamDto {
+  /**
+   * User ID to filter by.
+   */
   @IsOptional()
   @IsString()
   @ApiPropertyOptional({

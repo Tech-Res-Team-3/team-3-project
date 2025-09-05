@@ -16,7 +16,7 @@ import { CreateAddressDto } from './dto/create-addresses.dto';
 import { CurrentUser } from 'src/user/decorators';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(FirebaseAuthGuard)
 @ApiTags('Addresses')
@@ -27,11 +27,23 @@ export class AddressesController {
     private prisma: PrismaService,
   ) {}
 
+  @ApiOperation({
+    summary: 'Create a new address for the authenticated user',
+    description: 'Creates a new address associated with the current user.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The address has been successfully created.',
+  })
   @Post()
   createAddress(@Body() dto: CreateAddressDto, @CurrentUser() user: any) {
     return this.addressesService.createAddress(user.uid, dto);
   }
 
+  @ApiOperation({
+    summary: 'Get addresses of the authenticated user',
+    description: 'Retrieves all addresses associated with the current user.',
+  })
   @Get('/my-addresses')
   getMyAddresses(
     @CurrentUser() user: any,
