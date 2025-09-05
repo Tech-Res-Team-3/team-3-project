@@ -19,7 +19,7 @@ import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
 import { useAuthStore } from "../../stores/authStore";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Region } from "react-native-maps";
 import DateTimePicker, {
   DateType,
   useDefaultStyles,
@@ -53,7 +53,7 @@ export default function MainAppScreen() {
   const [isEnabled, setIsEnabled] = useState(true);
   const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
     useState(true);
-  const [region, setRegion] = useState({
+  const [region, setRegion] = useState<Region>({
     latitude: 34.0522,
     longitude: -118.2437,
     latitudeDelta: 0.1,
@@ -72,7 +72,21 @@ export default function MainAppScreen() {
     return (region.latitudeDelta / 2) * 111;
   }
 
+  function areRegionsEqual(
+    r1: Region,
+    r2: Region,
+    threshold = 0.0001
+  ): boolean {
+    return (
+      Math.abs(r1.latitude - r2.latitude) < threshold &&
+      Math.abs(r1.longitude - r2.longitude) < threshold &&
+      Math.abs(r1.latitudeDelta - r2.latitudeDelta) < threshold &&
+      Math.abs(r1.longitudeDelta - r2.longitudeDelta) < threshold
+    );
+  }
+
   useEffect(() => {
+    console.log("useEffect triggered", region, fetchVehiclesNearby);
     const timeout = setTimeout(() => {
       const radius = getRadiusFromRegion(region);
       fetchVehiclesNearby(region.latitude, region.longitude, radius);
@@ -355,22 +369,29 @@ export default function MainAppScreen() {
             <MapView
               style={{ width: "100%", height: "100%", borderRadius: 16 }}
               region={region}
-              onRegionChangeComplete={setRegion}
+              onRegionChangeComplete={(newRegion) => {
+                if (!areRegionsEqual(region, newRegion)) {
+                  setRegion(newRegion);
+                }
+              }}
               scrollEnabled={isCurrentLocationEnabled}
               zoomEnabled={isCurrentLocationEnabled}
               pitchEnabled={isCurrentLocationEnabled}
               rotateEnabled={isCurrentLocationEnabled}
             >
-              {vehicles.map((vehicle) => (
-                <Marker
-                  key={vehicle.id}
-                  coordinate={{
-                    latitude: vehicle.address.latitude ?? 0,
-                    longitude: vehicle.address.longitude ?? 0,
-                  }}
-                  title={`${vehicle.make} ${vehicle.model}`}
-                />
-              ))}
+              {vehicles.map((vehicle) =>
+                vehicle.address ? (
+                  <Marker
+                    key={vehicle.id}
+                    coordinate={{
+                      latitude: vehicle.address.latitude ?? 0,
+                      longitude: vehicle.address.longitude ?? 0,
+                    }}
+                    icon={require("../../assets/rao-icon-medium.png")}
+                    title={`${vehicle.make} ${vehicle.model}`}
+                  />
+                ) : null
+              )}
             </MapView>
           </View>
         </View>

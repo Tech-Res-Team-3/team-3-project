@@ -25,7 +25,9 @@ export default function VehicleSettings() {
   const [modalVisible, setModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [addressModalVisible, setAddressModalVisible] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
+    null
+  );
   const [newVehicle, setNewVehicle] = useState<Partial<Vehicle>>({});
 
   // Enum and boolean options
@@ -84,6 +86,7 @@ export default function VehicleSettings() {
         condition: newVehicle.condition || undefined,
         transmission: newVehicle.transmission || undefined,
       });
+      await fetchUserVehicles();
       setAddModalVisible(false);
       setNewVehicle({});
     } catch (err) {
@@ -203,21 +206,31 @@ export default function VehicleSettings() {
       </Modal>
 
       {/* Address Selection Modal */}
-      <Modal visible={addressModalVisible} animationType="slide" transparent={true}>
-        <View style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.3)",
-        }}>
-          <View style={{
-            backgroundColor: "#fff",
-            borderRadius: 12,
-            padding: 24,
-            width: "90%",
-            maxHeight: "80%",
-          }}>
-            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
+      <Modal
+        visible={addressModalVisible}
+        animationType="slide"
+        transparent={true}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.3)",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 12,
+              padding: 24,
+              width: "90%",
+              maxHeight: "80%",
+            }}
+          >
+            <Text
+              style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}
+            >
               Select Address
             </Text>
             {addresses.length === 0 ? (
@@ -233,7 +246,8 @@ export default function VehicleSettings() {
                       padding: 12,
                       borderBottomWidth: 1,
                       borderBottomColor: "#eee",
-                      backgroundColor: selectedAddressId === address.id ? "#f3f3f3" : "#fff",
+                      backgroundColor:
+                        selectedAddressId === address.id ? "#f3f3f3" : "#fff",
                     }}
                     onPress={() => setSelectedAddressId(address.id)}
                   >
@@ -254,7 +268,10 @@ export default function VehicleSettings() {
               disabled={!selectedAddressId}
               onPress={handleAssignAddress}
             />
-            <Button title="Cancel" onPress={() => setAddressModalVisible(false)} />
+            <Button
+              title="Cancel"
+              onPress={() => setAddressModalVisible(false)}
+            />
           </View>
         </View>
       </Modal>

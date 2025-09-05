@@ -84,12 +84,16 @@ export function useVehicles() {
         async (lat: number, lng: number, radius: number) => {
             setLoading(true);
             setError(null);
-            console.log('findVehiclesNearby called with:', { lat, lng, radius });
             try {
                 const res = await axios.get(
                     `/vehicles/nearby?lat=${lat}&lng=${lng}&radius=${radius}`
                 );
-                setVehicles(res.data);
+                // Normalize: flatten { vehicle, address } into a single Vehicle object
+                const normalized: Vehicle[] = res.data.map((item: any) => ({
+                    ...item.vehicle,
+                    address: item.address,
+                }));
+                setVehicles(normalized);
             } catch (err: any) {
                 setError(err.message || 'Failed to fetch nearby vehicles');
                 console.error('Error in findVehiclesNearby:', err);
