@@ -123,6 +123,13 @@
             </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Controller to handle user-related endpoints.</p>
+
+            </p>
 
 
 
@@ -149,6 +156,8 @@
                                 <a href="#getUsers" >getUsers</a>
                             </li>
                             <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                     <span class="modifier"></span>
                                     <span class="modifier">Async</span>
                                 <a href="#promoteToHost" >promoteToHost</a>
@@ -216,14 +225,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="52"
-                                    class="link-to-prism">src/user/users.controller.ts:52</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="63"
+                                    class="link-to-prism">src/user/users.controller.ts:63</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Fetches registered users from the database.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -281,7 +292,8 @@
 
                         </div>
                             <div class="io-description">
-                                
+                                <p>Fetches registered users from the database.</p>
+
                             </div>
                 </td>
             </tr>
@@ -293,6 +305,8 @@
                 <td class="col-md-4">
                     <a name="promoteToHost"></a>
                     <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
                             <span class="modifier"></span>
                             <span class="modifier">Async</span>
                         <span ><b>promoteToHost</b></span>
@@ -311,20 +325,22 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;promote-to-host&#x27;)<br /></code>
+                    <code>@ApiOperation({summary: &#x27;Promotes the current user to host&#x27;})<br />@ApiResponse({status: 200, description: &#x27;The user has been successfully promoted to host.&#x27;})<br />@Patch(&#x27;promote-to-host&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="94"
-                                    class="link-to-prism">src/user/users.controller.ts:94</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="128"
+                                    class="link-to-prism">src/user/users.controller.ts:128</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Promotes the current user to host.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -358,7 +374,8 @@
 
                         </div>
                             <div class="io-description">
-                                
+                                <p>Promotes the current user to host.</p>
+
                             </div>
                 </td>
             </tr>
@@ -396,14 +413,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="80"
-                                    class="link-to-prism">src/user/users.controller.ts:80</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="101"
+                                    class="link-to-prism">src/user/users.controller.ts:101</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Syncs the authenticated user with the database.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -449,7 +468,8 @@
 
                         </div>
                             <div class="io-description">
-                                
+                                <p>Syncs the authenticated user with the database.</p>
+
                             </div>
                 </td>
             </tr>
@@ -486,14 +506,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="68"
-                                    class="link-to-prism">src/user/users.controller.ts:68</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="82"
+                                    class="link-to-prism">src/user/users.controller.ts:82</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Updates the current user&#39;s information in the database.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -572,12 +594,23 @@ import { PatchUserDto } from &#x27;./dto/patch-user.dto&#x27;;
 import { GetUsersParamDto } from &#x27;./dto/get-users-param.dto&#x27;;
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from &#x27;@nestjs/swagger&#x27;;
 
+/**
+ * Controller to handle user-related endpoints.
+ */
 @UseGuards(FirebaseAuthGuard)
 @ApiTags(&#x27;Users&#x27;)
 @Controller(&#x27;users&#x27;)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * 
+   * @param getUsersParamDto 
+   * @param limit 
+   * @param page 
+   * @returns 
+   * Fetches registered users from the database.
+   */
   @Get(&#x27;{/:uid}&#x27;)
   @ApiOperation({
     summary: &#x27;Fetches a registered users by their uid&#x27;
@@ -608,6 +641,9 @@ export class UsersController {
     return this.usersService.getUsers(getUsersParamDto, limit, page);
   }
 
+  /**
+   * Updates the current user&#x27;s information in the database.
+   */
   @Patch()
   @ApiOperation({
     summary: &#x27;Updates the current user&#x27;
@@ -620,6 +656,13 @@ export class UsersController {
     return this.usersService.updateUser(user.uid, body);
   }
 
+  /**
+   * 
+   * @param user 
+   * @param body 
+   * @returns 
+   * Syncs the authenticated user with the database.
+   */
   @ApiOperation({
     summary: &#x27;Syncs the authenticated user with the database&#x27;
   })
@@ -641,6 +684,19 @@ export class UsersController {
     return { message: &#x27;User synced&#x27;, user: dbUser };
   }
 
+  /**
+   * 
+   * @param user 
+   * @returns 
+   * Promotes the current user to host.
+   */
+  @ApiOperation({
+    summary: &#x27;Promotes the current user to host&#x27;
+  })
+  @ApiResponse({
+    status: 200,
+    description: &#x27;The user has been successfully promoted to host.&#x27;,
+  })
   @Patch(&#x27;promote-to-host&#x27;)
   async promoteToHost(@CurrentUser() user: AuthenticatedUser) {
     const updatedUser &#x3D; await this.usersService.promoteToHost(user.uid);

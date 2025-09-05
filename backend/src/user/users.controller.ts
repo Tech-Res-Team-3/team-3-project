@@ -21,12 +21,23 @@ import { PatchUserDto } from './dto/patch-user.dto';
 import { GetUsersParamDto } from './dto/get-users-param.dto';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+/**
+ * Controller to handle user-related endpoints.
+ */
 @UseGuards(FirebaseAuthGuard)
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * 
+   * @param getUsersParamDto 
+   * @param limit 
+   * @param page 
+   * @returns 
+   * Fetches registered users from the database.
+   */
   @Get('{/:uid}')
   @ApiOperation({
     summary: 'Fetches a registered users by their uid'
@@ -57,6 +68,9 @@ export class UsersController {
     return this.usersService.getUsers(getUsersParamDto, limit, page);
   }
 
+  /**
+   * Updates the current user's information in the database.
+   */
   @Patch()
   @ApiOperation({
     summary: 'Updates the current user'
@@ -69,6 +83,13 @@ export class UsersController {
     return this.usersService.updateUser(user.uid, body);
   }
 
+  /**
+   * 
+   * @param user 
+   * @param body 
+   * @returns 
+   * Syncs the authenticated user with the database.
+   */
   @ApiOperation({
     summary: 'Syncs the authenticated user with the database'
   })
@@ -90,6 +111,19 @@ export class UsersController {
     return { message: 'User synced', user: dbUser };
   }
 
+  /**
+   * 
+   * @param user 
+   * @returns 
+   * Promotes the current user to host.
+   */
+  @ApiOperation({
+    summary: 'Promotes the current user to host'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been successfully promoted to host.',
+  })
   @Patch('promote-to-host')
   async promoteToHost(@CurrentUser() user: AuthenticatedUser) {
     const updatedUser = await this.usersService.promoteToHost(user.uid);

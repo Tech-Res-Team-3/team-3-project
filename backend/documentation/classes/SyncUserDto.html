@@ -123,6 +123,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Data Transfer Object for synchronizing user information.</p>
+
+            </p>
 
 
 
@@ -140,6 +147,7 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                    <span class="modifier"></span>
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
                                 <a href="#role" >role</a>
@@ -171,6 +179,7 @@
                     <span class="name">
                             <span class="modifier"></span>
                             <span class="modifier"></span>
+                            <span class="modifier"></span>
                         <span ><b>role</b></span>
                         <a href="#role"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -187,16 +196,22 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @IsString()<br />@IsOptional()<br />
+                            @ApiProperty({description: &#x27;Unique identifier for the user&#x27;})<br />@IsString()<br />@IsOptional()<br />
                         </code>
                     </td>
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="6" class="link-to-prism">src/user/dto/sync-user.dto.ts:6</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/user/dto/sync-user.dto.ts:17</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Unique identifier for the user.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -212,9 +227,20 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { IsString, IsOptional } from &quot;class-validator&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { ApiProperty } from &quot;@nestjs/swagger&quot;;
+import { IsString, IsOptional } from &quot;class-validator&quot;;
 
+/**
+ * Data Transfer Object for synchronizing user information.
+ */
 export class SyncUserDto {
+
+    /**
+     * Unique identifier for the user.
+     */
+    @ApiProperty({
+        description: &#x27;Unique identifier for the user&#x27;,
+    })
     @IsString()
     @IsOptional()
     role: string;

@@ -141,6 +141,10 @@
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
+                                <a href="#findVehiclesNearby" >findVehiclesNearby</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#getMyVehicles" >getMyVehicles</a>
                             </li>
                             <li>
@@ -170,7 +174,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="6" class="link-to-prism">src/vehicle/providers/vehicle.service.ts:6</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/vehicle/providers/vehicle.service.ts:7</a></div>
                             </td>
                         </tr>
 
@@ -235,8 +239,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="9"
-                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:9</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="10"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:10</a></div>
                         </td>
                     </tr>
 
@@ -298,6 +302,99 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="findVehiclesNearby"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>findVehiclesNearby</b></span>
+                        <a href="#findVehiclesNearby"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findVehiclesNearby(lat: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, lng: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, radius: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="60"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>lat</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>lng</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>radius</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="getMyVehicles"></a>
                     <span class="name">
                             <span class="modifier">Async</span>
@@ -316,8 +413,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="35"
-                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:35</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:50</a></div>
                         </td>
                     </tr>
 
@@ -385,8 +482,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="26"
-                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:26</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="41"
+                                    class="link-to-prism">src/vehicle/providers/vehicle.service.ts:41</a></div>
                         </td>
                     </tr>
 
@@ -453,6 +550,7 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
 import { CreateVehicleDto, UpdateVehicleDto } from &#x27;../dto&#x27;;
+import { isAscii } from &#x27;buffer&#x27;;
 
 @Injectable()
 export class VehicleService {
@@ -460,6 +558,16 @@ export class VehicleService {
 
   async createVehicle(firebaseUid: string, data: CreateVehicleDto) {
     try {
+      const user &#x3D; await this.prisma.user.findUnique({
+        where: { firebaseUid },
+        include: { addresses: true },
+      });
+
+      if (!user) throw new Error(&#x27;User not found&#x27;);
+      if (user.addresses.length &#x3D;&#x3D;&#x3D; 0) throw new Error(&#x27;User has no address&#x27;);
+
+      const userAddress &#x3D; user.addresses[0];
+
       return await this.prisma.vehicle.create({
         data: {
           ...data,
@@ -467,7 +575,11 @@ export class VehicleService {
           user: {
             connect: { firebaseUid },
           },
+          addresses: {
+            connect: { id: userAddress.id },
+          },
         },
+        include: { addresses: true },
       });
     } catch (error) {
       console.error(error);
@@ -492,6 +604,99 @@ export class VehicleService {
     });
 
     return myVehicles;
+  }
+
+  async findVehiclesNearby(lat: number, lng: number, radius: number) {
+    const results &#x3D; await this.prisma.$queryRaw&lt;
+      {
+        vehicle_id: number;
+        make: string;
+        model: string;
+        year: number;
+        licensePlate: string;
+        color: string;
+        seats: number;
+        type: string;
+        vehicleImage: string | null;
+        verified: boolean;
+        rating: number;
+        hasSeatbelts: boolean;
+        seatbeltType: string;
+        condition: string;
+        value: number;
+        vin: string;
+        mileage: number;
+        transmission: string;
+        salesTaxPaid: boolean;
+        trim: string;
+        bodyStyle: string;
+        hasSalvageTitle: boolean;
+        extraInfo: string;
+        userId: number;
+
+        // Address fields
+        address_id: number;
+        latitude: number;
+        longitude: number;
+        distance: number;
+      }[]
+    &gt;&#x60;
+      SELECT DISTINCT ON (v.id)
+      v.id AS vehicle_id,
+      v.make, v.model, v.year, v.&quot;licensePlate&quot;, v.color, v.seats, v.type,
+      v.&quot;vehicleImage&quot;, v.verified, v.rating, v.&quot;hasSeatbelts&quot;, v.&quot;seatbeltType&quot;,
+      v.condition, v.value, v.vin, v.mileage, v.transmission, v.&quot;salesTaxPaid&quot;,
+      v.trim, v.&quot;bodyStyle&quot;, v.&quot;hasSalvageTitle&quot;, v.&quot;extraInfo&quot;, v.&quot;userId&quot;,
+      a.latitude, a.longitude,
+      ST_Distance(
+        ST_MakePoint(a.longitude, a.latitude)::geography,
+        ST_MakePoint(${lng}, ${lat})::geography
+      ) AS distance
+      FROM &quot;Vehicle&quot; v
+      JOIN &quot;_VehicleAddresses&quot; va ON va.&quot;A&quot; &#x3D; v.id
+      JOIN &quot;Address&quot; a ON a.id &#x3D; va.&quot;B&quot;
+      WHERE ST_DWithin(
+        ST_MakePoint(a.longitude, a.latitude)::geography,
+        ST_MakePoint(${lng}, ${lat})::geography,
+        ${radius * 1000}
+      )
+      ORDER BY v.id, distance ASC
+  &#x60;;
+
+    return results.map((r) &#x3D;&gt; ({
+      vehicle: {
+        id: r.vehicle_id,
+        make: r.make,
+        model: r.model,
+        year: r.year,
+        licensePlate: r.licensePlate,
+        color: r.color,
+        seats: r.seats,
+        type: r.type,
+        vehicleImage: r.vehicleImage,
+        verified: r.verified,
+        rating: r.rating,
+        hasSeatbelts: r.hasSeatbelts,
+        seatbeltType: r.seatbeltType,
+        condition: r.condition,
+        value: r.value,
+        vin: r.vin,
+        mileage: r.mileage,
+        transmission: r.transmission,
+        salesTaxPaid: r.salesTaxPaid,
+        trim: r.trim,
+        bodyStyle: r.bodyStyle,
+        hasSalvageTitle: r.hasSalvageTitle,
+        extraInfo: r.extraInfo,
+        userId: r.userId,
+      },
+      address: {
+        id: r.address_id,
+        latitude: r.latitude,
+        longitude: r.longitude,
+      },
+      distanceMeters: r.distance,
+    }));
   }
 }
 </code></pre>

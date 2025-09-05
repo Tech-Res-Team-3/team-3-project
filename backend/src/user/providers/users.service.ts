@@ -3,10 +3,19 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { GetUsersParamDto } from '../dto/get-users-param.dto';
 import { PatchUserDto } from '../dto/patch-user.dto';
 
+/**
+ * Class to connect to Users table in the database.
+ */
 @Injectable()
 export class UsersService {
+  /**
+   * Constructor to initialize PrismaService instance.
+   */
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Creates a user in the database and authenticates them with FirebaseAuth.
+   */
   async upsertUser(data: {
     firebaseUid: string;
     email: string;
@@ -35,6 +44,9 @@ export class UsersService {
     });
   }
 
+  /**
+   * Fetches users from the database.
+   */
   async getUsers(
     getUsersParamDto: GetUsersParamDto,
     limit: number,
@@ -43,6 +55,9 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
+  /**
+   * Fetches a user by their Firebase UID.
+   */
   async getUserById(firebaseUid: string) {
     return this.prisma.user.findUnique({ 
       where: { firebaseUid },
@@ -50,6 +65,9 @@ export class UsersService {
     });
   }
 
+  /**
+   * Updates a user in the database.
+   */
   async updateUser(firebaseUid: string, data: PatchUserDto) {
     const user = await this.prisma.user.update({
        where: { firebaseUid },
@@ -64,6 +82,9 @@ export class UsersService {
     });
   }
 
+  /**
+   * Promotes a user to host or demotes them back to guest. 
+   */  
   async promoteToHost(firebaseUid: string) {
     const user = await this.prisma.user.findUnique({ where: { firebaseUid } });
 
@@ -75,5 +96,4 @@ export class UsersService {
     });
   }
 
-  
 }

@@ -150,6 +150,11 @@
                             </li>
                             <li>
                                     <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#getNearbyVehicles" >getNearbyVehicles</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
                                 <a href="#updateVehicle" >updateVehicle</a>
                             </li>
                         </ul>
@@ -198,8 +203,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="24"
-                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:24</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="25"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:25</a></div>
                         </td>
                     </tr>
 
@@ -286,8 +291,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="40"
-                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:40</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="41"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:41</a></div>
                         </td>
                     </tr>
 
@@ -337,6 +342,107 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="getNearbyVehicles"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>getNearbyVehicles</b></span>
+                        <a href="#getNearbyVehicles"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getNearbyVehicles(lat: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, lng: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, radius: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Get(&#x27;nearby&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="46"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>lat</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>lng</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>radius</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="updateVehicle"></a>
                     <span class="name">
                             <span class="modifier"></span>
@@ -362,8 +468,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="32"
-                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:32</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:33</a></div>
                         </td>
                     </tr>
 
@@ -433,6 +539,7 @@
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from &#x27;@nestjs/common&#x27;;
 import { FirebaseAuthGuard } from &#x27;src/firebase/guards/firebase-auth.guard&#x27;;
@@ -466,6 +573,15 @@ export class VehicleController {
   @Get(&#x27;/myVehicles&#x27;)
   getMyVehicles(@CurrentUser() user: any) {
     return this.vehicleService.getMyVehicles(user.uid);
+  }
+
+  @Get(&#x27;nearby&#x27;)
+  async getNearbyVehicles(
+    @Query(&#x27;lat&#x27;) lat: number,
+    @Query(&#x27;lng&#x27;) lng: number,
+    @Query(&#x27;radius&#x27;) radius: number,
+  ) {
+    return this.vehicleService.findVehiclesNearby(lat, lng, radius);
   }
 }
 </code></pre>

@@ -13,6 +13,7 @@ import { VehicleModule } from './vehicle/vehicle.module';
 import { DriversLicensesModule } from './drivers-licenses/drivers-licenses.module';
 import { TripsModule } from './trips/trips.module';
 import { BookingModule } from './booking/booking.module';
+import { AdminsModule } from './admins/admins.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { BookingModule } from './booking/booking.module';
     VehicleModule,
     DriversLicensesModule,
     TripsModule,
-    BookingModule
+    BookingModule,
+    AdminsModule
 
   ],
   controllers: [UsersController, AppController],
