@@ -123,6 +123,13 @@
             </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Controller for vehicle-related operations</p>
+
+            </p>
 
 
 
@@ -203,14 +210,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="25"
-                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:25</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="28"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:28</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to create a new vehicle</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -291,14 +300,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="41"
-                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:41</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="46"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:46</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to get all vehicles for the currently logged in user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -368,14 +379,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="46"
-                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:46</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="52"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:52</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to get vehicles nearby a specific location</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -468,14 +481,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="33"
-                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:33</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="37"
+                                    class="link-to-prism">src/vehicle/vehicle.controller.ts:37</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to update an existing vehicle</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -548,12 +563,15 @@ import { CurrentUser } from &#x27;src/user/decorators&#x27;;
 import { VehicleService } from &#x27;./providers/vehicle.service&#x27;;
 import { ApiTags } from &#x27;@nestjs/swagger&#x27;;
 
+/** Controller for vehicle-related operations */
 @UseGuards(FirebaseAuthGuard)
 @Controller(&#x27;vehicles&#x27;)
 @ApiTags(&#x27;Vehicles&#x27;)
 export class VehicleController {
+  /** Constructor for VehicleController */
   constructor(private readonly vehicleService: VehicleService) {}
 
+  /** Endpoint to create a new vehicle */
   @Post()
   createVehicle(
     @CurrentUser() user: any,
@@ -562,6 +580,7 @@ export class VehicleController {
     return this.vehicleService.createVehicle(user.uid, createVehicleDto);
   }
 
+  /** Endpoint to update an existing vehicle */
   @Patch(&#x27;/:id&#x27;)
   updateVehicle(
     @Param(&#x27;id&#x27;, ParseIntPipe) id: number,
@@ -570,11 +589,13 @@ export class VehicleController {
     return this.vehicleService.updateVehicle(id, updatVehicleDto);
   }
 
+  /** Endpoint to get all vehicles for the currently logged in user */
   @Get(&#x27;/myVehicles&#x27;)
   getMyVehicles(@CurrentUser() user: any) {
     return this.vehicleService.getMyVehicles(user.uid);
   }
 
+  /** Endpoint to get vehicles nearby a specific location */
   @Get(&#x27;nearby&#x27;)
   async getNearbyVehicles(
     @Query(&#x27;lat&#x27;) lat: number,

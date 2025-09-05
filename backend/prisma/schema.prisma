@@ -83,7 +83,7 @@ model Address {
   userId Int?
   user   User? @relation(fields: [userId], references: [id])
 
-  vehicles Vehicle[] @relation("VehicleAdresses")
+  vehicles Vehicle[] @relation("VehicleAddresses")
 
   @@index([userId])
   @@index([city, state])
@@ -130,7 +130,7 @@ model Vehicle {
 
   trips Trip[]
 
-  addresses Address[] @relation("VehicleAdresses")
+  addresses Address[] @relation("VehicleAddresses")
 
   @@index([userId])
   @@index([make, model])
