@@ -34,6 +34,7 @@ import { getApp } from "@react-native-firebase/app";
 import { signOut } from "@react-native-firebase/auth";
 import { useCallback } from "react";
 import notifee, { AndroidStyle } from "@notifee/react-native"; // remove after done testing!!
+import { useVehicles } from "../../hooks/vehicle/useVehicles";
 
 dayjs.locale("en");
 
@@ -55,9 +56,10 @@ export default function MainAppScreen() {
   const [region, setRegion] = useState({
     latitude: 34.0522,
     longitude: -118.2437,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitudeDelta: 0.1,
+    longitudeDelta: 0.1,
   });
+  const { vehicles, fetchVehiclesNearby } = useVehicles();
   const defaultStyles = useDefaultStyles();
   const [startDate, setStartDate] = useState<DateType>();
   const [endDate, setEndDate] = useState<DateType>();
@@ -65,22 +67,19 @@ export default function MainAppScreen() {
   const [hasRedirected, setHasRedirected] = useState(false); // Prevent infinite redirects
 
   requestPermissionIfNeeded();
+  function getRadiusFromRegion(region: { latitudeDelta: number }) {
+    // Approximate: 1 degree latitude ≈ 111km
+    return (region.latitudeDelta / 2) * 111;
+  }
 
   useEffect(() => {
-    console.log("MainAppScreen mounted");
-    console.log("User in main app:", user);
+    const timeout = setTimeout(() => {
+      const radius = getRadiusFromRegion(region);
+      fetchVehiclesNearby(region.latitude, region.longitude, radius);
+    }, 400); // Debounce
 
-    // Since (app)/_layout.tsx handles auth guards, we can be more confident here
-    // Just wait for user sync if needed
-    if (!user) {
-      console.log("MainAppScreen: Waiting for user data to sync...");
-      setLoading(false);
-      return;
-    }
-
-    console.log("MainAppScreen: User data available, ready to render");
-    setLoading(false);
-  }, [user]);
+    return () => clearTimeout(timeout);
+  }, [region, fetchVehiclesNearby]);
 
   // Handle back navigation - show logout confirmation modal only when this screen is focused
   useFocusEffect(
@@ -356,19 +355,22 @@ export default function MainAppScreen() {
             <MapView
               style={{ width: "100%", height: "100%", borderRadius: 16 }}
               region={region}
+              onRegionChangeComplete={setRegion}
               scrollEnabled={isCurrentLocationEnabled}
               zoomEnabled={isCurrentLocationEnabled}
               pitchEnabled={isCurrentLocationEnabled}
               rotateEnabled={isCurrentLocationEnabled}
             >
-              <Marker
-                coordinate={{
-                  latitude: region.latitude,
-                  longitude: region.longitude,
-                }}
-                image={require("../../assets/rao-icon-medium.png")}
-                opacity={0.7}
-              />
+              {vehicles.map((vehicle) => (
+                <Marker
+                  key={vehicle.id}
+                  coordinate={{
+                    latitude: vehicle.address.latitude ?? 0,
+                    longitude: vehicle.address.longitude ?? 0,
+                  }}
+                  title={`${vehicle.make} ${vehicle.model}`}
+                />
+              ))}
             </MapView>
           </View>
         </View>
