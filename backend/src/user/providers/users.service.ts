@@ -45,27 +45,6 @@ export class UsersService {
   }
 
   /**
-   * Fetches users from the database.
-   */
-  async getUsers(
-    getUsersParamDto: GetUsersParamDto,
-    limit: number,
-    page: number,
-  ) {
-    return this.prisma.user.findMany();
-  }
-
-  /**
-   * Fetches a user by their Firebase UID.
-   */
-  async getUserById(firebaseUid: string) {
-    return this.prisma.user.findUnique({ 
-      where: { firebaseUid },
-      include: { addresses: true } 
-    });
-  }
-
-  /**
    * Updates a user in the database.
    */
   async updateUser(firebaseUid: string, data: PatchUserDto) {

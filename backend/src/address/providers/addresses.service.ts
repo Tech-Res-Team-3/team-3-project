@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateAddressDto } from '../dto/create-addresses.dto';
 import { UsersService } from 'src/user/providers/users.service';
 
+/** Service to manage addresses associated with users. */
 @Injectable()
 export class AddressesService {
     constructor(

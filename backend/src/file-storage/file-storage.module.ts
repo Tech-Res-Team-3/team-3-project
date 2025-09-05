@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FileStorageService } from './file-storage.service';
+import { FileStorageService } from './providers/file-storage.service';
 import { FileStorageController } from './file-storage.controller';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { FirebaseModule } from 'src/firebase/firebase.module';
