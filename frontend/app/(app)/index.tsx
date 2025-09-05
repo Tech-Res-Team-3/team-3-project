@@ -53,6 +53,7 @@ export default function MainAppScreen() {
   const [isEnabled, setIsEnabled] = useState(true);
   const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
     useState(true);
+  const [pendingRegion, setPendingRegion] = useState<Region | null>(null);
   const [region, setRegion] = useState<Region>({
     latitude: 34.0522,
     longitude: -118.2437,
@@ -220,7 +221,7 @@ export default function MainAppScreen() {
             onPress={(data, details = null) => {
               if (details && details.geometry && details.geometry.location) {
                 const { lat, lng } = details.geometry.location;
-                setRegion({
+                setPendingRegion({
                   latitude: lat,
                   longitude: lng,
                   latitudeDelta: 0.0922,
@@ -403,7 +404,12 @@ export default function MainAppScreen() {
         >
           <Button
             title="View Rentals"
-            onPress={() => {}}
+            onPress={() => {
+              if (pendingRegion) {
+                setRegion(pendingRegion);
+              }
+              // In the future, add more logic here for availability, preferences, etc.
+            }}
             className="w-11/12 bg-ruby"
             textClassName="text-white"
           />
