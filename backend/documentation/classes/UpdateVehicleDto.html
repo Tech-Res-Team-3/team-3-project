@@ -123,6 +123,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Data Transfer Object for updating a vehicle</p>
+
+            </p>
 
             <p class="comment">
                 <h3>Extends</h3>
@@ -149,6 +156,7 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { PartialType } from &#x27;@nestjs/mapped-types&#x27;;
 import { CreateVehicleDto } from &#x27;./create-vehicle.dto&#x27;;
 
+/** Data Transfer Object for updating a vehicle */
 export class UpdateVehicleDto extends PartialType(CreateVehicleDto) {}
 </code></pre>
     </div>

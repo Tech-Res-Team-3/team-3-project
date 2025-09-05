@@ -123,6 +123,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Data Transfer Object for creating a driver&#39;s license</p>
+
+            </p>
 
 
 
@@ -211,10 +218,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:23</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:27</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>URL to the back image of the driver&#39;s license</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -248,10 +261,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:15</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:17</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The expiration date of the driver&#39;s license in MM/DD/YYYY format</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -285,10 +304,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:19</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:22</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>URL to the front image of the driver&#39;s license</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -321,10 +346,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/drivers-licenses/dto/create-drivers-license.dto.ts:12</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The state that issued the driver&#39;s license</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -361,6 +392,12 @@
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The driver&#39;s license number</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -376,30 +413,35 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { IsAlphanumeric, IsBoolean, IsDate, IsDateString, IsOptional, IsString, IsUrl, Matches } from &quot;class-validator&quot;;
-import { IsValidMMDDYYYYDate } from &quot;../validators/is-valid-mmddyyyy-date.validator&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { IsAlphanumeric, IsString, IsUrl } from &#x27;class-validator&#x27;;
+import { IsValidMMDDYYYYDate } from &#x27;../validators/is-valid-mmddyyyy-date.validator&#x27;;
 
-
+/** Data Transfer Object for creating a driver&#x27;s license */
 export class CreateDriversLicenseDto {
+  /** The driver&#x27;s license number */
+  @IsAlphanumeric()
+  licenseNumber: string;
 
-    @IsAlphanumeric()
-    licenseNumber: string;
-    
-    @IsString()
-    issuingState: string;
-    
-    @IsString()
-    @IsValidMMDDYYYYDate()
-    expirationDate: string;
-    
-    @IsString()
-    @IsUrl()
-    frontImage: string;
-    
-    @IsUrl()
-    @IsString()
-    backImage: string;
-}</code></pre>
+  /** The state that issued the driver&#x27;s license */
+  @IsString()
+  issuingState: string;
+
+  /** The expiration date of the driver&#x27;s license in MM/DD/YYYY format */
+  @IsString()
+  @IsValidMMDDYYYYDate()
+  expirationDate: string;
+
+  /** URL to the front image of the driver&#x27;s license */
+  @IsString()
+  @IsUrl()
+  frontImage: string;
+
+  /** URL to the back image of the driver&#x27;s license */
+  @IsUrl()
+  @IsString()
+  backImage: string;
+}
+</code></pre>
     </div>
 </div>
 

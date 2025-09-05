@@ -121,6 +121,13 @@
             </p>
 
 
+                <p class="comment">
+                <h3>Description</h3>
+                </p>
+                <p class="comment">
+                    <p>Guard to enforce role-based access control</p>
+
+                </p>
 
 
 
@@ -164,12 +171,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/firebase/guards/roles.guard.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/firebase/guards/roles.guard.ts:12</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dependency injection of Reflector</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -227,14 +236,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="14"
-                                    class="link-to-prism">src/firebase/guards/roles.guard.ts:14</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="17"
+                                    class="link-to-prism">src/firebase/guards/roles.guard.ts:17</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Check if the user has one of the required roles to access the route</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -288,10 +299,13 @@
 import { Reflector } from &#x27;@nestjs/core&#x27;;
 import { ROLES_KEY } from &#x27;src/firebase/decorators/roles.decorator&#x27;;
 
+/** Guard to enforce role-based access control */
 @Injectable()
 export class RolesGuard implements CanActivate {
+  /** Dependency injection of Reflector */
   constructor(private reflector: Reflector) {}
 
+  /** Check if the user has one of the required roles to access the route */
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles &#x3D; this.reflector.getAllAndOverride&lt;string[]&gt;(
       ROLES_KEY,

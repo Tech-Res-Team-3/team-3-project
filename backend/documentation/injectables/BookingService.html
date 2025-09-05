@@ -119,6 +119,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Service to manage bookings</p>
+
+            </p>
 
 
 
@@ -166,12 +173,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/booking/providers/booking.service.ts:7</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/booking/providers/booking.service.ts:8</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dependency injection of PrismaService</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -231,14 +240,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="29"
-                                    class="link-to-prism">src/booking/providers/booking.service.ts:29</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/booking/providers/booking.service.ts:33</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Change the status of an existing booking for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -324,14 +335,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="10"
-                                    class="link-to-prism">src/booking/providers/booking.service.ts:10</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="13"
+                                    class="link-to-prism">src/booking/providers/booking.service.ts:13</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Create a new booking for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -394,10 +407,13 @@ import { CreateBookingDto } from &#x27;../dto/create-booking.dto&#x27;;
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
 import { BookingStatus } from &#x27;../enums/booking-status.enums&#x27;;
 
+/** Service to manage bookings */
 @Injectable()
 export class BookingService {
+    /** Dependency injection of PrismaService */
     constructor(private prisma: PrismaService) {}
 
+    /** Create a new booking for the authenticated user */
     async createBooking(
         uid: string,
         createBookingDto: CreateBookingDto
@@ -417,6 +433,7 @@ export class BookingService {
         return booking;
     }
 
+    /** Change the status of an existing booking for the authenticated user */
     async changeBookingStatus(
         uid: string,
         bookingId: number,
@@ -435,6 +452,7 @@ export class BookingService {
             );
         }
 
+        /** Update the booking */
         const updatedBooking &#x3D; await this.prisma.booking.update({
             where: { id: bookingId },
             data: { status },

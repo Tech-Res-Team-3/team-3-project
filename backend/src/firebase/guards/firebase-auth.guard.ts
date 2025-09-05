@@ -7,13 +7,16 @@ import {
 import { FirebaseService } from '../firebase.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+/** Guard to protect routes using Firebase authentication */
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
+  /** Dependency injection of FirebaseService and PrismaService */
   constructor(
     private readonly firebaseService: FirebaseService,
     private readonly prisma: PrismaService,
   ) {}
 
+  /** Validate the request's Firebase ID token and attach user info to the request */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;

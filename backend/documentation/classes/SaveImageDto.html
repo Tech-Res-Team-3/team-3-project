@@ -123,6 +123,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Data Transfer Object for saving image metadata</p>
+
+            </p>
 
 
 
@@ -200,10 +207,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="5" class="link-to-prism">src/file-storage/dto/saveImage.dto.ts:5</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/file-storage/dto/saveImage.dto.ts:7</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The file path where the image is stored</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -236,10 +249,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/file-storage/dto/saveImage.dto.ts:8</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/file-storage/dto/saveImage.dto.ts:11</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The ID of the user associated with the image</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -273,10 +292,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/file-storage/dto/saveImage.dto.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/file-storage/dto/saveImage.dto.ts:15</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The ID of the vehicle associated with the image</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -294,13 +319,17 @@
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { IsString, IsOptional } from &#x27;class-validator&#x27;;
 
+/** Data Transfer Object for saving image metadata */
 export class SaveImageDto {
+  /** The file path where the image is stored */
   @IsString()
   filePath: string;
 
+  /** The ID of the user associated with the image */
   @IsOptional()
   userId: number;
 
+  /** The ID of the vehicle associated with the image */
   @IsOptional()
   vehicleId?: number;
 }

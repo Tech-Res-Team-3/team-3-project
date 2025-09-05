@@ -1,24 +1,28 @@
-import { IsAlphanumeric, IsBoolean, IsDate, IsDateString, IsOptional, IsString, IsUrl, Matches } from "class-validator";
-import { IsValidMMDDYYYYDate } from "../validators/is-valid-mmddyyyy-date.validator";
+import { IsAlphanumeric, IsString, IsUrl } from 'class-validator';
+import { IsValidMMDDYYYYDate } from '../validators/is-valid-mmddyyyy-date.validator';
 
-
+/** Data Transfer Object for creating a driver's license */
 export class CreateDriversLicenseDto {
+  /** The driver's license number */
+  @IsAlphanumeric()
+  licenseNumber: string;
 
-    @IsAlphanumeric()
-    licenseNumber: string;
-    
-    @IsString()
-    issuingState: string;
-    
-    @IsString()
-    @IsValidMMDDYYYYDate()
-    expirationDate: string;
-    
-    @IsString()
-    @IsUrl()
-    frontImage: string;
-    
-    @IsUrl()
-    @IsString()
-    backImage: string;
+  /** The state that issued the driver's license */
+  @IsString()
+  issuingState: string;
+
+  /** The expiration date of the driver's license in MM/DD/YYYY format */
+  @IsString()
+  @IsValidMMDDYYYYDate()
+  expirationDate: string;
+
+  /** URL to the front image of the driver's license */
+  @IsString()
+  @IsUrl()
+  frontImage: string;
+
+  /** URL to the back image of the driver's license */
+  @IsUrl()
+  @IsString()
+  backImage: string;
 }

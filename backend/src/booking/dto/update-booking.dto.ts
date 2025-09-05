@@ -1,3 +1,4 @@
-import { CreateBookingDto } from "./create-booking.dto"
+import { CreateBookingDto } from './create-booking.dto';
 
-export class UpdateBookingDto extends CreateBookingDto{}
+/** Data Transfer Object for updating a booking */
+export class UpdateBookingDto extends CreateBookingDto {}

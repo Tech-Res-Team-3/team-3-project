@@ -123,6 +123,13 @@
             </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Controller to manage drivers&#39; licenses-related endpoints</p>
+
+            </p>
 
 
 
@@ -198,14 +205,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="24"
-                                    class="link-to-prism">src/drivers-licenses/drivers-licenses.controller.ts:24</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="27"
+                                    class="link-to-prism">src/drivers-licenses/drivers-licenses.controller.ts:27</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to create a new drivers license</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -286,14 +295,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="35"
-                                    class="link-to-prism">src/drivers-licenses/drivers-licenses.controller.ts:35</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="39"
+                                    class="link-to-prism">src/drivers-licenses/drivers-licenses.controller.ts:39</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to retrieve all drivers licenses for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -362,14 +373,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="40"
-                                    class="link-to-prism">src/drivers-licenses/drivers-licenses.controller.ts:40</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="45"
+                                    class="link-to-prism">src/drivers-licenses/drivers-licenses.controller.ts:45</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to update a specific drivers license</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -453,12 +466,15 @@ import { UpdateDriversLicenseDto } from &#x27;./dto/update-drivers-license.dto&#
 import { FirebaseAuthGuard } from &#x27;src/firebase/guards/firebase-auth.guard&#x27;;
 import { ApiTags } from &#x27;@nestjs/swagger&#x27;;
 
+/** Controller to manage drivers&#x27; licenses-related endpoints */
 @UseGuards(FirebaseAuthGuard)
 @Controller(&#x27;drivers-licenses&#x27;)
 @ApiTags(&#x27;Drivers Licenses&#x27;)
 export class DriversLicensesController {
+  /** Dependency injection of DriversLicensesService */
   constructor(private driversLicensesService: DriversLicensesService) {}
 
+  /** Endpoint to create a new drivers license */
   @Post()
   createDriversLicense(
     @Body() createDriversLicenseDto: CreateDriversLicenseDto,
@@ -470,11 +486,13 @@ export class DriversLicensesController {
     );
   }
 
+  /** Endpoint to retrieve all drivers licenses for the authenticated user */
   @Get()
   getDriversLicenses(@CurrentUser() user: any) {
     return this.driversLicensesService.getDriversLicenses(user.uid);
   }
 
+  /** Endpoint to update a specific drivers license */
   @Patch(&#x27;/:id&#x27;)
   updateDriversLicense(
     @Param(&#x27;id&#x27;) id: string,

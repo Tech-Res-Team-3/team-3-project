@@ -4,6 +4,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
+/** Custom validator to check if a string is a valid date in MM-DD-YYYY format */
 export function IsValidMMDDYYYYDate(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({

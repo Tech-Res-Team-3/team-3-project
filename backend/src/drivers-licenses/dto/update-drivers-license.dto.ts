@@ -1,5 +1,7 @@
-import { PartialType } from "@nestjs/swagger";
-import { CreateDriversLicenseDto } from "./create-drivers-license.dto";
+import { PartialType } from '@nestjs/swagger';
+import { CreateDriversLicenseDto } from './create-drivers-license.dto';
 
-
-export class UpdateDriversLicenseDto extends PartialType(CreateDriversLicenseDto) {}
+/** Data Transfer Object for updating a driver's license */
+export class UpdateDriversLicenseDto extends PartialType(
+  CreateDriversLicenseDto,
+) {}
