@@ -119,6 +119,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Service to manage drivers&#39; licenses</p>
+
+            </p>
 
 
 
@@ -176,6 +183,8 @@
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dependency injection of PrismaService</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -235,14 +244,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="11"
-                                    class="link-to-prism">src/drivers-licenses/providers/drivers-licenses.service.ts:11</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="13"
+                                    class="link-to-prism">src/drivers-licenses/providers/drivers-licenses.service.ts:13</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Create a new drivers license for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -316,14 +327,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="26"
-                                    class="link-to-prism">src/drivers-licenses/providers/drivers-licenses.service.ts:26</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="29"
+                                    class="link-to-prism">src/drivers-licenses/providers/drivers-licenses.service.ts:29</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Retrieve all drivers licenses for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -385,14 +398,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="34"
-                                    class="link-to-prism">src/drivers-licenses/providers/drivers-licenses.service.ts:34</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="38"
+                                    class="link-to-prism">src/drivers-licenses/providers/drivers-licenses.service.ts:38</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Update a specific drivers license for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -463,15 +478,17 @@
 
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
-import { UsersService } from &#x27;src/user/providers/users.service&#x27;;
 import { CreateDriversLicenseDto } from &#x27;../dto/create-drivers-license.dto&#x27;;
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
 import { UpdateDriversLicenseDto } from &#x27;../dto/update-drivers-license.dto&#x27;;
 
+/** Service to manage drivers&#x27; licenses */
 @Injectable()
 export class DriversLicensesService {
+  /** Dependency injection of PrismaService */
   constructor(private prisma: PrismaService) {}
 
+  /** Create a new drivers license for the authenticated user */
   async createDriversLicense(
     firebaseUid: string,
     dto: CreateDriversLicenseDto,
@@ -487,6 +504,7 @@ export class DriversLicensesService {
     return driverLicense;
   }
 
+  /** Retrieve all drivers licenses for the authenticated user */
   async getDriversLicenses(firebaseUid: string) {
     return this.prisma.driverLicense.findMany({
       where: {
@@ -495,6 +513,7 @@ export class DriversLicensesService {
     });
   }
 
+  /** Update a specific drivers license for the authenticated user */
   async updateDriversLicense(
     firebaseUid: string,
     id: number,

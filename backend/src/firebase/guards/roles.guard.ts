@@ -7,10 +7,13 @@ import {
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from 'src/firebase/decorators/roles.decorator';
 
+/** Guard to enforce role-based access control */
 @Injectable()
 export class RolesGuard implements CanActivate {
+  /** Dependency injection of Reflector */
   constructor(private reflector: Reflector) {}
 
+  /** Check if the user has one of the required roles to access the route */
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(
       ROLES_KEY,

@@ -3,10 +3,13 @@ import { CreateBookingDto } from '../dto/create-booking.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BookingStatus } from '../enums/booking-status.enums';
 
+/** Service to manage bookings */
 @Injectable()
 export class BookingService {
+    /** Dependency injection of PrismaService */
     constructor(private prisma: PrismaService) {}
 
+    /** Create a new booking for the authenticated user */
     async createBooking(
         uid: string,
         createBookingDto: CreateBookingDto
@@ -26,6 +29,7 @@ export class BookingService {
         return booking;
     }
 
+    /** Change the status of an existing booking for the authenticated user */
     async changeBookingStatus(
         uid: string,
         bookingId: number,
@@ -44,6 +48,7 @@ export class BookingService {
             );
         }
 
+        /** Update the booking */
         const updatedBooking = await this.prisma.booking.update({
             where: { id: bookingId },
             data: { status },

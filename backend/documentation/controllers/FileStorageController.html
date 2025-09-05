@@ -123,6 +123,13 @@
             </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Controller to manage file storage-related endpoints</p>
+
+            </p>
 
 
 
@@ -200,14 +207,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="15"
-                                    class="link-to-prism">src/file-storage/file-storage.controller.ts:15</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="18"
+                                    class="link-to-prism">src/file-storage/file-storage.controller.ts:18</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to get a signed URL for file access</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -278,14 +287,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="21"
-                                    class="link-to-prism">src/file-storage/file-storage.controller.ts:21</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="25"
+                                    class="link-to-prism">src/file-storage/file-storage.controller.ts:25</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to save image metadata</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -348,17 +359,21 @@ import { FirebaseAuthGuard } from &#x27;src/firebase/guards/firebase-auth.guard&
 import { CurrentUser } from &#x27;src/user/decorators&#x27;;
 import { ApiTags } from &#x27;@nestjs/swagger&#x27;;
 
+/** Controller to manage file storage-related endpoints */
 @Controller(&#x27;file-storage&#x27;)
 @ApiTags(&#x27;File Storages&#x27;)
 export class FileStorageController {
+  /** Dependency injection of FileStorageService */
   constructor(private readonly fileStorageService: FileStorageService) {}
 
+  /** Endpoint to get a signed URL for file access */
   @UseGuards(FirebaseAuthGuard)
   @Post(&#x27;signed-url&#x27;)
   async getSignedUrl(@Body() body: GetSignedUrlDto) {
     return this.fileStorageService.getSignedUrl(body.path, body.folder);
   }
 
+  /** Endpoint to save image metadata */
   @UseGuards(FirebaseAuthGuard)
   @Post(&#x27;save-image&#x27;)
   async saveImage(@CurrentUser() user: any, @Body() body: SaveImageDto) {

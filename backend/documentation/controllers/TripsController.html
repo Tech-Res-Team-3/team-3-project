@@ -123,6 +123,13 @@
             </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Controller to manage trips-related endpoints</p>
+
+            </p>
 
 
 
@@ -198,14 +205,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="24"
-                                    class="link-to-prism">src/trips/trips.controller.ts:24</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="27"
+                                    class="link-to-prism">src/trips/trips.controller.ts:27</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to create a new trip</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -286,14 +295,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="37"
-                                    class="link-to-prism">src/trips/trips.controller.ts:37</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="42"
+                                    class="link-to-prism">src/trips/trips.controller.ts:42</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to retrieve all trips for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -348,7 +359,7 @@
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>updateTrip(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, updaetTripDto: <a href="../classes/UpdateTripDto.html" target="_self">UpdateTripDto</a>)</code>
+                    <code>updateTrip(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, updateTripDto: <a href="../classes/UpdateTripDto.html" target="_self">UpdateTripDto</a>)</code>
                 </td>
             </tr>
 
@@ -362,14 +373,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="29"
-                                    class="link-to-prism">src/trips/trips.controller.ts:29</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/trips/trips.controller.ts:33</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to update a specific trip</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -396,7 +409,7 @@
 
                                         </tr>
                                         <tr>
-                                                <td>updaetTripDto</td>
+                                                <td>updateTripDto</td>
                                             <td>
                                                             <code><a href="../classes/UpdateTripDto.html" target="_self" >UpdateTripDto</a></code>
                                             </td>
@@ -441,25 +454,30 @@ import { CreateTripDto, UpdateTripDto } from &#x27;./dto&#x27;;
 import { FirebaseAuthGuard } from &#x27;src/firebase/guards/firebase-auth.guard&#x27;;
 import { ApiTags } from &#x27;@nestjs/swagger&#x27;;
 
+/** Controller to manage trips-related endpoints */
 @UseGuards(FirebaseAuthGuard)
 @Controller(&#x27;trips&#x27;)
 @ApiTags(&#x27;Trips&#x27;)
 export class TripsController {
+  /** Dependency injection of TripsService */
   constructor(private readonly tripsService: TripsService) {}
 
+  /** Endpoint to create a new trip */
   @Post()
   createTrip(@CurrentUser() user: any, @Body() createTripDto: CreateTripDto) {
     return this.tripsService.createTrip(user.uid, createTripDto);
   }
 
+  /** Endpoint to update a specific trip */
   @Patch(&#x27;/:id&#x27;)
   updateTrip(
     @Param(&#x27;id&#x27;, ParseIntPipe) id: number,
-    @Body() updaetTripDto: UpdateTripDto,
+    @Body() updateTripDto: UpdateTripDto,
   ) {
-    return this.tripsService.updateTrip(id, updaetTripDto);
+    return this.tripsService.updateTrip(id, updateTripDto);
   }
 
+  /** Endpoint to retrieve all trips for the authenticated user */
   @Get(&#x27;/myTrips&#x27;)
   getMyTrips(@CurrentUser() user: any) {
     return this.tripsService.getMyTrips(user.uid);

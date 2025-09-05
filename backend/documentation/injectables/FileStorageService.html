@@ -119,6 +119,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Service to manage file storage</p>
+
+            </p>
 
 
 
@@ -181,12 +188,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/file-storage/file-storage.service.ts:8</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/file-storage/file-storage.service.ts:10</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dependency injection of PrismaService and FirebaseService</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -258,14 +267,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="14"
-                                    class="link-to-prism">src/file-storage/file-storage.service.ts:14</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="18"
+                                    class="link-to-prism">src/file-storage/file-storage.service.ts:18</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Generate a signed URL for file upload or access</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -359,14 +370,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="37"
-                                    class="link-to-prism">src/file-storage/file-storage.service.ts:37</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="42"
+                                    class="link-to-prism">src/file-storage/file-storage.service.ts:42</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Save image metadata to the database</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -450,10 +463,16 @@
             </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/file-storage/file-storage.service.ts:8</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/file-storage/file-storage.service.ts:10</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Reference to the Firebase storage bucket</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -468,14 +487,18 @@ import { FirebaseService } from &#x27;src/firebase/firebase.service&#x27;;
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
 import { v4 as uuidv4 } from &#x27;uuid&#x27;;
 
+/** Service to manage file storage */
 @Injectable()
 export class FileStorageService {
+  /** Reference to the Firebase storage bucket */
   private bucket;
+  /** Dependency injection of PrismaService and FirebaseService */
   constructor(
     private readonly prisma: PrismaService,
     private readonly firebaseService: FirebaseService,
   ) {}
 
+  /** Generate a signed URL for file upload or access */
   async getSignedUrl(
     originalFileName: string,
     folder?: string,
@@ -499,6 +522,7 @@ export class FileStorageService {
     return { url, filePath };
   }
 
+  /** Save image metadata to the database */
   async saveImage(filePath: string, userId?: number, vehicleId?: number) {
     if (userId &amp;&amp; !vehicleId) {
       return this.prisma.user.update({
