@@ -109,7 +109,7 @@ export class VehicleService {
         ST_MakePoint(${lng}, ${lat})::geography
       ) AS distance
       FROM "Vehicle" v
-      JOIN "_VehicleAdresses" va ON va."A" = v.id
+      JOIN "_VehicleAddresses" va ON va."A" = v.id
       JOIN "Address" a ON a.id = va."B"
       WHERE ST_DWithin(
         ST_MakePoint(a.longitude, a.latitude)::geography,
