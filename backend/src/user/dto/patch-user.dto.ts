@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
-/**
- * Data Transfer Object for updating user information.
- */
+/** Data Transfer Object for updating user information. */
 export class PatchUserDto {
 
   /**

@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { FileStorageService } from './file-storage.service';
+import { FileStorageService } from './providers/file-storage.service';
 import { GetSignedUrlDto, SaveImageDto } from './dto';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
 import { CurrentUser } from 'src/user/decorators';

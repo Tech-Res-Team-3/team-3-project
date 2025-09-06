@@ -14,6 +14,7 @@ import { DriversLicensesModule } from './drivers-licenses/drivers-licenses.modul
 import { TripsModule } from './trips/trips.module';
 import { BookingModule } from './booking/booking.module';
 import { AdminsModule } from './admins/admins.module';
+import { DriversLicensesService } from './drivers-licenses/providers/drivers-licenses.service';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { AdminsModule } from './admins/admins.module';
 
   ],
   controllers: [UsersController, AppController],
-  providers: [AppService, UsersService],
+  providers: [AppService, UsersService, DriversLicensesService],
 })
 export class AppModule {}
