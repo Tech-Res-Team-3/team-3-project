@@ -79,10 +79,37 @@ export function useVehicles() {
         [removeVehicle, setLoading, setError]
     );
 
+    // Fetch vehicles within a radius of a point
+    const fetchVehiclesNearby = useCallback(
+        async (lat: number, lng: number, radius: number) => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await axios.get(
+                    `/vehicles/nearby?lat=${lat}&lng=${lng}&radius=${radius}`
+                );
+                // Normalize: flatten { vehicle, address } into a single Vehicle object
+                const normalized: Vehicle[] = res.data.map((item: any) => ({
+                    ...item.vehicle,
+                    address: item.address,
+                }));
+                setVehicles(normalized);
+            } catch (err: any) {
+                setError(err.message || 'Failed to fetch nearby vehicles');
+                console.error('Error in findVehiclesNearby:', err);
+                throw err;
+            } finally {
+                setLoading(false);
+            }
+        },
+        [setVehicles, setLoading, setError]
+    );
+
     return {
         vehicles,
         fetchAllVehicles,
         fetchUserVehicles,
+        fetchVehiclesNearby,
         addVehicleAsync,
         addVehicle,
         updateVehicle,

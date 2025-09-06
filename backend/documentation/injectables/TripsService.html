@@ -119,6 +119,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Service to manage trips</p>
+
+            </p>
 
 
 
@@ -176,6 +183,8 @@
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dependency injection of PrismaService and BookingService</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -247,14 +256,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="15"
-                                    class="link-to-prism">src/trips/providers/trips.service.ts:15</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="17"
+                                    class="link-to-prism">src/trips/providers/trips.service.ts:17</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Create a new trip</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -336,6 +347,8 @@
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Retrieve all trips for the authenticated user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -397,14 +410,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="46"
-                                    class="link-to-prism">src/trips/providers/trips.service.ts:46</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="45"
+                                    class="link-to-prism">src/trips/providers/trips.service.ts:45</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Update an existing trip</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -466,16 +481,18 @@
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
 import { CreateTripDto, UpdateTripDto } from &#x27;../dto&#x27;;
 import { BookingService } from &#x27;src/booking/providers/booking.service&#x27;;
-import { CreateBookingDto } from &#x27;src/booking/dto/create-booking.dto&#x27;;
 import { BookingStatus } from &#x27;src/booking/enums/booking-status.enums&#x27;;
 
+/** Service to manage trips */
 @Injectable()
 export class TripsService {
+  /** Dependency injection of PrismaService and BookingService */
   constructor(
     private readonly prisma: PrismaService,
     private readonly bookingService: BookingService,
   ) {}
 
+  /** Create a new trip */
   async createTrip(firebaseUid: string, dto: CreateTripDto) {
     const trip &#x3D; await this.prisma.trip.create({
       data: {
@@ -495,18 +512,15 @@ export class TripsService {
         },
       },
     });
-    await this.bookingService.createBooking(
-      firebaseUid,
-      {
-        tripId: trip.id,
-        bookedAt: new Date(),
-        status: BookingStatus.PENDING
-      }
-    );
+    await this.bookingService.createBooking(firebaseUid, {
+      tripId: trip.id,
+      bookedAt: new Date(),
+      status: BookingStatus.PENDING,
+    });
     return trip;
-
   }
 
+  /** Update an existing trip */
   async updateTrip(id: number, data: UpdateTripDto) {
     return await this.prisma.trip.update({
       where: { id },
@@ -514,6 +528,7 @@ export class TripsService {
     });
   }
 
+  /** Retrieve all trips for the authenticated user */
   async getMyTrips(firebaseUid: string) {
     return await this.prisma.trip.findMany({
       where: {

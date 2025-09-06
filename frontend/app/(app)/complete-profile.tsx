@@ -204,6 +204,7 @@ export default function CompleteProfileScreen() {
         </View>
 
         {/* Address Section */}
+        {/* FIXME: VirtualizationList error */}
         <View className="w-[90%] bg-white rounded-2xl p-5 mb-5 shadow">
           <Text className="text-xl font-bold text-ruby mb-3 mt-1">Address</Text>
           <GooglePlacesAutocomplete

@@ -123,6 +123,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Data Transfer Object for updating a booking</p>
+
+            </p>
 
             <p class="comment">
                 <h3>Extends</h3>
@@ -219,6 +226,12 @@
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The date when the booking is made</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -258,11 +271,17 @@
                         </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in         <code><a href="../classes/CreateBookingDto.html#source" target="_self" >CreateBookingDto:16</a></code>
+                                <div class="io-line">Defined in         <code><a href="../classes/CreateBookingDto.html#source" target="_self" >CreateBookingDto:17</a></code>
 </div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The status of the booking</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -301,11 +320,17 @@
                         </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in         <code><a href="../classes/CreateBookingDto.html#source" target="_self" >CreateBookingDto:19</a></code>
+                                <div class="io-line">Defined in         <code><a href="../classes/CreateBookingDto.html#source" target="_self" >CreateBookingDto:21</a></code>
 </div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The ID of the trip associated with the booking</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -321,9 +346,11 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { CreateBookingDto } from &quot;./create-booking.dto&quot;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { CreateBookingDto } from &#x27;./create-booking.dto&#x27;;
 
-export class UpdateBookingDto extends CreateBookingDto{}</code></pre>
+/** Data Transfer Object for updating a booking */
+export class UpdateBookingDto extends CreateBookingDto {}
+</code></pre>
     </div>
 </div>
 

@@ -2,16 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTripDto, UpdateTripDto } from '../dto';
 import { BookingService } from 'src/booking/providers/booking.service';
-import { CreateBookingDto } from 'src/booking/dto/create-booking.dto';
 import { BookingStatus } from 'src/booking/enums/booking-status.enums';
 
+/** Service to manage trips */
 @Injectable()
 export class TripsService {
+  /** Dependency injection of PrismaService and BookingService */
   constructor(
     private readonly prisma: PrismaService,
     private readonly bookingService: BookingService,
   ) {}
 
+  /** Create a new trip */
   async createTrip(firebaseUid: string, dto: CreateTripDto) {
     const trip = await this.prisma.trip.create({
       data: {
@@ -31,18 +33,15 @@ export class TripsService {
         },
       },
     });
-    await this.bookingService.createBooking(
-      firebaseUid,
-      {
-        tripId: trip.id,
-        bookedAt: new Date(),
-        status: BookingStatus.PENDING
-      }
-    );
+    await this.bookingService.createBooking(firebaseUid, {
+      tripId: trip.id,
+      bookedAt: new Date(),
+      status: BookingStatus.PENDING,
+    });
     return trip;
-
   }
 
+  /** Update an existing trip */
   async updateTrip(id: number, data: UpdateTripDto) {
     return await this.prisma.trip.update({
       where: { id },
@@ -50,6 +49,7 @@ export class TripsService {
     });
   }
 
+  /** Retrieve all trips for the authenticated user */
   async getMyTrips(firebaseUid: string) {
     return await this.prisma.trip.findMany({
       where: {

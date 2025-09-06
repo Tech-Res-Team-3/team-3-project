@@ -123,12 +123,21 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Data Transfer Object for updating a driver&#39;s license</p>
+
+            </p>
 
             <p class="comment">
                 <h3>Extends</h3>
             </p>
             <p class="comment">
-                            <code><a href="../classes/CreateDriversLicenseDto.html" target="_self" >PartialType(CreateDriversLicenseDto)</a></code>
+                            <code><a href="../classes/CreateDriversLicenseDto.html" target="_self" >PartialType(
+  CreateDriversLicenseDto,
+)</a></code>
             </p>
 
 
@@ -146,11 +155,14 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { PartialType } from &quot;@nestjs/swagger&quot;;
-import { CreateDriversLicenseDto } from &quot;./create-drivers-license.dto&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { PartialType } from &#x27;@nestjs/swagger&#x27;;
+import { CreateDriversLicenseDto } from &#x27;./create-drivers-license.dto&#x27;;
 
-
-export class UpdateDriversLicenseDto extends PartialType(CreateDriversLicenseDto) {}</code></pre>
+/** Data Transfer Object for updating a driver&#x27;s license */
+export class UpdateDriversLicenseDto extends PartialType(
+  CreateDriversLicenseDto,
+) {}
+</code></pre>
     </div>
 </div>
 

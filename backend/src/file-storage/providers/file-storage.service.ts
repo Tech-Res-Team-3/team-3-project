@@ -3,14 +3,18 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 
+/** Service to manage file storage */
 @Injectable()
 export class FileStorageService {
+  /** Reference to the Firebase storage bucket */
   private bucket;
+  /** Dependency injection of PrismaService and FirebaseService */
   constructor(
     private readonly prisma: PrismaService,
     private readonly firebaseService: FirebaseService,
   ) {}
 
+  /** Generate a signed URL for file upload or access */
   async getSignedUrl(
     originalFileName: string,
     folder?: string,
@@ -34,6 +38,7 @@ export class FileStorageService {
     return { url, filePath };
   }
 
+  /** Save image metadata to the database */
   async saveImage(filePath: string, userId?: number, vehicleId?: number) {
     if (userId && !vehicleId) {
       return this.prisma.user.update({

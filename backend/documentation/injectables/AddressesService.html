@@ -119,6 +119,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Class to manage addresses</p>
+
+            </p>
 
 
 
@@ -169,17 +176,19 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(usersService: <a href="../injectables/UsersService.html" target="_self">UsersService</a>, prisma: <a href="../injectables/PrismaService.html" target="_self">PrismaService</a>)</code>
+<code>constructor(prisma: <a href="../injectables/PrismaService.html" target="_self">PrismaService</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/address/providers/addresses.service.ts:7</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/address/providers/addresses.service.ts:8</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Constructor to initialize services</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -191,18 +200,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                                <tr>
-                                                        <td>usersService</td>
-                                                  
-                                                        <td>
-                                                                        <code><a href="../injectables/UsersService.html" target="_self" >UsersService</a></code>
-                                                        </td>
-                                                  
-                                                    <td>
-                                                            No
-                                                    </td>
-                                                    
-                                                </tr>
                                                 <tr>
                                                         <td>prisma</td>
                                                   
@@ -259,6 +256,8 @@
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Create a new address</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -340,6 +339,8 @@
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Delete an address</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -401,14 +402,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="28"
-                                    class="link-to-prism">src/address/providers/addresses.service.ts:28</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="26"
+                                    class="link-to-prism">src/address/providers/addresses.service.ts:26</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Get all addresses for a currently logged in user</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -470,14 +473,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="34"
-                                    class="link-to-prism">src/address/providers/addresses.service.ts:34</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/address/providers/addresses.service.ts:33</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Update an existing address</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -552,53 +557,52 @@ import { PrismaService } from &#x27;../../prisma/prisma.service&#x27;;
 import { CreateAddressDto } from &#x27;../dto/create-addresses.dto&#x27;;
 import { UsersService } from &#x27;src/user/providers/users.service&#x27;;
 
+/** Class to manage addresses */
 @Injectable()
 export class AddressesService {
-    constructor(
-        private usersService: UsersService,
-        private prisma: PrismaService
-    ) {}
-    
-    async createAddress(
-        firebaseUid: string,
-        dto: CreateAddressDto
-    ) {
-        const address &#x3D; await this.prisma.address.create({
-            data: {
-                ...dto,
-                user: {
-                    connect: { firebaseUid }
-                }
-            }
-        });
-        return address;
-    }
+  /** Constructor to initialize services */
+  constructor(private prisma: PrismaService) {}
 
-    async getMyAddresses(firebaseUid: string) {
-        const myAddresses &#x3D; await this.prisma.address.findMany();
+  /** Create a new address */
+  async createAddress(firebaseUid: string, dto: CreateAddressDto) {
+    const address &#x3D; await this.prisma.address.create({
+      data: {
+        ...dto,
+        user: {
+          connect: { firebaseUid },
+        },
+      },
+    });
+    return address;
+  }
 
-        return myAddresses; 
-    }
+  /** Get all addresses for a currently logged in user */
+  async getMyAddresses(firebaseUid: string) {
+    return await this.prisma.address.findMany({
+      where: { user: { firebaseUid } },
+    });
+  }
 
-    async updateAddress(
-        firebaseUid: string,
-        id: number,
-        updateAddressDto: Partial&lt;CreateAddressDto&gt;
-    ) {
-        const address &#x3D; await this.prisma.address.update({
-            where: { id, user: { firebaseUid } },
-            data: updateAddressDto
-        });
+  /** Update an existing address */
+  async updateAddress(
+    firebaseUid: string,
+    id: number,
+    updateAddressDto: Partial&lt;CreateAddressDto&gt;,
+  ) {
+    const address &#x3D; await this.prisma.address.update({
+      where: { id, user: { firebaseUid } },
+      data: updateAddressDto,
+    });
 
-        return address;
-    }
+    return address;
+  }
 
-    async deleteAddress(id: number) {
-        await this.prisma.address.delete({
-            where: { id }
-        });
-    }
-    
+  /** Delete an address */
+  async deleteAddress(id: number) {
+    await this.prisma.address.delete({
+      where: { id },
+    });
+  }
 }
 </code></pre>
     </div>

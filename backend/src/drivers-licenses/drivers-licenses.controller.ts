@@ -14,12 +14,15 @@ import { UpdateDriversLicenseDto } from './dto/update-drivers-license.dto';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
+/** Controller to manage drivers' licenses-related endpoints */
 @UseGuards(FirebaseAuthGuard)
 @Controller('drivers-licenses')
 @ApiTags('Drivers Licenses')
 export class DriversLicensesController {
+  /** Dependency injection of DriversLicensesService */
   constructor(private driversLicensesService: DriversLicensesService) {}
 
+  /** Endpoint to create a new drivers license */
   @Post()
   createDriversLicense(
     @Body() createDriversLicenseDto: CreateDriversLicenseDto,
@@ -31,11 +34,13 @@ export class DriversLicensesController {
     );
   }
 
+  /** Endpoint to retrieve all drivers licenses for the authenticated user */
   @Get()
   getDriversLicenses(@CurrentUser() user: any) {
     return this.driversLicensesService.getDriversLicenses(user.uid);
   }
 
+  /** Endpoint to update a specific drivers license */
   @Patch('/:id')
   updateDriversLicense(
     @Param('id') id: string,

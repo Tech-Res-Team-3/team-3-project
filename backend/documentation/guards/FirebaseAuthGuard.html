@@ -121,6 +121,13 @@
             </p>
 
 
+                <p class="comment">
+                <h3>Description</h3>
+                </p>
+                <p class="comment">
+                    <p>Guard to protect routes using Firebase authentication</p>
+
+                </p>
 
 
 
@@ -165,12 +172,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/firebase/guards/firebase-auth.guard.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/firebase/guards/firebase-auth.guard.ts:12</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dependency injection of FirebaseService and PrismaService</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -242,14 +251,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="17"
-                                    class="link-to-prism">src/firebase/guards/firebase-auth.guard.ts:17</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="20"
+                                    class="link-to-prism">src/firebase/guards/firebase-auth.guard.ts:20</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Validate the request&#39;s Firebase ID token and attach user info to the request</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -303,13 +314,16 @@
 import { FirebaseService } from &#x27;../firebase.service&#x27;;
 import { PrismaService } from &#x27;src/prisma/prisma.service&#x27;;
 
+/** Guard to protect routes using Firebase authentication */
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
+  /** Dependency injection of FirebaseService and PrismaService */
   constructor(
     private readonly firebaseService: FirebaseService,
     private readonly prisma: PrismaService,
   ) {}
 
+  /** Validate the request&#x27;s Firebase ID token and attach user info to the request */
   async canActivate(context: ExecutionContext): Promise&lt;boolean&gt; {
     const request &#x3D; context.switchToHttp().getRequest();
     const authHeader &#x3D; request.headers.authorization;

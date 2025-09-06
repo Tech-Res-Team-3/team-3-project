@@ -123,6 +123,13 @@
             </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Controller to manage booking-related endpoints</p>
+
+            </p>
 
 
 
@@ -194,14 +201,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="26"
-                                    class="link-to-prism">src/booking/booking.controller.ts:26</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="35"
+                                    class="link-to-prism">src/booking/booking.controller.ts:35</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to change the status of an existing booking</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -294,14 +303,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="18"
-                                    class="link-to-prism">src/booking/booking.controller.ts:18</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="26"
+                                    class="link-to-prism">src/booking/booking.controller.ts:26</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Endpoint to create a new booking</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -357,7 +368,14 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Body, Controller, Param, Patch, Post, UseGuards } from &#x27;@nestjs/common&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from &#x27;@nestjs/common&#x27;;
 import { BookingService } from &#x27;./providers/booking.service&#x27;;
 import { FirebaseAuthGuard } from &#x27;src/firebase/guards/firebase-auth.guard&#x27;;
 import { CreateBookingDto } from &#x27;./dto/create-booking.dto&#x27;;
@@ -365,30 +383,32 @@ import { CurrentUser } from &#x27;src/user/decorators&#x27;;
 import { UpdateBookingDto } from &#x27;./dto/update-booking.dto&#x27;;
 import { ApiTags } from &#x27;@nestjs/swagger&#x27;;
 
+/** Controller to manage booking-related endpoints */
 @UseGuards(FirebaseAuthGuard)
 @Controller(&#x27;booking&#x27;)
 @ApiTags(&#x27;Bookings&#x27;)
 export class BookingController {
-    constructor(
-        private readonly bookingService: BookingService,
-    ) {}
+  /** Dependency injection of BookingService */
+  constructor(private readonly bookingService: BookingService) {}
 
-    @Post()
-    createBooking(
-        @Body() createBookingDto: CreateBookingDto,
-        @CurrentUser(&#x27;uid&#x27;) uid: string,
-    ) {
-        return this.bookingService.createBooking(uid, createBookingDto);
-    }
+  /** Endpoint to create a new booking */
+  @Post()
+  createBooking(
+    @Body() createBookingDto: CreateBookingDto,
+    @CurrentUser(&#x27;uid&#x27;) uid: string,
+  ) {
+    return this.bookingService.createBooking(uid, createBookingDto);
+  }
 
-    @Patch(&#x27;:id/status&#x27;)
-    changeBookingStatus(
-        @Param(&#x27;id&#x27;) bookingId: number,
-        @Body() dto: UpdateBookingDto,
-        @CurrentUser(&#x27;uid&#x27;) uid: string,
-    ) {
-        return this.bookingService.changeBookingStatus(uid, bookingId, dto.status);
-    }
+  /** Endpoint to change the status of an existing booking */
+  @Patch(&#x27;:id/status&#x27;)
+  changeBookingStatus(
+    @Param(&#x27;id&#x27;) bookingId: number,
+    @Body() dto: UpdateBookingDto,
+    @CurrentUser(&#x27;uid&#x27;) uid: string,
+  ) {
+    return this.bookingService.changeBookingStatus(uid, bookingId, dto.status);
+  }
 }
 </code></pre>
     </div>

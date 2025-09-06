@@ -119,6 +119,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Service to manage Firebase integration</p>
+
+            </p>
 
 
 
@@ -180,12 +187,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/firebase/firebase.service.ts:9</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/firebase/firebase.service.ts:12</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dependency injection of ConfigService</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -243,14 +252,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="13"
-                                    class="link-to-prism">src/firebase/firebase.service.ts:13</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="17"
+                                    class="link-to-prism">src/firebase/firebase.service.ts:17</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Initialize Firebase app and services on module init</p>
+</div>
 
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -286,10 +297,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/firebase/firebase.service.ts:8</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/firebase/firebase.service.ts:10</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Firebase authentication instance</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -313,10 +330,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/firebase/firebase.service.ts:9</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/firebase/firebase.service.ts:12</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Firebase storage bucket instance</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -331,13 +354,17 @@ import { ConfigService } from &#x27;@nestjs/config&#x27;;
 import * as admin from &#x27;firebase-admin&#x27;;
 import { Bucket } from &#x27;@google-cloud/storage&#x27;;
 
+/** Service to manage Firebase integration */
 @Injectable()
 export class FirebaseService implements OnModuleInit {
+  /** Firebase authentication instance */
   public auth: admin.auth.Auth;
+  /** Firebase storage bucket instance */
   public bucket: Bucket;
-
+  /** Dependency injection of ConfigService */
   constructor(private readonly configService: ConfigService) {}
 
+  /** Initialize Firebase app and services on module init */
   onModuleInit() {
     if (!admin.apps.length) {
       admin.initializeApp({

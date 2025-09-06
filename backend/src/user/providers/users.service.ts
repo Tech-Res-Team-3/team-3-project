@@ -45,14 +45,38 @@ export class UsersService {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Fetches users from the database.
+   */
+  async getUsers(
+    getUsersParamDto: GetUsersParamDto,
+    limit: number,
+    page: number,
+  ) {
+    return this.prisma.user.findMany();
+  }
+
+  /**
+   * Fetches a user by their Firebase UID.
+   */
+  async getUserById(firebaseUid: string) {
+    return this.prisma.user.findUnique({
+      where: { firebaseUid },
+      include: { addresses: true },
+    });
+  }
+
+  /**
+>>>>>>> f983ccbf68eac6db21bda2dfad93f03290a2759a
    * Updates a user in the database.
    */
   async updateUser(firebaseUid: string, data: PatchUserDto) {
     const user = await this.prisma.user.update({
-       where: { firebaseUid },
-       data,
-       include: { addresses: true }
-      });
+      where: { firebaseUid },
+      data,
+      include: { addresses: true },
+    });
 
     if (!user) throw new Error('User not found');
     return this.prisma.user.update({
@@ -62,8 +86,8 @@ export class UsersService {
   }
 
   /**
-   * Promotes a user to host or demotes them back to guest. 
-   */  
+   * Promotes a user to host or demotes them back to guest.
+   */
   async promoteToHost(firebaseUid: string) {
     const user = await this.prisma.user.findUnique({ where: { firebaseUid } });
 
@@ -74,5 +98,4 @@ export class UsersService {
       data: { role: newRole },
     });
   }
-
 }
