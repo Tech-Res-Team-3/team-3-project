@@ -1,7 +1,7 @@
 import { VehicleResponseDto } from './vehicle-response.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-class AddressDto {
+export class AddressDto {
   @ApiProperty()
   id: number;
 
