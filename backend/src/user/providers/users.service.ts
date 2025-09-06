@@ -45,6 +45,8 @@ export class UsersService {
   }
 
   /**
+<<<<<<< HEAD
+=======
    * Fetches users from the database.
    */
   async getUsers(
@@ -66,6 +68,7 @@ export class UsersService {
   }
 
   /**
+>>>>>>> f983ccbf68eac6db21bda2dfad93f03290a2759a
    * Updates a user in the database.
    */
   async updateUser(firebaseUid: string, data: PatchUserDto) {

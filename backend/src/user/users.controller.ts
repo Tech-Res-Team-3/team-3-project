@@ -34,46 +34,7 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  /**
-   *
-   * @param getUsersParamDto
-   * @param limit
-   * @param page
-   * @returns
-   * Fetches registered users from the database.
-   */
-  @Get('{/:uid}')
-  @ApiBearerAuth('firebase-auth')
-  @ApiOperation({
-    summary: 'Fetches a registered users by their uid',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The users have been successfully fetched.',
-  })
-  @ApiQuery({
-    name: 'limit',
-    type: 'number',
-    required: false,
-    description: 'Number of users to return',
-    example: 10,
-  })
-  @ApiQuery({
-    name: 'page',
-    type: 'number',
-    required: false,
-    description: 'Page number for pagination',
-    example: 1,
-  })
-  getUsers(
-    @Param() getUsersParamDto: GetUsersParamDto,
-    @Query('limit', new DefaultValuePipe(15), ParseIntPipe) limit: number,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-  ) {
-    return this.usersService.getUsers(getUsersParamDto, limit, page);
-  }
-
-  /**
+  
    * Updates the current user's information in the database.
    */
   @ApiBearerAuth('firebase-auth')
