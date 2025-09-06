@@ -1,12 +1,11 @@
 import {
   Body,
   Controller,
-  Post,
-  Get,
   UseGuards,
   Param,
   Query,
   Patch,
+  Post,
   ParseIntPipe,
   DefaultValuePipe,
 } from '@nestjs/common';
@@ -34,8 +33,7 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  
-   * Updates the current user's information in the database.
+  /** Updates the current user's information in the database.
    */
   @ApiBearerAuth('firebase-auth')
   @Patch('/updateMe')

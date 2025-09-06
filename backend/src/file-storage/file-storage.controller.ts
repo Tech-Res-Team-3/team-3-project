@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { FileStorageService } from './file-storage.service';
+import { FileStorageService } from './providers/file-storage.service';
 import {
   GetSignedUrlDto,
   SaveImageDto,
