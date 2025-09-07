@@ -1,16 +1,13 @@
 import {
   Body,
   Controller,
-  Post,
-  Get,
   UseGuards,
   Param,
   Query,
   Patch,
+  Post,
   ParseIntPipe,
   DefaultValuePipe,
-  ValidationPipe,
-  Delete,
 } from '@nestjs/common';
 import { UsersService } from './providers/users.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
@@ -19,7 +16,13 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import type { AuthenticatedUser } from './types';
 import { PatchUserDto } from './dto/patch-user.dto';
 import { GetUsersParamDto } from './dto/get-users-param.dto';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 /**
  * Controller to handle user-related endpoints.
@@ -30,12 +33,12 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  /**
-   * Updates the current user's information in the database.
+  /** Updates the current user's information in the database.
    */
-  @Patch()
+  @ApiBearerAuth('firebase-auth')
+  @Patch('/updateMe')
   @ApiOperation({
-    summary: 'Updates the current user'
+    summary: 'Updates the current user',
   })
   @ApiResponse({
     status: 200,
@@ -46,14 +49,14 @@ export class UsersController {
   }
 
   /**
-   * 
-   * @param user 
-   * @param body 
-   * @returns 
+   *
+   * @param user
+   * @param body
+   * @returns
    * Syncs the authenticated user with the database.
    */
   @ApiOperation({
-    summary: 'Syncs the authenticated user with the database'
+    summary: 'Syncs the authenticated user with the database',
   })
   @ApiResponse({
     status: 201,
@@ -74,13 +77,14 @@ export class UsersController {
   }
 
   /**
-   * 
-   * @param user 
-   * @returns 
+   *
+   * @param user
+   * @returns
    * Promotes the current user to host.
    */
+  @ApiBearerAuth('firebase-auth')
   @ApiOperation({
-    summary: 'Promotes the current user to host'
+    summary: 'Promotes the current user to host',
   })
   @ApiResponse({
     status: 200,

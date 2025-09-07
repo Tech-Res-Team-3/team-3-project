@@ -157,14 +157,18 @@ enum Transmission {
 
 model Trip {
   id            Int      @id @default(autoincrement())
-  startLocation String
-  endLocation   String
+  startLat      Float
+  startLng      Float
+  endLat        Float
+  endLng        Float
   startAt       DateTime
   endAt         DateTime
   status        Status   @default(SCHEDULED)
   price         Float
   discount      Float    @default(0)
   rating        Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   userId    Int
   user      User      @relation(fields: [userId], references: [id])
