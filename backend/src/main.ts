@@ -15,11 +15,17 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('RAO Rentals API')
     .setDescription(
-      'The API details for the data pipelines used in the NestJS backend.',
+      'The API details for the data pipelines used in the NestJS backend for RAO Rentals.',
     )
     .setVersion('1.0')
-    .addTag('Authentication')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'firebase-auth',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -1,16 +1,13 @@
 import {
   Body,
   Controller,
-  Post,
-  Get,
   UseGuards,
   Param,
   Query,
   Patch,
+  Post,
   ParseIntPipe,
   DefaultValuePipe,
-  ValidationPipe,
-  Delete,
 } from '@nestjs/common';
 import { UsersService } from './providers/users.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
@@ -30,7 +27,7 @@ export class UsersController {
   /** Updates the current user's information in the database. */
   @Patch()
   @ApiOperation({
-    summary: 'Updates the current user'
+    summary: 'Updates the current user',
   })
   @ApiResponse({
     status: 200,
@@ -42,7 +39,7 @@ export class UsersController {
 
   /** Syncs the authenticated user with the database. */
   @ApiOperation({
-    summary: 'Syncs the authenticated user with the database'
+    summary: 'Syncs the authenticated user with the database',
   })
   @ApiResponse({
     status: 201,
@@ -64,7 +61,7 @@ export class UsersController {
 
   /** Promotes the current user to host. */
   @ApiOperation({
-    summary: 'Promotes the current user to host'
+    summary: 'Promotes the current user to host',
   })
   @ApiResponse({
     status: 200,
