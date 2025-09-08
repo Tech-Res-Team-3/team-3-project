@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { GetUsersParamDto } from '../dto/get-users-param.dto';
 import { PatchUserDto } from '../dto/patch-user.dto';
 
 /**
@@ -8,14 +7,12 @@ import { PatchUserDto } from '../dto/patch-user.dto';
  */
 @Injectable()
 export class UsersService {
-  /**
-   * Constructor to initialize PrismaService instance.
-   */
-  constructor(private prisma: PrismaService) {}
+  /** Constructor to initialize PrismaService instance. */
+  constructor(
+    private readonly prisma: PrismaService
+  ) {}
 
-  /**
-   * Creates a user in the database and authenticates them with FirebaseAuth.
-   */
+  /** Creates a user in the database and authenticates them with FirebaseAuth. */
   async upsertUser(data: {
     firebaseUid: string;
     email: string;
@@ -44,33 +41,7 @@ export class UsersService {
     });
   }
 
-  /**
-<<<<<<< HEAD
-=======
-   * Fetches users from the database.
-   */
-  async getUsers(
-    getUsersParamDto: GetUsersParamDto,
-    limit: number,
-    page: number,
-  ) {
-    return this.prisma.user.findMany();
-  }
-
-  /**
-   * Fetches a user by their Firebase UID.
-   */
-  async getUserById(firebaseUid: string) {
-    return this.prisma.user.findUnique({
-      where: { firebaseUid },
-      include: { addresses: true },
-    });
-  }
-
-  /**
->>>>>>> f983ccbf68eac6db21bda2dfad93f03290a2759a
-   * Updates a user in the database.
-   */
+  /** Updates a user in the database. */
   async updateUser(firebaseUid: string, data: PatchUserDto) {
     const user = await this.prisma.user.update({
       where: { firebaseUid },
@@ -85,9 +56,7 @@ export class UsersService {
     });
   }
 
-  /**
-   * Promotes a user to host or demotes them back to guest.
-   */
+  /** Promotes a user to host or demotes them back to guest. */
   async promoteToHost(firebaseUid: string) {
     const user = await this.prisma.user.findUnique({ where: { firebaseUid } });
 
