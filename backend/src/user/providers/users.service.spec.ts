@@ -7,16 +7,18 @@ describe('UsersService', () => {
   let service = UsersService;
 
   beforeEach(async () => {
-    const mockUpsertUser: PrismaService = {
-      syncUser: (syncUserdto: SyncUserDto) => Promise.resolve({
-        role: syncUserdto.role
-      }),
+    const mockPrisma = {
+      user: {
+        upsert: jest.fn().mockResolvedValue({
+          role: 'GUEST'
+        })
+      }
     }
 
     const module: TestingModule = await Test.createTestingModule({
       providers:[
         UsersService,
-        { provide: PrismaService, useValue: {} }
+        { provide: PrismaService, useValue: {mockPrisma} }
       ],
 
     }).compile();
