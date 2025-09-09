@@ -15,8 +15,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useVehicles } from "../../../hooks/vehicle/useVehicles";
 import { useAddresses } from "../../../hooks/address/useAddresses";
 import { Vehicle } from "../../../types/vehicle";
+import { useRouter } from "expo-router";
 
 export default function VehicleSettings() {
+  const router = useRouter();
   const { vehicles, fetchUserVehicles, addVehicleAsync, removeVehicleAsync } =
     useVehicles();
   const { addresses, fetchUserAddresses } = useAddresses();
@@ -148,16 +150,18 @@ export default function VehicleSettings() {
               marginBottom: 12,
               alignItems: "center",
             }}
-            onPress={() => {
-              setSelectedVehicle(vehicle);
-              setModalVisible(true);
-            }}
+            onPress={() =>
+              router.push(`/dashboard/vehicle-dashboard/${vehicle.id}`)
+            }
           >
             <Text style={{ fontSize: 18 }}>Vehicle ID: {vehicle.id}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <Button title="Add Vehicle" onPress={() => setAddModalVisible(true)} />
+      <Button
+        title="Add Vehicle"
+        onPress={() => router.push("/dashboard/add-vehicle")}
+      />
 
       {/* Vehicle Info Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
