@@ -22,4 +22,15 @@ export class AdminsService {
       },
     });
   }
+
+  async getUser(firebaseUid: string) {
+    return await this.prisma.user.findUnique({
+      where: { firebaseUid },
+      include: {
+        vehicles: true,
+        addresses: true,
+        driverLicenses: true,
+      },
+    });
+  }
 }

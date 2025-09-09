@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AdminsService } from './providers/admins.service';
 import { GetUsersFilter } from './dto';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
@@ -14,8 +14,13 @@ export class AdminsController {
   constructor(private adminService: AdminsService) {}
 
   /** Get a list of all users that allows filtering */
-  @Get('users')
+  @Get('/users')
   async getAllUsers(@Query() filterDto: GetUsersFilter) {
     return this.adminService.getAllUsers(filterDto);
+  }
+
+  @Get('/users/{:firebaseUid}')
+  async getUser(@Param('firebaseUid') firebaseUid: string) {
+    return this.adminService.getUser(firebaseUid);
   }
 }
