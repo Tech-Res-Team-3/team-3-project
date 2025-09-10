@@ -4,6 +4,7 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as VehicleDashboardIcons from "../../../../../components/icons/dashboard/vehicle/VehicleDashboardIcons";
 import { useVehicleStore } from "../../../../../stores/vehicleStore";
+import { Button } from "../../../../../components/Button";
 
 const menuItems = [
   {
@@ -77,39 +78,45 @@ export default function VehicleDashboardScreen() {
     );
   }
 
-  const carName =
-    vehicle.extraInfo && vehicle.extraInfo.trim().length > 0
-      ? vehicle.extraInfo
-      : [vehicle.year, vehicle.make, vehicle.model].filter(Boolean).join(" ");
-
   return (
     <SafeAreaView className="flex-1 bg-gray-100 items-center">
       {/* Vehicle Profile Card */}
       <View
-        className="w-11/12 bg-white rounded-xl px-6 pt-8 pb-6 items-center mb-4"
+        className="w-11/12 bg-white rounded-xl items-center mb-2 pb-2"
         style={{ shadowColor: "#DDD", elevation: 8 }}
       >
         <Image
           source={
             vehicle.vehicleImage
               ? { uri: vehicle.vehicleImage }
-              : require("../../../../../assets/rao-app-icon.png")
+              : require("../../../../../assets/default-bmw.jpg")
           }
-          className="w-32 h-20 rounded-lg"
+          className="w-full h-56 rounded-lg"
         />
-        <Text className="text-xl font-bold mt-2">
-          {vehicle.year} {vehicle.make} {vehicle.model} • {vehicle.licensePlate}
-        </Text>
-        <View className="flex-row items-center mt-1 gap-4">
-          <Text className="text-md text-yellow-500 font-semibold mr-2">
-            ★ {vehicle.rating ?? 0}
+        <View className="flex-col w-11/12 mt-4 mb-4">
+          {/* TODO: Vehicle - add snooze prop */}
+          <Button
+            className="bg-sky-600 w-1/4 py-[6px] mb-2"
+            title="Snoozed"
+            textClassName="text-sm text-white"
+          />
+          <Text className="self-start text-left text-xl font-bold mt-2">
+            {vehicle.year} {vehicle.make} {vehicle.model} •{" "}
+            <Text className="font-normal text-gray-500">
+              {vehicle.licensePlate}
+            </Text>
           </Text>
-          <Text className="text-md text-gray-500">
-            {vehicle.trips?.length ?? 0} trips
-          </Text>
-          <Text className="ml-2 text-md text-gray-600 font-semibold">
-            {carName || "Car Name"}
-          </Text>
+          <View className="flex-row items-center mt-1 gap-4">
+            <Text className="text-lg text-yellow-500 font-semibold mr-2">
+              ★ {vehicle.rating ?? 0}
+            </Text>
+            <Text className="text-lg text-gray-500">
+              {vehicle.trips?.length ?? 0} trips
+            </Text>
+            <Text className="ml-2 text-lg text-gray-500 font-semibold">
+              Car Name
+            </Text>
+          </View>
         </View>
       </View>
       <ScrollView
