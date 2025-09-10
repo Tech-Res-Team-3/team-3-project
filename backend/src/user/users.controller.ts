@@ -43,8 +43,6 @@ export class UsersController {
     const dbUser = await this.usersService.upsertUser({
       firebaseUid: user.uid,
       email: user.email,
-      firstName: body.firstName,
-      lastName: body.lastName,
       role: body.role === 'ADMIN' ? 'ADMIN' : 'GUEST',
     });
     return { message: 'User synced', user: dbUser };
