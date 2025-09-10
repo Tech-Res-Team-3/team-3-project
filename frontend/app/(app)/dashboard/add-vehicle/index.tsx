@@ -103,9 +103,9 @@ export default function AddVehicleIntroScreen() {
         ...vehicleDraft,
         extraInfo: vehicleDraft.extraInfo ?? "", // default to empty string if undefined/null
       };
-      await addVehicleAsync(draftToSend);
+      const newVehicle = await addVehicleAsync(draftToSend);
       setLoading(false);
-      router.replace("/dashboard/vehicle-dashboard");
+      router.replace(`/dashboard/vehicle-dashboard/${newVehicle.id}`);
     } catch (err) {
       setLoading(false);
       // Optionally show error to user

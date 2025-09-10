@@ -1,62 +1,117 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import { Link, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as VehicleDashboardIcons from "../../../../../components/icons/dashboard/vehicle/VehicleDashboardIcons";
-// import your icons as needed
+import { useVehicleStore } from "../../../../../stores/vehicleStore";
 
 const menuItems = [
   {
     label: "Calendar",
-    route: "calendar",
+    route: "./[vehicleId]/calendar",
     icon: VehicleDashboardIcons.CalendarIcon,
   },
   {
     label: "Pricing & Discounts",
-    route: "pricing",
+    route: "./[vehicleId]/prices",
     icon: VehicleDashboardIcons.PricesIcon,
   },
   {
     label: "Location & Delivery",
-    route: "location",
+    route: "./[vehicleId]/location",
     icon: VehicleDashboardIcons.LocationIcon,
   },
   {
     label: "Guest Instructions",
-    route: "guest-instructions",
+    route: "./[vehicleId]/instructions",
     icon: VehicleDashboardIcons.InstructionsIcon,
   },
-  { label: "Photos", route: "photos", icon: VehicleDashboardIcons.PhotosIcon },
+  {
+    label: "Photos",
+    route: "./[vehicleId]/photos",
+    icon: VehicleDashboardIcons.PhotosIcon,
+  },
   {
     label: "Details",
-    route: "details",
+    route: "./[vehicleId]/details",
     icon: VehicleDashboardIcons.DetailsIcon,
   },
   {
     label: "Pickup & Return Hours",
-    route: "pickup-return-hours",
+    route: "./[vehicleId]/hours",
     icon: VehicleDashboardIcons.ClockIcon,
   },
-  { label: "Extras", route: "extras", icon: VehicleDashboardIcons.ExtrasIcon },
+  {
+    label: "Extras",
+    route: "./[vehicleId]/extras",
+    icon: VehicleDashboardIcons.ExtrasIcon,
+  },
   {
     label: "Distance Included",
-    route: "distance-included",
+    route: "./[vehicleId]/distance",
     icon: VehicleDashboardIcons.DistanceIcon,
   },
-  { label: "Goals", route: "goals", icon: VehicleDashboardIcons.GoalsIcon },
+  {
+    label: "Goals",
+    route: "./[vehicleId]/goals",
+    icon: VehicleDashboardIcons.GoalsIcon,
+  },
   {
     label: "Trip Preferences",
-    route: "trip-preferences",
+    route: "./[vehicleId]/preferences",
     icon: VehicleDashboardIcons.PreferencesIcon,
   },
 ];
 
 export default function VehicleDashboardScreen() {
-  const router = useRouter();
   const { vehicleId } = useLocalSearchParams();
+  const vehicle = useVehicleStore((state) =>
+    state.vehicles.find((v) => v.id === Number(vehicleId))
+  );
+
+  if (!vehicle) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+        <Text>Loading vehicle...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const carName =
+    vehicle.extraInfo && vehicle.extraInfo.trim().length > 0
+      ? vehicle.extraInfo
+      : [vehicle.year, vehicle.make, vehicle.model].filter(Boolean).join(" ");
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100 items-center">
+      {/* Vehicle Profile Card */}
+      <View
+        className="w-11/12 bg-white rounded-xl px-6 pt-8 pb-6 items-center mb-4"
+        style={{ shadowColor: "#DDD", elevation: 8 }}
+      >
+        <Image
+          source={
+            vehicle.vehicleImage
+              ? { uri: vehicle.vehicleImage }
+              : require("../../../../../assets/rao-app-icon.png")
+          }
+          className="w-32 h-20 rounded-lg"
+        />
+        <Text className="text-xl font-bold mt-2">
+          {vehicle.year} {vehicle.make} {vehicle.model} • {vehicle.licensePlate}
+        </Text>
+        <View className="flex-row items-center mt-1 gap-4">
+          <Text className="text-md text-yellow-500 font-semibold mr-2">
+            ★ {vehicle.rating ?? 0}
+          </Text>
+          <Text className="text-md text-gray-500">
+            {vehicle.trips?.length ?? 0} trips
+          </Text>
+          <Text className="ml-2 text-md text-gray-600 font-semibold">
+            {carName || "Car Name"}
+          </Text>
+        </View>
+      </View>
       <ScrollView
         className="w-full"
         contentContainerStyle={{ paddingVertical: 20 }}
