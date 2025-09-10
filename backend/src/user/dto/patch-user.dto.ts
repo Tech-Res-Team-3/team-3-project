@@ -3,7 +3,6 @@ import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 /** Data Transfer Object for updating user information. */
 export class PatchUserDto {
-
   /**
    * First name of the user.
    */
@@ -12,10 +11,11 @@ export class PatchUserDto {
     example: 'John',
   })
   @IsString()
+  @IsOptional()
   @MinLength(3)
   @MaxLength(96)
   firstName: string;
-  
+
   /**
    * Last name of the user.
    */
@@ -24,10 +24,11 @@ export class PatchUserDto {
     example: 'Doe',
   })
   @IsString()
+  @IsOptional()
   @MinLength(3)
   @MaxLength(96)
   lastName: string;
-  
+
   /**
    * Phone number of the user (optional).
    */
@@ -37,6 +38,7 @@ export class PatchUserDto {
     required: false,
   })
   @IsString()
+  @IsOptional()
   @IsOptional()
   phone?: string;
 }
