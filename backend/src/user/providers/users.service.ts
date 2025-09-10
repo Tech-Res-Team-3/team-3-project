@@ -15,21 +15,16 @@ export class UsersService {
     firebaseUid: string;
     email: string;
     role: 'GUEST' | 'ADMIN';
-    firstName?: string;
-    lastName?: string;
+  
   }) {
     return this.prisma.user.upsert({
       where: { firebaseUid: data.firebaseUid },
       update: {
         email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
       },
       create: {
         firebaseUid: data.firebaseUid,
         email: data.email,
-        firstName: data.firstName ?? 'Unknown',
-        lastName: data.lastName ?? 'User',
         role: data.role,
       },
     });
