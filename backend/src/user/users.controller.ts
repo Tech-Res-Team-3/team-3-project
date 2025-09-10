@@ -1,21 +1,11 @@
-import {
-  Body,
-  Controller,
-  UseGuards,
-  Param,
-  Query,
-  Patch,
-  Post,
-  ParseIntPipe,
-  DefaultValuePipe,
-} from '@nestjs/common';
+import { Body, Controller, UseGuards, Patch, Post, Get } from '@nestjs/common';
 import { UsersService } from './providers/users.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
 import { SyncUserDto } from './dto/sync-user.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
 import type { AuthenticatedUser } from './types';
 import { PatchUserDto } from './dto/patch-user.dto';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 /** Controller to handle user-related endpoints. */
 @UseGuards(FirebaseAuthGuard)
@@ -53,7 +43,8 @@ export class UsersController {
     const dbUser = await this.usersService.upsertUser({
       firebaseUid: user.uid,
       email: user.email,
-      displayName: user.name,
+      firstName: body.firstName,
+      lastName: body.lastName,
       role: body.role === 'ADMIN' ? 'ADMIN' : 'GUEST',
     });
     return { message: 'User synced', user: dbUser };
@@ -71,5 +62,10 @@ export class UsersController {
   async promoteToHost(@CurrentUser() user: AuthenticatedUser) {
     const updatedUser = await this.usersService.promoteToHost(user.uid);
     return { message: 'User promoted to host', user: updatedUser };
+  }
+
+  @Get('/me')
+  async getMe(@CurrentUser() user: AuthenticatedUser) {
+    return this.usersService.getMe(user.uid);
   }
 }
