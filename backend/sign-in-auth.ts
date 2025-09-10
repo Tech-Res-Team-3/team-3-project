@@ -23,4 +23,4 @@ async function signInAndGetAdminToken(email: string, password: string) {
   return token;
 }
 
-signInAndGetAdminToken('cameron-stanley@example.com', 'test123');
+signInAndGetAdminToken('test@test.com', 'test123');

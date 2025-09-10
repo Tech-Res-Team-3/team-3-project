@@ -38,10 +38,10 @@ async function createAdminUser(email: string, password: string) {
     );
     const idToken = await userCredentials.user.getIdToken(true);
 
-    console.log(`Role 'ADMIN' set for user ${userRecord.uid}`);
+    console.log(`ADMIN role token: ${idToken}`);
   } catch (error) {
     console.log('Error creating admin user:', error);
   }
 }
 
-createAdminUser('cameron-stanley@example.com', 'test123');
+createAdminUser('admin@test.com', 'test123');

@@ -8,34 +8,28 @@ import { PatchUserDto } from '../dto/patch-user.dto';
 @Injectable()
 export class UsersService {
   /** Constructor to initialize PrismaService instance. */
-  constructor(
-    private readonly prisma: PrismaService
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   /** Creates a user in the database and authenticates them with FirebaseAuth. */
   async upsertUser(data: {
     firebaseUid: string;
     email: string;
-    displayName?: string;
     role: 'GUEST' | 'ADMIN';
+    firstName?: string;
+    lastName?: string;
   }) {
-    const [firstName, lastNameRaw] = data.displayName
-      ? data.displayName.split(' ')
-      : data.email
-        ? [data.email.split('@')[0], '']
-        : ['Unknown', 'User'];
-    const lastName = lastNameRaw ?? '';
-
     return this.prisma.user.upsert({
       where: { firebaseUid: data.firebaseUid },
       update: {
         email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
       },
       create: {
         firebaseUid: data.firebaseUid,
         email: data.email,
-        firstName,
-        lastName,
+        firstName: data.firstName ?? 'Unknown',
+        lastName: data.lastName ?? 'User',
         role: data.role,
       },
     });
@@ -65,6 +59,12 @@ export class UsersService {
     return this.prisma.user.update({
       where: { firebaseUid },
       data: { role: newRole },
+    });
+  }
+
+  async getMe(uid: string) {
+    return await this.prisma.user.findUnique({
+      where: { firebaseUid: uid },
     });
   }
 }
