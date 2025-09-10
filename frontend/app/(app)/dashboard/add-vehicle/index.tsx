@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Image,
   View,
   Text,
   TextInput,
@@ -75,6 +76,55 @@ export default function AddVehicleIntroScreen() {
   const { addVehicleAsync } = useVehicles();
   const setLoading = useLoadingStore((s) => s.setLoading);
 
+  // Local state for each field
+  const [licensePlate, setLicensePlate] = useState(
+    vehicleDraft?.licensePlate || ""
+  );
+  const [color, setColor] = useState(vehicleDraft?.color || "");
+  const [value, setValue] = useState(
+    vehicleDraft?.value !== undefined ? String(vehicleDraft.value) : ""
+  );
+  const [type, setType] = useState(vehicleDraft?.type || "");
+  const [trim, setTrim] = useState(vehicleDraft?.trim || "");
+  const [bodyStyle, setBodyStyle] = useState(vehicleDraft?.bodyStyle || "");
+  const [seats, setSeats] = useState(
+    vehicleDraft?.seats !== undefined ? String(vehicleDraft.seats) : ""
+  );
+  const [extraInfo, setExtraInfo] = useState(vehicleDraft?.extraInfo || "");
+
+  // Boolean fields
+  const [hasSeatbelts, setHasSeatbelts] = useState(
+    !!vehicleDraft?.hasSeatbelts
+  );
+  const [hasSalvageTitle, setHasSalvageTitle] = useState(
+    !!vehicleDraft?.hasSalvageTitle
+  );
+  const [salesTaxPaid, setSalesTaxPaid] = useState(
+    !!vehicleDraft?.salesTaxPaid
+  );
+
+  useEffect(() => {
+    // Clear all local fields and Zustand draft on mount
+    setLicensePlate("");
+    setColor("");
+    setValue("");
+    setType("");
+    setTrim("");
+    setBodyStyle("");
+    setSeats("");
+    setExtraInfo("");
+    setHasSeatbelts(false);
+    setHasSalvageTitle(false);
+    setSalesTaxPaid(false);
+    setVehicleDraft({});
+
+    // Optionally, clear again on unmount
+    return () => {
+      setVehicleDraft({});
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // If coming back from verify-vin, update draft with VIN
   useEffect(() => {
     if (vinParam && vinParam !== vehicleDraft?.vin) {
@@ -99,16 +149,51 @@ export default function AddVehicleIntroScreen() {
     if (!vehicleDraft) return;
     setLoading(true);
     try {
+      setVehicleDraft({
+        ...vehicleDraft,
+        licensePlate,
+        color,
+        value: Number(value.replace(/[^0-9]/g, "")),
+        type,
+        trim,
+        bodyStyle,
+        seats: Number(seats.replace(/[^0-9]/g, "")),
+        extraInfo,
+        hasSeatbelts,
+        hasSalvageTitle,
+        salesTaxPaid,
+      });
       const draftToSend = {
         ...vehicleDraft,
-        extraInfo: vehicleDraft.extraInfo ?? "", // default to empty string if undefined/null
+        licensePlate,
+        color,
+        value: Number(value.replace(/[^0-9]/g, "")),
+        type,
+        trim,
+        bodyStyle,
+        seats: Number(seats.replace(/[^0-9]/g, "")),
+        extraInfo: extraInfo ?? "",
+        hasSeatbelts,
+        hasSalvageTitle,
+        salesTaxPaid,
       };
       const newVehicle = await addVehicleAsync(draftToSend);
       setLoading(false);
+      setLicensePlate("");
+      setColor("");
+      setValue("");
+      setType("");
+      setTrim("");
+      setBodyStyle("");
+      setSeats("");
+      setExtraInfo("");
+      setHasSeatbelts(false);
+      setHasSalvageTitle(false);
+      setSalesTaxPaid(false);
+      setVehicleDraft({}); // Clear Zustand draft
       router.replace(`/dashboard/vehicle-dashboard/${newVehicle.id}`);
     } catch (err) {
       setLoading(false);
-      // Optionally show error to user
       alert("Failed to add vehicle. Please try again.");
     }
   };
@@ -160,10 +245,10 @@ export default function AddVehicleIntroScreen() {
 
           {/* Placeholder image */}
           <View
-            className="w-11/12 bg-gray-200 rounded-2xl mb-6 items-center justify-center"
+            className="w-11/12 rounded-2xl mb-6 items-center justify-center"
             style={{ height: height * 0.23 }}
           >
-            <Text className="text-gray-400 text-lg">[Photo Placeholder]</Text>
+            <Image source={require("../../../../assets/default-bmw.jpg")} />
           </View>
 
           {/* Main content */}
@@ -290,25 +375,22 @@ export default function AddVehicleIntroScreen() {
                 {/* Has seatbelts */}
                 {renderBooleanSwitch(
                   "Has seatbelts",
-                  vehicleDraft?.hasSeatbelts,
-                  (val) =>
-                    setVehicleDraft({ ...vehicleDraft, hasSeatbelts: val })
+                  hasSeatbelts,
+                  setHasSeatbelts
                 )}
 
                 {/* Has salvage title */}
                 {renderBooleanSwitch(
                   "Has salvage title",
-                  vehicleDraft?.hasSalvageTitle,
-                  (val) =>
-                    setVehicleDraft({ ...vehicleDraft, hasSalvageTitle: val })
+                  hasSalvageTitle,
+                  setHasSalvageTitle
                 )}
 
                 {/* Sales tax paid */}
                 {renderBooleanSwitch(
                   "Sales tax paid",
-                  vehicleDraft?.salesTaxPaid,
-                  (val) =>
-                    setVehicleDraft({ ...vehicleDraft, salesTaxPaid: val })
+                  salesTaxPaid,
+                  setSalesTaxPaid
                 )}
 
                 {/* License plate */}
@@ -318,9 +400,10 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={vehicleDraft?.licensePlate || ""}
-                    onChangeText={(text) =>
-                      setVehicleDraft({ ...vehicleDraft, licensePlate: text })
+                    value={licensePlate}
+                    onChangeText={setLicensePlate}
+                    onBlur={() =>
+                      setVehicleDraft({ ...vehicleDraft, licensePlate })
                     }
                     placeholder="Enter license plate"
                   />
@@ -333,10 +416,9 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={vehicleDraft?.color || ""}
-                    onChangeText={(text) =>
-                      setVehicleDraft({ ...vehicleDraft, color: text })
-                    }
+                    value={color}
+                    onChangeText={setColor}
+                    onBlur={() => setVehicleDraft({ ...vehicleDraft, color })}
                     placeholder="Enter color"
                   />
                 </View>
@@ -348,15 +430,12 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={
-                      vehicleDraft?.value !== undefined
-                        ? String(vehicleDraft.value)
-                        : ""
-                    }
-                    onChangeText={(text) =>
+                    value={value}
+                    onChangeText={setValue}
+                    onBlur={() =>
                       setVehicleDraft({
                         ...vehicleDraft,
-                        value: Number(text.replace(/[^0-9]/g, "")),
+                        value: Number(value.replace(/[^0-9]/g, "")),
                       })
                     }
                     placeholder="Enter value"
@@ -371,10 +450,9 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={vehicleDraft?.type || ""}
-                    onChangeText={(text) =>
-                      setVehicleDraft({ ...vehicleDraft, type: text })
-                    }
+                    value={type}
+                    onChangeText={setType}
+                    onBlur={() => setVehicleDraft({ ...vehicleDraft, type })}
                     placeholder="Enter type"
                   />
                 </View>
@@ -386,10 +464,9 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={vehicleDraft?.trim || ""}
-                    onChangeText={(text) =>
-                      setVehicleDraft({ ...vehicleDraft, trim: text })
-                    }
+                    value={trim}
+                    onChangeText={setTrim}
+                    onBlur={() => setVehicleDraft({ ...vehicleDraft, trim })}
                     placeholder="Enter trim"
                   />
                 </View>
@@ -401,9 +478,10 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={vehicleDraft?.bodyStyle || ""}
-                    onChangeText={(text) =>
-                      setVehicleDraft({ ...vehicleDraft, bodyStyle: text })
+                    value={bodyStyle}
+                    onChangeText={setBodyStyle}
+                    onBlur={() =>
+                      setVehicleDraft({ ...vehicleDraft, bodyStyle })
                     }
                     placeholder="Enter body class"
                   />
@@ -416,15 +494,12 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={
-                      vehicleDraft?.seats !== undefined
-                        ? String(vehicleDraft.seats)
-                        : ""
-                    }
-                    onChangeText={(text) =>
+                    value={seats}
+                    onChangeText={setSeats}
+                    onBlur={() =>
                       setVehicleDraft({
                         ...vehicleDraft,
-                        seats: Number(text.replace(/[^0-9]/g, "")),
+                        seats: Number(seats.replace(/[^0-9]/g, "")),
                       })
                     }
                     placeholder="Enter number of doors"
@@ -439,9 +514,10 @@ export default function AddVehicleIntroScreen() {
                   </Text>
                   <TextInput
                     className="w-full text-lg text-gray-900"
-                    value={vehicleDraft?.extraInfo || ""}
-                    onChangeText={(text) =>
-                      setVehicleDraft({ ...vehicleDraft, extraInfo: text })
+                    value={extraInfo}
+                    onChangeText={setExtraInfo}
+                    onBlur={() =>
+                      setVehicleDraft({ ...vehicleDraft, extraInfo })
                     }
                     placeholder="Enter extra info"
                   />

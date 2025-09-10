@@ -6,69 +6,68 @@ import * as VehicleDashboardIcons from "../../../../../components/icons/dashboar
 import { useVehicleStore } from "../../../../../stores/vehicleStore";
 import { Button } from "../../../../../components/Button";
 
-const menuItems = [
-  {
-    label: "Calendar",
-    route: "./[vehicleId]/calendar",
-    icon: VehicleDashboardIcons.CalendarIcon,
-  },
-  {
-    label: "Pricing & Discounts",
-    route: "./[vehicleId]/prices",
-    icon: VehicleDashboardIcons.PricesIcon,
-  },
-  {
-    label: "Location & Delivery",
-    route: "./[vehicleId]/location",
-    icon: VehicleDashboardIcons.LocationIcon,
-  },
-  {
-    label: "Guest Instructions",
-    route: "./[vehicleId]/instructions",
-    icon: VehicleDashboardIcons.InstructionsIcon,
-  },
-  {
-    label: "Photos",
-    route: "./[vehicleId]/photos",
-    icon: VehicleDashboardIcons.PhotosIcon,
-  },
-  {
-    label: "Details",
-    route: "./[vehicleId]/details",
-    icon: VehicleDashboardIcons.DetailsIcon,
-  },
-  {
-    label: "Pickup & Return Hours",
-    route: "./[vehicleId]/hours",
-    icon: VehicleDashboardIcons.ClockIcon,
-  },
-  {
-    label: "Extras",
-    route: "./[vehicleId]/extras",
-    icon: VehicleDashboardIcons.ExtrasIcon,
-  },
-  {
-    label: "Distance Included",
-    route: "./[vehicleId]/distance",
-    icon: VehicleDashboardIcons.DistanceIcon,
-  },
-  {
-    label: "Goals",
-    route: "./[vehicleId]/goals",
-    icon: VehicleDashboardIcons.GoalsIcon,
-  },
-  {
-    label: "Trip Preferences",
-    route: "./[vehicleId]/preferences",
-    icon: VehicleDashboardIcons.PreferencesIcon,
-  },
-];
-
 export default function VehicleDashboardScreen() {
   const { vehicleId } = useLocalSearchParams();
   const vehicle = useVehicleStore((state) =>
     state.vehicles.find((v) => v.id === Number(vehicleId))
   );
+  const menuItems = [
+    {
+      label: "Calendar",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/calendar`,
+      icon: VehicleDashboardIcons.CalendarIcon,
+    },
+    {
+      label: "Pricing & Discounts",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/prices`,
+      icon: VehicleDashboardIcons.PricesIcon,
+    },
+    {
+      label: "Location & Delivery",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/location`,
+      icon: VehicleDashboardIcons.LocationIcon,
+    },
+    {
+      label: "Guest Instructions",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/instructions`,
+      icon: VehicleDashboardIcons.InstructionsIcon,
+    },
+    {
+      label: "Photos",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/photos`,
+      icon: VehicleDashboardIcons.PhotosIcon,
+    },
+    {
+      label: "Details",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/details`,
+      icon: VehicleDashboardIcons.DetailsIcon,
+    },
+    {
+      label: "Pickup & Return Hours",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/hours`,
+      icon: VehicleDashboardIcons.ClockIcon,
+    },
+    {
+      label: "Extras",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/extras`,
+      icon: VehicleDashboardIcons.ExtrasIcon,
+    },
+    {
+      label: "Distance Included",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/distance`,
+      icon: VehicleDashboardIcons.DistanceIcon,
+    },
+    {
+      label: "Goals",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/goals`,
+      icon: VehicleDashboardIcons.GoalsIcon,
+    },
+    {
+      label: "Trip Preferences",
+      route: `/dashboard/vehicle-dashboard/${vehicleId}/preferences`,
+      icon: VehicleDashboardIcons.PreferencesIcon,
+    },
+  ];
 
   if (!vehicle) {
     return (
