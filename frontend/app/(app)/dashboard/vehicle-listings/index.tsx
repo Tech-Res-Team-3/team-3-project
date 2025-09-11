@@ -10,6 +10,7 @@ import {
 import { useVehicles } from "../../../../hooks/vehicle/useVehicles";
 import { useRouter } from "expo-router";
 import { Button } from "../../../../components/Button";
+import { useLoadingStore } from "../../../../stores/loadingStore";
 
 const VEHICLE_IMAGE_HEIGHT = 90;
 const VEHICLE_IMAGE_WIDTH = 140;
@@ -18,9 +19,21 @@ const DEFAULT_IMAGE = require("../../../../assets/default-bmw.jpg");
 export default function VehicleSettings() {
   const router = useRouter();
   const { vehicles, fetchUserVehicles } = useVehicles();
+  const setLoading = useLoadingStore((s) => s.setLoading);
 
   useEffect(() => {
-    fetchUserVehicles();
+    let isMounted = true;
+    (async () => {
+      setLoading(true);
+      try {
+        await fetchUserVehicles();
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -36,7 +49,7 @@ export default function VehicleSettings() {
           >
             <View className="w-11/12 relative">
               {/* Badge */}
-              <View className="absolute top-3 left-8 bg-ruby/50 px-5 py-1 rounded-full z-10">
+              <View className="absolute top-4 left-8 bg-ruby/50 px-5 py-1 rounded-full z-10">
                 <Text className="text-lg text-white font-semibold">
                   {idx + 1}/{vehicles.length}
                 </Text>
@@ -59,9 +72,9 @@ export default function VehicleSettings() {
                 />
               </TouchableOpacity>
               {/* Overlapping Card */}
-              <View className="absolute left-0 right-0 -bottom-28 mx-3 bg-white rounded-xl shadow-lg p-4">
+              <View className="absolute left-0 right-0 -bottom-28 mx-3 bg-white rounded-xl shadow-xl p-4">
                 <Button
-                  className="bg-sky-600 font-light w-1/4 py-1 mt-2 mb-2"
+                  className="bg-sky-600 py-0.5 px-0.5 w-1/4 mb-4"
                   textClassName="text-white text-sm font-light"
                   title="Listed"
                 />
