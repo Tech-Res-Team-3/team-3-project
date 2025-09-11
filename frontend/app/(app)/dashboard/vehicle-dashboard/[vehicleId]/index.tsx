@@ -45,7 +45,7 @@ export default function VehicleDashboardScreen() {
     {
       label: "Pickup & Return Hours",
       route: `/dashboard/vehicle-dashboard/${vehicleId}/hours`,
-      icon: VehicleDashboardIcons.ClockIcon,
+      icon: VehicleDashboardIcons.ClockAltIcon,
     },
     {
       label: "Extras",

@@ -63,7 +63,7 @@ const guestMenuItems = [
 const hostMenuItems = [
   {
     label: "Vehicle Settings",
-    route: "/dashboard/vehicle-settings",
+    route: "/dashboard/vehicle-listings",
     icon: DashboardIcons.VehicleIcon,
   },
   {
