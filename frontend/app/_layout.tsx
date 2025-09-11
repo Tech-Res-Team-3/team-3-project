@@ -101,20 +101,6 @@ export default function RootLayout() {
     };
   }, [firebaseUser, user, globalLoading, pathname, router]);
 
-  if (!firebaseUser) {
-    console.log(
-      "(app) layout: No Firebase auth - showing GlobalLoading while root layout handles redirect"
-    );
-  }
-
-  if (!user) {
-    console.log(
-      "(app) layout: Firebase user exists but Zustand user syncing - showing loading"
-    );
-  }
-
-  console.log("(app) layout: Rendering authenticated Stack");
-
   // Render the stack and always overlay GlobalLoading
   return (
     <SafeAreaProvider>

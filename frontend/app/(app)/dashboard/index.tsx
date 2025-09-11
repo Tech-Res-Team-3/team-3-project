@@ -9,7 +9,7 @@ import { getApp } from "@react-native-firebase/app";
 import { useAuthStore } from "../../../stores/authStore";
 import { useLoadingStore } from "../../../stores/loadingStore";
 // import DashboardMenuButton from "../../../components/DashboardMenuButton";
-import * as DashboardIcons from "../../../components/icons/dashboard/DashboardIcons";
+import * as DashboardIcons from "../../../components/icons/dashboard/user/DashboardIcons";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LogoutConfirmationModal from "../../../components/LogoutConfirmationModal";
@@ -63,7 +63,7 @@ const guestMenuItems = [
 const hostMenuItems = [
   {
     label: "Vehicle Settings",
-    route: "/dashboard/vehicle-settings",
+    route: "/dashboard/vehicle-listings",
     icon: DashboardIcons.VehicleIcon,
   },
   {

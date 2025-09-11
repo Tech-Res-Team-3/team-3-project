@@ -1,7 +1,7 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 
-export default function DashboardLayout() {
+export default function VehicleDashboardLayout() {
   return (
     <GestureHandlerRootView>
       <Drawer
@@ -24,66 +24,80 @@ export default function DashboardLayout() {
           }}
         />
         <Drawer.Screen
-          name="notifications"
+          name="calendar"
           options={{
-            drawerLabel: "Notification Settings",
-            title: "Notification Settings",
+            drawerLabel: "Calendar",
+            title: "Calendar",
           }}
         />
         <Drawer.Screen
-          name="messages"
+          name="details"
           options={{
-            drawerLabel: "Messages",
-            title: "Messages",
+            drawerLabel: "Details",
+            title: "Details",
           }}
         />
         <Drawer.Screen
-          name="password"
+          name="distance"
           options={{
-            drawerLabel: "Password",
-            title: "Password",
+            drawerLabel: "Distance",
+            title: "Distance",
           }}
         />
         <Drawer.Screen
-          name="activity"
+          name="extras"
           options={{
-            drawerLabel: "Activity",
-            title: "Activity",
+            drawerLabel: "Extras",
+            title: "Extras",
           }}
         />
         <Drawer.Screen
-          name="travel-credit"
+          name="goals"
           options={{
-            drawerLabel: "Travel Credit",
-            title: "Travel Credit",
+            drawerLabel: "Goals",
+            title: "Goals",
           }}
         />
         <Drawer.Screen
-          name="how-it-works"
+          name="hours"
           options={{
-            drawerLabel: "How Rao Rentals Works",
-            title: "How Rao Rentals Works",
+            drawerLabel: "Hours",
+            title: "Hours",
           }}
         />
         <Drawer.Screen
-          name="support"
+          name="instructions"
           options={{
-            drawerLabel: "Contact Support",
-            title: "Contact Support",
+            drawerLabel: "Instructions",
+            title: "Instructions",
           }}
         />
         <Drawer.Screen
-          name="legal"
+          name="location"
           options={{
-            drawerLabel: "Legal",
-            title: "Legal",
+            drawerLabel: "Location",
+            title: "Location",
           }}
         />
         <Drawer.Screen
-          name="profile-photo"
+          name="photos"
           options={{
-            drawerLabel: "Profile Photo",
-            title: "Profile Photo",
+            drawerLabel: "Photos",
+            title: "Photos",
+          }}
+        />
+        <Drawer.Screen
+          name="preferences"
+          options={{
+            drawerLabel: "Preferences",
+            title: "Preferences",
+          }}
+        />
+        <Drawer.Screen
+          name="prices"
+          options={{
+            drawerLabel: "Prices",
+            title: "Prices",
           }}
         />
       </Drawer>

@@ -3,6 +3,7 @@ import { Vehicle } from '../types/vehicle';
 
 interface VehicleStoreState {
     vehicles: Vehicle[];
+    vehicleDraft: Partial<Vehicle> | null;
     isLoading: boolean;
     error: string | null;
     setVehicles: (vehicles: Vehicle[]) => void;
@@ -11,10 +12,13 @@ interface VehicleStoreState {
     removeVehicle: (vehicleId: number) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
+    setVehicleDraft: (draft: Partial<Vehicle>) => void;
+    clearVehicleDraft: () => void;
 }
 
 export const useVehicleStore = create<VehicleStoreState>((set) => ({
     vehicles: [],
+    vehicleDraft: null,
     isLoading: false,
     error: null,
     setVehicles: (vehicles) => set({ vehicles }),
@@ -29,4 +33,6 @@ export const useVehicleStore = create<VehicleStoreState>((set) => ({
         })),
     setLoading: (isLoading) => set({ isLoading }),
     setError: (error) => set({ error }),
+    setVehicleDraft: (draft) => set({ vehicleDraft: draft }),
+    clearVehicleDraft: () => set({ vehicleDraft: null }),
 }));

@@ -61,6 +61,24 @@ export function useVehicles() {
         [addVehicle, setLoading, setError]
     );
 
+    const updateVehicleAsync = useCallback(
+        async (vehicleId: number, updates: Partial<Vehicle>) => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await axios.patch(`/vehicles/${vehicleId}`, updates);
+                updateVehicle(res.data); // update Zustand store
+                return res.data;
+            } catch (err: any) {
+                setError(err.message || 'Failed to update vehicle');
+                throw err;
+            } finally {
+                setLoading(false);
+            }
+        },
+        [updateVehicle, setLoading, setError]
+    );
+
     // Remove a vehicle
     const removeVehicleAsync = useCallback(
         async (vehicleId: number) => {
@@ -111,6 +129,7 @@ export function useVehicles() {
         fetchUserVehicles,
         fetchVehiclesNearby,
         addVehicleAsync,
+        updateVehicleAsync,
         addVehicle,
         updateVehicle,
         removeVehicleAsync,
