@@ -1,4 +1,5 @@
 import { CalendarIcon } from "./CalendarIcon";
+import { ClockAltIcon } from "./ClockAltIcon";
 import { ClockIcon } from "./ClockIcon";
 import { DetailsIcon } from "./DetailsIcon";
 import { DistanceIcon } from "./DistanceIcon";
@@ -9,9 +10,11 @@ import { LocationIcon } from "./LocationIcon";
 import { PhotosIcon } from "./PhotosIcon";
 import { PreferencesIcon } from "./PreferencesIcon";
 import { PricesIcon } from "./PricesIcon";
+import { ToolsIcon } from "./ToolsIcon";
 
 export {
     CalendarIcon,
+    ClockAltIcon,
     ClockIcon,
     DetailsIcon,
     DistanceIcon,
@@ -21,5 +24,6 @@ export {
     LocationIcon,
     PhotosIcon,
     PreferencesIcon,
-    PricesIcon
+    PricesIcon,
+    ToolsIcon,
 }
