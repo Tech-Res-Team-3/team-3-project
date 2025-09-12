@@ -1,4 +1,8 @@
 {
     "httpyac.responseViewColumn": "current",
-    "httpyac.responseViewContent": "exchange"
+    "httpyac.responseViewContent": "exchange",
+    "tailwindCSS.experimental.classRegex": [
+        "className=\"([^\"]*)\"",
+        "textClassName=\"([^\"]*)\""
+    ]
 }

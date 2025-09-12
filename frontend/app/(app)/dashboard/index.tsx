@@ -255,8 +255,8 @@ export default function DashboardScreen() {
           </View>
           <Button
             title="View Profile"
-            className="self-start mt-4 w-1/3 px-0 py-[5] bg-ruby"
-            textClassName="text-white text-xs"
+            className="self-start mt-4 w-1/4 py-2 bg-ruby"
+            textClassName="text-white text-sm"
             onPress={handleViewProfile}
           />
         </View>
@@ -296,14 +296,14 @@ export default function DashboardScreen() {
         <View className="w-11/12 flex-col items-center space-y-4 my-6 gap-6">
           <Button
             title={`Switch to ${isHost ? "Guest" : "Host"}`}
-            className="bg-ruby w-11/12"
-            textClassName="text-white"
+            className="py-6 bg-ruby w-11/12"
+            textClassName="text-xl text-white"
             onPress={handleSwitchToHost}
           />
           <Button
             title="Logout"
-            className="bg-white w-11/12 border-2 border-ruby"
-            textClassName="text-ruby"
+            className="py-6 bg-white w-11/12 border-2 border-ruby"
+            textClassName="text-xl text-ruby"
             onPress={() => setShowLogoutModal(true)}
           />
         </View>

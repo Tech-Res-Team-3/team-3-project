@@ -56,15 +56,15 @@ export default function HomeScreen() {
             <Link href="/signup" asChild>
               <Button
                 title="Sign Up"
-                className="bg-ruby w-11/12"
-                textClassName="text-white"
+                className="py-6 bg-ruby w-11/12"
+                textClassName="text-xl text-white"
               ></Button>
             </Link>
 
             <Button
               title="Login"
-              className="bg-white border-2 border-ruby w-11/12"
-              textClassName="text-ruby"
+              className="py-6 bg-white border-2 border-ruby w-11/12"
+              textClassName="text-xl text-ruby"
               onPress={handleLoginPress}
             />
           </View>

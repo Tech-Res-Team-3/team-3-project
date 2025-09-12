@@ -63,8 +63,8 @@ export default function LogInForm({ onLogin, onSignUpPress }: LogInFormProps) {
       <Button
         title="Login"
         onPress={handleLogIn}
-        className="bg-ruby self-center w-11/12"
-        textClassName="text-white"
+        className="py-6 bg-ruby w-11/12 self-center"
+        textClassName="text-xl text-white"
       />
       <View className="pt-20">
         <Text className="text-xl font-semibold self-center pt-4">

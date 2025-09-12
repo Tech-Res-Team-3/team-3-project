@@ -19,7 +19,12 @@ import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
 import { useAuthStore } from "../../stores/authStore";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
-import MapView, { Marker, Region } from "react-native-maps";
+import MapView, {
+  Callout,
+  CalloutSubview,
+  Marker,
+  Region,
+} from "react-native-maps";
 import DateTimePicker, {
   DateType,
   useDefaultStyles,
@@ -389,8 +394,14 @@ export default function MainAppScreen() {
                       longitude: vehicle.address.longitude ?? 0,
                     }}
                     icon={require("../../assets/rao-icon-medium.png")}
-                    title={`${vehicle.make} ${vehicle.model}`}
-                  />
+                    // onPress={() => {}}
+                  >
+                    <Callout>
+                      <View className="bg-slate-400 h-5 w-6">
+                        <Text className="text-white text-xs">C</Text>
+                      </View>
+                    </Callout>
+                  </Marker>
                 ) : null
               )}
             </MapView>
@@ -410,8 +421,8 @@ export default function MainAppScreen() {
               }
               // In the future, add more logic here for availability, preferences, etc.
             }}
-            className="w-11/12 bg-ruby"
-            textClassName="text-white"
+            className="py-6 bg-ruby w-11/12"
+            textClassName="text-xl text-white"
           />
         </View>
       </SafeAreaView>

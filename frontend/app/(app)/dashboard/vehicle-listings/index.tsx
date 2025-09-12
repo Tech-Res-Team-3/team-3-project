@@ -74,8 +74,8 @@ export default function VehicleSettings() {
               {/* Overlapping Card */}
               <View className="absolute left-0 right-0 -bottom-28 mx-3 bg-white rounded-xl shadow-xl p-4">
                 <Button
-                  className="bg-sky-600 py-0.5 px-0.5 w-1/4 mb-4"
-                  textClassName="text-white text-sm font-light"
+                  className="bg-sky-600 w-1/4 mb-4 py-1"
+                  textClassName="text-white text-base font-normal"
                   title="Listed"
                 />
                 <Text className="text-xl font-bold text-gray-900">
@@ -98,8 +98,8 @@ export default function VehicleSettings() {
       <View className="w-full pt-3">
         <Button
           title="Add Vehicle"
-          className="bg-ruby py-2 w-11/12 self-center"
-          textClassName="text-white"
+          className="bg-ruby py-6 w-11/12 self-center"
+          textClassName="text-white text-xl"
           onPress={() => router.push("/dashboard/add-vehicle")}
         />
       </View>
