@@ -19,11 +19,12 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       activeOpacity={0.4}
-      className={`py-6 rounded-full items-center ${disabled ? "bg-ruby/20" : ""} ${className}`}
+      // py-6 is default padding
+      className={`rounded-full items-center ${disabled ? "bg-ruby/20" : ""} ${className}`}
       onPress={onPress}
       disabled={disabled}
     >
-      <Text className={`text-xl font-medium ${textClassName}`}>{title}</Text>
+      <Text className={`${textClassName}`}>{title}</Text>
     </TouchableOpacity>
   );
 };

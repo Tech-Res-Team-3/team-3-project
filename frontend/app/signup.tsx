@@ -105,7 +105,7 @@ export default function SignUpScreen() {
             <View className="flex-1 h-px bg-gray-300" />
           </View>
         </View>
-        <View className="items-center justify-end -mt-16 bg-white">
+        <View className="items-center justify-end -mt-20 bg-white">
           <SignUpForm onRegister={onEmailRegister} />
         </View>
       </SafeAreaView>

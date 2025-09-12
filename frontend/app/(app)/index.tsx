@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -17,9 +17,17 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { useLoadingStore } from "../../stores/loadingStore";
 import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
 import { useAuthStore } from "../../stores/authStore";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import {
+  GooglePlacesAutocomplete,
+  GooglePlacesAutocompleteProps,
+} from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
-import MapView, { Marker, Region } from "react-native-maps";
+import MapView, {
+  Callout,
+  CalloutSubview,
+  Marker,
+  Region,
+} from "react-native-maps";
 import DateTimePicker, {
   DateType,
   useDefaultStyles,
@@ -180,6 +188,13 @@ export default function MainAppScreen() {
     }
   }
 
+  function getRandomPrice(min = 40, max = 120) {
+    // Returns a random integer between min and max (inclusive)
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  const placesRef = useRef<any>(null);
+
   return (
     <>
       <GlobalLoading />
@@ -216,6 +231,7 @@ export default function MainAppScreen() {
             City, Address, Airport
           </Text>
           <GooglePlacesAutocomplete
+            ref={placesRef}
             placeholder="Los Angeles, CA"
             placeholderTextColor="#d1d5db"
             onPress={(data, details = null) => {
@@ -224,10 +240,11 @@ export default function MainAppScreen() {
                 setPendingRegion({
                   latitude: lat,
                   longitude: lng,
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
+                  latitudeDelta: 0.2,
+                  longitudeDelta: 0.1,
                 });
               }
+              placesRef.current?.close && placesRef.current.close();
             }}
             fetchDetails={true}
             query={{
@@ -388,9 +405,20 @@ export default function MainAppScreen() {
                       latitude: vehicle.address.latitude ?? 0,
                       longitude: vehicle.address.longitude ?? 0,
                     }}
-                    icon={require("../../assets/rao-icon-medium.png")}
-                    title={`${vehicle.make} ${vehicle.model}`}
-                  />
+                    image={require("../../assets/rao-icon-medium.png")}
+                    // onPress={() => {}}
+                  >
+                    <Callout>
+                      <View className="w-fit p-2">
+                        <Text className="font-bold text-base">
+                          {vehicle.year} {vehicle.make} {vehicle.model}
+                        </Text>
+                        <Text className="text-emerald-500 text-lg mt-1">
+                          ${getRandomPrice()}/day
+                        </Text>
+                      </View>
+                    </Callout>
+                  </Marker>
                 ) : null
               )}
             </MapView>
@@ -410,8 +438,8 @@ export default function MainAppScreen() {
               }
               // In the future, add more logic here for availability, preferences, etc.
             }}
-            className="w-11/12 bg-ruby"
-            textClassName="text-white"
+            className="py-6 bg-ruby w-11/12"
+            textClassName="text-xl text-white"
           />
         </View>
       </SafeAreaView>

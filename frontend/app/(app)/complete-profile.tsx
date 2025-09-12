@@ -21,6 +21,7 @@ import { useAuthStore } from "../../stores/authStore";
 import { useLoadingStore } from "../../stores/loadingStore";
 import { useAddresses } from "../../hooks/address/useAddresses";
 import GlobalLoading from "../../components/GlobalLoading";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
 const { height } = Dimensions.get("window");
@@ -385,43 +386,43 @@ export default function CompleteProfileScreen() {
               {error}
             </Text>
           )}
-          <Button
-            title="Save Profile"
-            onPress={async () => {
-              setError(null);
-              const validationError = validateProfile({
-                firstName,
-                lastName,
-                phone,
-              });
-              if (validationError) {
-                setError(validationError);
-                return;
-              }
-              useLoadingStore.getState().setLoading(true);
-              if (!user) return;
-              try {
-                await updateUser({
-                  firstName,
-                  lastName,
-                  phone,
-                  // Add other fields as needed
-                });
-                const { label, ...addressToSave } = address;
-                await addAddressAsync(addressToSave);
-                router.replace("/(app)");
-              } catch (err) {
-                setError("Failed to update profile. Please try again.");
-                console.error("Failed to update user:", err);
-              } finally {
-                useLoadingStore.getState().setLoading(false);
-              }
-            }}
-            className="bg-ruby self-center w-11/12"
-            textClassName="text-white"
-          />
         </View>
       </ScrollView>
+      <Button
+        title="Save Profile"
+        onPress={async () => {
+          setError(null);
+          const validationError = validateProfile({
+            firstName,
+            lastName,
+            phone,
+          });
+          if (validationError) {
+            setError(validationError);
+            return;
+          }
+          useLoadingStore.getState().setLoading(true);
+          if (!user) return;
+          try {
+            await updateUser({
+              firstName,
+              lastName,
+              phone,
+              // Add other fields as needed
+            });
+            const { label, ...addressToSave } = address;
+            await addAddressAsync(addressToSave);
+            router.replace("/(app)");
+          } catch (err) {
+            setError("Failed to update profile. Please try again.");
+            console.error("Failed to update user:", err);
+          } finally {
+            useLoadingStore.getState().setLoading(false);
+          }
+        }}
+        className="py-6 bg-ruby self-center w-11/12"
+        textClassName="text-white text-xl"
+      />
     </>
   );
 }

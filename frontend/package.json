@@ -18,7 +18,7 @@
     "@react-native-firebase/firestore": "^23.2.1",
     "@react-native-firebase/messaging": "^23.2.1",
     "@react-native-firebase/storage": "^23.2.1",
-    "@react-native-google-signin/google-signin": "^15.0.0",
+    "@react-native-google-signin/google-signin": "^16.0.0",
     "@react-native-picker/picker": "^2.11.1",
     "@react-navigation/drawer": "^7.5.7",
     "axios": "^1.11.0",
@@ -42,7 +42,7 @@
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-google-places-autocomplete": "^1.9.0",
-    "react-native-maps": "1.20.1",
+    "react-native-maps": "^1.23.8",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
@@ -54,13 +54,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@react-native-community/cli": "latest",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.2.0",
     "@types/react": "~19.0.10",
     "@types/react-native": "^0.72.8",
     "tsx": "^4.20.3",
-    "typescript": "~5.8.3",
-    "@react-native-community/cli": "latest"
+    "typescript": "~5.8.3"
   },
   "overrides": {
     "react": "19.0.0"
