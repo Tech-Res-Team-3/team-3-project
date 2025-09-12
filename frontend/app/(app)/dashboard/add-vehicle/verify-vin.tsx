@@ -128,8 +128,8 @@ export default function VerifyVinScreen() {
           title={loading ? "Verifying..." : "Next"}
           onPress={handleNext}
           disabled={!vin || loading}
-          className="w-11/12 bg-ruby"
-          textClassName="text-white"
+          className="py-6 w-11/12 bg-ruby"
+          textClassName="text-white text-xl"
         />
       </View>
     </SafeAreaView>

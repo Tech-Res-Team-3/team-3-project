@@ -118,7 +118,7 @@ export default function SignUpForm({ onRegister }: SignUpFormProps) {
         title="Sign Up"
         onPress={handleSignUp}
         disabled={!agreed}
-        className="py-6 bg-ruby self-center w-11/12"
+        className="py-6 bg-ruby self-center w-11/12 mt-6"
         textClassName="text-xl text-white"
       />
       <Text className="text-xl font-semibold self-center pt-4">

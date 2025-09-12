@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -17,7 +17,10 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { useLoadingStore } from "../../stores/loadingStore";
 import { useProfileCompleteStore } from "../../stores/profileCompleteStore";
 import { useAuthStore } from "../../stores/authStore";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import {
+  GooglePlacesAutocomplete,
+  GooglePlacesAutocompleteProps,
+} from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
 import MapView, {
   Callout,
@@ -185,6 +188,13 @@ export default function MainAppScreen() {
     }
   }
 
+  function getRandomPrice(min = 40, max = 120) {
+    // Returns a random integer between min and max (inclusive)
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  const placesRef = useRef<any>(null);
+
   return (
     <>
       <GlobalLoading />
@@ -221,6 +231,7 @@ export default function MainAppScreen() {
             City, Address, Airport
           </Text>
           <GooglePlacesAutocomplete
+            ref={placesRef}
             placeholder="Los Angeles, CA"
             placeholderTextColor="#d1d5db"
             onPress={(data, details = null) => {
@@ -229,10 +240,11 @@ export default function MainAppScreen() {
                 setPendingRegion({
                   latitude: lat,
                   longitude: lng,
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
+                  latitudeDelta: 0.2,
+                  longitudeDelta: 0.1,
                 });
               }
+              placesRef.current?.close && placesRef.current.close();
             }}
             fetchDetails={true}
             query={{
@@ -393,12 +405,17 @@ export default function MainAppScreen() {
                       latitude: vehicle.address.latitude ?? 0,
                       longitude: vehicle.address.longitude ?? 0,
                     }}
-                    icon={require("../../assets/rao-icon-medium.png")}
+                    image={require("../../assets/rao-icon-medium.png")}
                     // onPress={() => {}}
                   >
                     <Callout>
-                      <View className="bg-slate-400 h-5 w-6">
-                        <Text className="text-white text-xs">C</Text>
+                      <View className="w-fit p-2">
+                        <Text className="font-bold text-base">
+                          {vehicle.year} {vehicle.make} {vehicle.model}
+                        </Text>
+                        <Text className="text-emerald-500 text-lg mt-1">
+                          ${getRandomPrice()}/day
+                        </Text>
                       </View>
                     </Callout>
                   </Marker>

@@ -564,8 +564,8 @@ export default function AddVehicleIntroScreen() {
             <Button
               title="Cancel"
               onPress={() => setMileageModalVisible(false)}
-              className="mt-4 bg-gray-200"
-              textClassName="text-gray-700"
+              className="py-6 mt-4 bg-gray-200"
+              textClassName="text-xl text-gray-700"
             />
           </View>
         </View>
@@ -601,8 +601,8 @@ export default function AddVehicleIntroScreen() {
             <Button
               title="Cancel"
               onPress={() => setTransModalVisible(false)}
-              className="mt-4 bg-gray-200"
-              textClassName="text-gray-700"
+              className="py-6 mt-4 bg-gray-200"
+              textClassName="text-xl text-gray-700"
             />
           </View>
         </View>
@@ -638,8 +638,8 @@ export default function AddVehicleIntroScreen() {
             <Button
               title="Cancel"
               onPress={() => setConditionModalVisible(false)}
-              className="mt-4 bg-gray-200"
-              textClassName="text-gray-700"
+              className="py-6 mt-4 bg-gray-200"
+              textClassName="text-xl text-gray-700"
             />
           </View>
         </View>
@@ -675,8 +675,8 @@ export default function AddVehicleIntroScreen() {
             <Button
               title="Cancel"
               onPress={() => setSeatbeltModalVisible(false)}
-              className="mt-4 bg-gray-200"
-              textClassName="text-gray-700"
+              className="py-6 mt-4 bg-gray-200"
+              textClassName="text-xl text-gray-700"
             />
           </View>
         </View>
@@ -697,8 +697,8 @@ export default function AddVehicleIntroScreen() {
           title="Next"
           onPress={handleNext}
           disabled={!carName || !vehicleDraft?.vin}
-          className="w-11/12 bg-ruby"
-          textClassName="text-white"
+          className="py-6 w-11/12 bg-ruby"
+          textClassName="text-white text-xl"
         />
       </View>
     </SafeAreaView>
