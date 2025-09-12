@@ -1,429 +1,290 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Image,
-  Button,
-  Alert,
   Text,
-  FlatList,
+  Image,
   TouchableOpacity,
+  FlatList,
   Modal,
-  TextInput,
+  Button,
   ActivityIndicator,
+  Alert,
+  Dimensions,
+  StyleSheet,
 } from "react-native";
-import { useRouter } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
-import { getStorage, ref, listAll, uploadString, deleteObject } from "@react-native-firebase/storage";
-import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
-import { useAuthStore } from "../../../stores/authStore";
+import {
+  getStorage,
+  ref,
+  listAll,
+  getDownloadURL,
+} from "@react-native-firebase/storage";
+import * as ImagePicker from "expo-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useImageUpload } from "../../../hooks/auth";
-import axios from "axios";
+import { useAuthStore } from "../../../stores/authStore";
+import { useUsers } from "../../../hooks/user/useUsers";
 
-const DEFAULT_FOLDERS = ["profile_photos", "vehicles"];
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const PHOTO_MARGIN = 4;
+const NUM_COLUMNS = 3;
+const PHOTO_SIZE =
+  (SCREEN_WIDTH - PHOTO_MARGIN * 2 * NUM_COLUMNS - 32) / NUM_COLUMNS; // 32 for SafeAreaView padding
 
-export default function ProfilePhotoManagerScreen() {
-  const [folders, setFolders] = useState<string[]>([]);
-  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [imageUri, setImageUri] = useState<string | null>(null);
-  const [showAddFolder, setShowAddFolder] = useState(false);
-  const [newFolderName, setNewFolderName] = useState("");
-  const [viewPhoto, setViewPhoto] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const user = getAuth(getApp()).currentUser;
+export default function ProfilePhotosScreen() {
+  // Use authStore for the current user
   const zustandUser = useAuthStore((state) => state.user);
-  const router = useRouter();
-  const { getSignedUrl, uploadToSignedUrl, saveImage } = useImageUpload();
+  const setUser = useAuthStore((state) => state.setUser);
+  const { updateUser } = useUsers();
+  const { getSignedUrl, uploadToSignedUrl } = useImageUpload();
 
-  // Fetch folders on mount
-  useEffect(() => {
-    if (!user) return;
-    const fetchFolders = async () => {
-      setLoading(true);
-      try {
-        const app = getApp();
-        const storage = getStorage(app);
-        const storageRef = ref(storage, `users/${user.uid}`);
-        const result = await listAll(storageRef);
-        const folderNames = [
-          ...DEFAULT_FOLDERS,
-          ...result.prefixes
-            .map((p) => p.name)
-            .filter((name) => !DEFAULT_FOLDERS.includes(name)),
-        ];
-        setFolders(folderNames);
-      } catch (err) {
-        Alert.alert("Error", "Could not fetch folders.");
-      }
-      setLoading(false);
-    };
-    fetchFolders();
-  }, [user]);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [viewPhoto, setViewPhoto] = useState<string | null>(null);
+  const [selectedImages, setSelectedImages] = useState<any[]>([]);
+  const [showUploadBar, setShowUploadBar] = useState(false);
 
-  // Fetch photos when folder changes
+  // Fetch profile photos on mount
   useEffect(() => {
-    if (!user || !selectedFolder) return;
+    if (!zustandUser) return;
     const fetchPhotos = async () => {
       setLoading(true);
       try {
-        const app = getApp();
-        const storage = getStorage(app);
-        const storageRef = ref(storage, `users/${user.uid}/${selectedFolder}`);
+        const storage = getStorage(getApp());
+        const storageRef = ref(
+          storage,
+          `users/${zustandUser.firebaseUid}/profile_photos`
+        );
         const result = await listAll(storageRef);
         const urls = await Promise.all(
-          result.items.map((item) => item.getDownloadURL())
+          result.items.map((item) => getDownloadURL(item))
         );
         setPhotos(urls);
       } catch (err) {
-        Alert.alert("Error", "Could not fetch photos.");
+        setPhotos([]);
       }
       setLoading(false);
     };
     fetchPhotos();
-  }, [user, selectedFolder]);
+  }, [zustandUser]);
 
-  // Pick image from gallery or camera
-  const pickImage = async (fromCamera = false) => {
-    let result;
-    if (fromCamera) {
-      result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 0.7,
-      });
-    } else {
-      result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 0.7,
-      });
-    }
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+  // Select multiple images
+  const pickMultipleImages = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 0.7,
+      selectionLimit: 5,
+    });
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setSelectedImages(result.assets);
+      setShowUploadBar(true);
     }
   };
 
-  // Upload to selected folder
-  const uploadImage = async () => {
-    if (!imageUri || !user || !selectedFolder) {
-      Alert.alert("Error", "Please select a folder and image.");
-      return;
-    }
-    setLoading(true);
-    try {
-      // 1. Get file blob
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
-      const filename = `${Date.now()}.jpg`;
-
-      // 2. Get signed upload URL from backend
-      const {
-        url: signedUrl,
-        filePath,
-        publicUrl,
-      } = await getSignedUrl(
-        `users/${user.uid}/${selectedFolder}`,
-        filename,
-        "image/jpeg"
-      );
-
-      // 3. Upload file to Firebase Storage using signed URL
-      await uploadToSignedUrl(signedUrl, blob, "image/jpeg");
-
-      // 4. Notify backend to save image path in DB
-      // FIXME: saveImage() requires vehicleId ???
-      // await saveImage(filePath);
-
-      setImageUri(null);
-      Alert.alert("Success", "Photo uploaded!");
-      // Optionally, refresh photo list here
-    } catch (err) {
-      Alert.alert(
-        "Upload Error",
-        err instanceof Error ? err.message : String(err)
-      );
-    }
-    setLoading(false);
-  };
-
-  // Add new folder
-  const addFolder = async () => {
-    if (!user || !newFolderName.trim()) return;
-    setLoading(true);
-    try {
-      // Firebase Storage has no "create folder" API, so we upload a dummy file and delete it
-      const app = getApp();
-      const storage = getStorage(app);
-      const dummyRef = ref(storage, `users/${user.uid}/${newFolderName}/.init`);
-      await uploadString(dummyRef, "init");
-      await deleteObject(dummyRef);
-      setFolders((prev) => [...prev, newFolderName]);
-      setShowAddFolder(false);
-      setNewFolderName("");
-    } catch (err) {
-      Alert.alert("Error", "Could not create folder.");
-    }
-    setLoading(false);
-  };
-
-  const deleteFolder = async (folderName: string) => {
-    if (!user) return;
-    if (!folderName) return;
-    if (DEFAULT_FOLDERS.includes(folderName)) {
-      Alert.alert("Cannot delete default folders.");
-      return;
-    }
-    Alert.alert(
-      "Delete Folder",
-      `Are you sure you want to delete the folder "${folderName}" and all its photos?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            setLoading(true);
-            try {
-              const app = getApp();
-              const storage = getStorage(app);
-              const storageRef = ref(storage, `users/${user.uid}/${folderName}`);
-              const result = await listAll(storageRef);
-              // Delete all files in the folder
-              await Promise.all(result.items.map((item) => deleteObject(item)));
-              // Delete all subfolders recursively (if any)
-              await Promise.all(
-                result.prefixes.map(async (prefix) => {
-                  const subResult = await listAll(prefix);
-                  await Promise.all(
-                    subResult.items.map((item) => deleteObject(item))
-                  );
-                })
-              );
-              setFolders((prev) => prev.filter((f) => f !== folderName));
-              if (selectedFolder === folderName) {
-                setSelectedFolder(null);
-                setPhotos([]);
-              }
-              Alert.alert("Folder deleted!");
-            } catch (err) {
-              Alert.alert("Error", "Could not delete folder.");
-            }
-            setLoading(false);
-          },
-        },
-      ]
+  // Toggle selection for preview before upload
+  const toggleSelectImage = (uri: string) => {
+    setSelectedImages((prev) =>
+      prev.some((img) => img.uri === uri)
+        ? prev.filter((img) => img.uri !== uri)
+        : [...prev, { uri }]
     );
   };
 
-  // Set photo as profile
-  const setAsProfilePhoto = async (photoUrl: string) => {
-    if (!zustandUser) {
-      Alert.alert("Error", "User not loaded.");
+  // Upload all selected images
+  const uploadSelectedImages = async () => {
+    if (!zustandUser || selectedImages.length === 0) return;
+    setLoading(true);
+    try {
+      for (const img of selectedImages) {
+        const uri = img.uri;
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const filename = `${Date.now()}-${Math.floor(
+          Math.random() * 10000
+        )}.jpg`;
+
+        // 1. Get signed upload URL from backend
+        const { url: signedUrl, publicUrl } = await getSignedUrl(
+          `users/${zustandUser.firebaseUid}/profile_photos`,
+          filename,
+          "image/jpeg"
+        );
+
+        // 2. Upload file to Firebase Storage using signed URL
+        await uploadToSignedUrl(signedUrl, blob, "image/jpeg");
+
+        // 3. Add the new photo to the list
+        setPhotos((prev) => [...prev, publicUrl]);
+      }
+      setSelectedImages([]);
+      setShowUploadBar(false);
+    } catch (err) {
+      // Handle error
+    }
+    setLoading(false);
+  };
+
+  // Set as profile photo
+  const setAsProfilePhoto = async () => {
+    if (!zustandUser || !viewPhoto) {
+      console.log("No user or photo selected", { zustandUser, viewPhoto });
       return;
     }
     try {
-      await axios.patch(`/users/${zustandUser.id}`, { photoUrl });
-      Alert.alert("Profile Photo Updated!");
+      console.log("Calling updateUser with:", { photoUrl: viewPhoto });
+      const updated = await updateUser({ photoUrl: viewPhoto });
+      setUser(updated); // Update authStore with the new user data
+      console.log("updateUser response:", updated);
+      Alert.alert("Success", "Profile photo updated!");
       setViewPhoto(null);
-      router.replace("/dashboard");
-    } catch (err) {
-      Alert.alert("Error", "Could not set profile photo.");
+    } catch (error) {
+      console.log("Error updating profile photo:", error);
+      Alert.alert("Error", "Failed to set profile photo. Please try again.");
     }
   };
 
+  // Add photo block as a pseudo-photo at the end
+  const gridData = React.useMemo(() => {
+    const photoObjs = photos.map((url) => ({ url }));
+    return [...photoObjs, { isAddButton: true }];
+  }, [photos]);
+
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff", padding: 16 }}>
       <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 8 }}>
-        Photo Manager
+        Profile Photos
       </Text>
       {loading && <ActivityIndicator size="large" />}
-      {/* Folder List */}
-      <Text style={{ fontWeight: "bold", marginTop: 8 }}>Folders:</Text>
-      <FlatList
-        data={folders}
-        horizontal
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity
-              style={{
-                padding: 8,
-                backgroundColor: selectedFolder === item ? "#007AFF" : "#eee",
-                borderRadius: 8,
-                marginRight: 4,
-              }}
-              onPress={() => setSelectedFolder(item)}
-            >
-              <Text
-                style={{ color: selectedFolder === item ? "#fff" : "#333" }}
-              >
-                {item}
-              </Text>
-            </TouchableOpacity>
-            {/* {!DEFAULT_FOLDERS.includes(item) && (
+      {photos.length === 0 ? (
+        <View style={{ alignItems: "center", marginTop: 40 }}>
+          <Text>No profile photos yet. Add one!</Text>
+          <Button title="Select Photos" onPress={pickMultipleImages} />
+        </View>
+      ) : (
+        <FlatList
+          data={gridData}
+          numColumns={NUM_COLUMNS}
+          keyExtractor={(item, index) =>
+            "isAddButton" in item ? "add-photo" : item.url + index
+          }
+          renderItem={({ item }) =>
+            "isAddButton" in item ? (
               <TouchableOpacity
-                onPress={() => deleteFolder(item)}
-                style={{
-                  backgroundColor: "#ff4444",
-                  borderRadius: 8,
-                  paddingHorizontal: 6,
-                  paddingVertical: 2,
-                  marginLeft: 2,
-                }}
+                style={styles.addPhotoBlock}
+                onPress={pickMultipleImages}
               >
-                <Text style={{ color: "#fff", fontWeight: "bold" }}>🗑</Text>
+                <Text style={{ fontSize: 32, color: "#888" }}>+</Text>
               </TouchableOpacity>
-            )} */}
-          </View>
-        )}
-        ListFooterComponent={
-          <>
-            <TouchableOpacity
-              style={{
-                padding: 8,
-                backgroundColor: "#4CAF50",
-                borderRadius: 8,
-                marginRight: 8,
-              }}
-              onPress={() => setShowAddFolder(true)}
-            >
-              <Text style={{ color: "#fff" }}>+ Add Folder</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                padding: 8,
-                backgroundColor: "#AF4C50",
-                borderRadius: 8,
-                marginRight: 8,
-              }}
-              onPress={() => {
-                if (selectedFolder) {
-                  deleteFolder(selectedFolder);
-                }
-              }}
-              disabled={!selectedFolder}
-            >
-              <Text style={{ color: "#fff" }}>Delete Folder</Text>
-            </TouchableOpacity>
-          </>
-        }
-      />
-
-      {/* Add Folder Modal */}
-      <Modal visible={showAddFolder} transparent animationType="slide">
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "#00000099",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#fff",
-              padding: 24,
-              borderRadius: 12,
-              width: "80%",
-            }}
-          >
-            <Text style={{ fontWeight: "bold", marginBottom: 8 }}>
-              New Folder Name
-            </Text>
-            <TextInput
-              value={newFolderName}
-              onChangeText={setNewFolderName}
-              placeholder="Folder name"
-              style={{
-                borderWidth: 1,
-                borderColor: "#ccc",
-                borderRadius: 8,
-                padding: 8,
-                marginBottom: 16,
-              }}
-            />
-            <Button title="Create" onPress={addFolder} />
-            <Button
-              title="Cancel"
-              onPress={() => setShowAddFolder(false)}
-              color="#888"
-            />
-          </View>
-        </View>
-      </Modal>
-
-      {/* Image Picker and Upload */}
-      {selectedFolder && (
-        <View style={{ marginVertical: 16 }}>
-          <Button title="Pick from Gallery" onPress={() => pickImage(false)} />
-          <Button title="Take a Photo" onPress={() => pickImage(true)} />
-          <Button
-            title="Upload Photo"
-            onPress={uploadImage}
-            disabled={!imageUri}
-          />
-        </View>
+            ) : (
+              <TouchableOpacity onPress={() => setViewPhoto(item.url)}>
+                <View style={{ position: "relative" }}>
+                  <Image
+                    source={{ uri: item.url }}
+                    style={[
+                      styles.gridPhoto,
+                      zustandUser?.photoUrl === item.url && styles.rubyBorder,
+                    ]}
+                  />
+                  {zustandUser?.photoUrl === item.url && (
+                    <View style={styles.defaultBadge}>
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontWeight: "bold",
+                          fontSize: 12,
+                        }}
+                      >
+                        Default
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              </TouchableOpacity>
+            )
+          }
+        />
       )}
 
-      {/* Photo List */}
-      {selectedFolder && (
-        <>
-          <Text style={{ fontWeight: "bold", marginTop: 8 }}>
-            Photos in "{selectedFolder}":
+      {/* Preview selected images before upload */}
+      {showUploadBar && selectedImages.length > 0 && (
+        <View style={{ marginTop: 16 }}>
+          <Text style={{ fontWeight: "bold", marginBottom: 8 }}>
+            Selected Photos ({selectedImages.length})
           </Text>
           <FlatList
-            data={photos}
+            data={selectedImages}
             horizontal
-            keyExtractor={(item) => item}
+            keyExtractor={(item, index) =>
+              item.uri ? item.uri : `selected-${index}`
+            }
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => setViewPhoto(item)}>
+              <TouchableOpacity
+                onPress={() => toggleSelectImage(item.uri)}
+                style={{ position: "relative" }}
+              >
                 <Image
-                  source={{ uri: item }}
-                  style={{ width: 80, height: 80, borderRadius: 8, margin: 8 }}
+                  source={{ uri: item.uri }}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: 8,
+                    margin: 8,
+                    borderWidth: 3,
+                    borderColor: selectedImages.some(
+                      (img) => img.uri === item.uri
+                    )
+                      ? "#c41111"
+                      : "#eee",
+                  }}
                 />
+                {selectedImages.some((img) => img.uri === item.uri) && (
+                  <View style={styles.checkMark}>
+                    <Text style={{ color: "#fff", fontWeight: "bold" }}>✓</Text>
+                  </View>
+                )}
               </TouchableOpacity>
             )}
-            ListEmptyComponent={
-              <Text style={{ margin: 16 }}>No photos yet.</Text>
-            }
           />
-        </>
+          <Button
+            title="Upload Selected Photos"
+            onPress={uploadSelectedImages}
+            disabled={loading || selectedImages.length === 0}
+          />
+        </View>
       )}
 
-      {/* View Photo Modal */}
+      {/* Modal for viewing photo */}
       <Modal visible={!!viewPhoto} transparent animationType="fade">
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "#000000cc",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#fff",
-              padding: 16,
-              borderRadius: 12,
-              alignItems: "center",
-            }}
-          >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
             {viewPhoto && (
               <>
-                <Image
-                  source={{ uri: viewPhoto }}
-                  style={{ width: 300, height: 300, borderRadius: 12 }}
-                />
-                <Button
-                  title="Set as Profile Photo"
-                  onPress={() => setAsProfilePhoto(viewPhoto)}
-                />
-                <Button
-                  title="Close"
-                  onPress={() => setViewPhoto(null)}
-                  color="#888"
-                />
+                <View style={styles.modalImageWrapper}>
+                  <Image
+                    source={{ uri: viewPhoto }}
+                    style={styles.modalImage}
+                    resizeMode="cover"
+                  />
+                  {/* Close X button */}
+                  <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => setViewPhoto(null)}
+                    hitSlop={12}
+                  >
+                    <Text style={styles.closeButtonText}>×</Text>
+                  </TouchableOpacity>
+                  {/* Set as Default button */}
+                  <TouchableOpacity
+                    style={styles.setDefaultButton}
+                    onPress={setAsProfilePhoto}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.setDefaultButtonText}>
+                      Set as Profile Photo
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </>
             )}
           </View>
@@ -432,3 +293,117 @@ export default function ProfilePhotoManagerScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  gridPhoto: {
+    width: PHOTO_SIZE,
+    height: PHOTO_SIZE,
+    borderRadius: 8,
+    margin: PHOTO_MARGIN,
+  },
+  addPhotoBlock: {
+    width: PHOTO_SIZE,
+    height: PHOTO_SIZE,
+    borderRadius: 8,
+    margin: PHOTO_MARGIN,
+    backgroundColor: "#eee",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  checkMark: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "#c41111",
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2,
+  },
+  defaultBadge: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+    backgroundColor: "#c41111",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    zIndex: 3,
+  },
+  rubyBorder: {
+    borderWidth: 2,
+    borderColor: "#c41111",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "#000000cc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "92%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalImageWrapper: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: 18,
+    overflow: "hidden",
+    position: "relative",
+    backgroundColor: "#222",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 18,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 14,
+    right: 14,
+    width: 36,
+    height: 36,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  closeButtonText: {
+    fontSize: 36,
+    color: "#ffffff",
+    fontWeight: "semibold",
+    lineHeight: 24,
+  },
+  setDefaultButton: {
+    position: "absolute",
+    bottom: 18,
+    left: "50%",
+    transform: [{ translateX: -80 }],
+    width: 160,
+    paddingVertical: 10,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  setDefaultButtonText: {
+    color: "#ffffff",
+    fontWeight: "bold",
+    fontSize: 16,
+    letterSpacing: 0.5,
+  },
+});

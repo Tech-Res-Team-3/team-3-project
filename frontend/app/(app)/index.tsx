@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -22,12 +22,7 @@ import {
   GooglePlacesAutocompleteProps,
 } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
-import MapView, {
-  Callout,
-  CalloutSubview,
-  Marker,
-  Region,
-} from "react-native-maps";
+import MapView, { Callout, Marker, Region } from "react-native-maps";
 import DateTimePicker, {
   DateType,
   useDefaultStyles,
@@ -40,17 +35,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { signOut } from "@react-native-firebase/auth";
-import { useCallback } from "react";
-import notifee, { AndroidStyle } from "@notifee/react-native"; // remove after done testing!!
+import notifee, { AndroidStyle } from "@notifee/react-native";
 import { useVehicles } from "../../hooks/vehicle/useVehicles";
+import { useMapStore } from "../../stores/mapStore";
 
 dayjs.locale("en");
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra?.GOOGLE_MAPS_API_KEY;
 const { height, width } = Dimensions.get("window");
+
+const DEFAULT_REGION: Region = {
+  latitude: 34.0522,
+  longitude: -118.2437,
+  latitudeDelta: 0.1,
+  longitudeDelta: 0.1,
+};
+
 async function requestPermissionIfNeeded() {
   const settings = await notifee.requestPermission();
-  // Optionally check settings.authorizationStatus
 }
 
 export default function MainAppScreen() {
@@ -61,23 +63,39 @@ export default function MainAppScreen() {
   const [isEnabled, setIsEnabled] = useState(true);
   const [isCurrentLocationEnabled, setIsCurrentLocationEnabled] =
     useState(true);
-  const [pendingRegion, setPendingRegion] = useState<Region | null>(null);
-  const [region, setRegion] = useState<Region>({
-    latitude: 34.0522,
-    longitude: -118.2437,
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1,
-  });
+
+  const pendingRegion = useMapStore((s) => s.pendingRegion);
+  const setPendingRegion = useMapStore((s) => s.setPendingRegion);
+  const region = useMapStore((s) => s.region) ?? DEFAULT_REGION;
+  const setRegion = useMapStore((s) => s.setRegion);
   const { vehicles, fetchVehiclesNearby } = useVehicles();
   const defaultStyles = useDefaultStyles();
   const [startDate, setStartDate] = useState<DateType>();
   const [endDate, setEndDate] = useState<DateType>();
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [hasRedirected, setHasRedirected] = useState(false); // Prevent infinite redirects
+  const [hasRedirected, setHasRedirected] = useState(false);
+  const [vehiclePrices, setVehiclePrices] = useState<{ [id: number]: number }>(
+    {}
+  );
+
+  useEffect(() => {
+    if (!useMapStore.getState().region) {
+      useMapStore.getState().setRegion(DEFAULT_REGION);
+    }
+  }, []);
+
+  function getOrGeneratePrice(vehicleId: number) {
+    if (vehiclePrices[vehicleId] !== undefined) {
+      return vehiclePrices[vehicleId];
+    }
+    const price = Math.floor(Math.random() * (120 - 40 + 1)) + 40;
+    setVehiclePrices((prev) => ({ ...prev, [vehicleId]: price }));
+    return price;
+  }
 
   requestPermissionIfNeeded();
+
   function getRadiusFromRegion(region: { latitudeDelta: number }) {
-    // Approximate: 1 degree latitude ≈ 111km
     return (region.latitudeDelta / 2) * 111;
   }
 
@@ -99,12 +117,11 @@ export default function MainAppScreen() {
     const timeout = setTimeout(() => {
       const radius = getRadiusFromRegion(region);
       fetchVehiclesNearby(region.latitude, region.longitude, radius);
-    }, 400); // Debounce
+    }, 400);
 
     return () => clearTimeout(timeout);
   }, [region, fetchVehiclesNearby]);
 
-  // Handle back navigation - show logout confirmation modal only when this screen is focused
   useFocusEffect(
     useCallback(() => {
       const backAction = () => {
@@ -112,7 +129,7 @@ export default function MainAppScreen() {
           "Back button pressed on main app - showing logout confirmation modal"
         );
         setShowLogoutModal(true);
-        return true; // Prevent default behavior
+        return true;
       };
 
       const backHandler = BackHandler.addEventListener(
@@ -124,21 +141,21 @@ export default function MainAppScreen() {
     }, [])
   );
 
-  // Handle logout confirmation
   const handleLogoutConfirm = async () => {
     console.log("Starting logout process...");
     setShowLogoutModal(false);
     useLoadingStore.getState().setLoading(true);
 
     try {
-      // Clear Zustand state first
       useAuthStore.getState().clearUser();
       console.log("Cleared Zustand user data");
 
-      // Sign out from Firebase
       const app = getApp();
       const auth = getAuth(app);
       await signOut(auth);
+      useMapStore.getState().setRegion(null);
+      useMapStore.getState().setPendingRegion(null);
+      useMapStore.getState().setLastSearch("");
       console.log(
         "Firebase signOut completed - navigation will be handled by root layout"
       );
@@ -153,7 +170,6 @@ export default function MainAppScreen() {
     setShowLogoutModal(false);
   };
 
-  // The (app) layout handles Firebase auth, so we just check for Zustand user here
   if (!user) {
     console.log("MainAppScreen waiting for user sync");
     return (
@@ -166,7 +182,6 @@ export default function MainAppScreen() {
     );
   }
 
-  // TODO: Create Notifications Screen
   async function handleTestNotification() {
     try {
       await notifee.displayNotification({
@@ -175,7 +190,6 @@ export default function MainAppScreen() {
         android: {
           channelId: "alerts",
           color: "#c41111",
-          // smallIcon: "ic_stat_name", // Remove or ensure it exists
           style: {
             type: AndroidStyle.BIGPICTURE,
             picture: "https://placekitten.com/400/300",
@@ -186,11 +200,6 @@ export default function MainAppScreen() {
     } catch (e) {
       console.log("Notifee error:", e);
     }
-  }
-
-  function getRandomPrice(min = 40, max = 120) {
-    // Returns a random integer between min and max (inclusive)
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   const placesRef = useRef<any>(null);
@@ -222,7 +231,7 @@ export default function MainAppScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Two stacked views at the top (each about 1/6 of height, together ~1/3) */}
+        {/* Two stacked views at the top */}
         <View
           className="flex flex-col w-11/12 bg-white rounded-2xl mb-6 items-center py-6 gap-3"
           style={[styles.shadow]}
@@ -257,25 +266,25 @@ export default function MainAppScreen() {
               container: {
                 flex: 0,
                 alignSelf: "stretch",
-                minHeight: 60, // Ensures the input is visible
-                zIndex: 10, // Makes sure dropdown is above other elements
+                minHeight: 60,
+                zIndex: 10,
               },
               textInputContainer: {
                 width: "100%",
                 minHeight: 48,
                 backgroundColor: "transparent",
                 paddingHorizontal: 6,
-                borderTopWidth: 0, // Remove top border
-                borderBottomWidth: 0, // Remove bottom border
-                borderWidth: 0, // Remove any border
-                elevation: 0, // Remove shadow on Android
+                borderTopWidth: 0,
+                borderBottomWidth: 0,
+                borderWidth: 0,
+                elevation: 0,
                 shadowOpacity: 0,
               },
               textInput: {
                 borderRadius: 24,
                 backgroundColor: "#f3f4f6",
                 fontSize: 16,
-                paddingHorizontal: 20, // Increase for more padding
+                paddingHorizontal: 20,
                 paddingLeft: 20,
                 color: "#222",
                 minHeight: 48,
@@ -310,7 +319,7 @@ export default function MainAppScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Transparent section (about 10% height) */}
+        {/* Transparent section */}
         <View
           className="w-5/6 justify-center py-6"
           style={{ backgroundColor: "transparent" }}
@@ -347,7 +356,7 @@ export default function MainAppScreen() {
           </Text>
         </View>
 
-        {/* Main box with shadow (about 40% height) */}
+        {/* Main box with shadow */}
         <View
           className="w-11/12 bg-white rounded-2xl justify-center items-center"
           style={[
@@ -382,7 +391,7 @@ export default function MainAppScreen() {
             />
           </View>
 
-          {/* Map content placeholder */}
+          {/* Map content */}
           <View className="flex-1 justify-center items-center w-full">
             <MapView
               style={{ width: "100%", height: "100%", borderRadius: 16 }}
@@ -406,15 +415,16 @@ export default function MainAppScreen() {
                       longitude: vehicle.address.longitude ?? 0,
                     }}
                     image={require("../../assets/rao-icon-medium.png")}
-                    // onPress={() => {}}
                   >
-                    <Callout>
-                      <View className="w-fit p-2">
+                    <Callout
+                      onPress={() => router.push(`/vehicle/${vehicle.id}`)}
+                    >
+                      <View className="w-fit p-0">
                         <Text className="font-bold text-base">
                           {vehicle.year} {vehicle.make} {vehicle.model}
                         </Text>
                         <Text className="text-emerald-500 text-lg mt-1">
-                          ${getRandomPrice()}/day
+                          ${getOrGeneratePrice(vehicle.id)}/day
                         </Text>
                       </View>
                     </Callout>
@@ -436,7 +446,6 @@ export default function MainAppScreen() {
               if (pendingRegion) {
                 setRegion(pendingRegion);
               }
-              // In the future, add more logic here for availability, preferences, etc.
             }}
             className="py-6 bg-ruby w-11/12"
             textClassName="text-xl text-white"
