@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import LogoutConfirmationModal from "../../../components/LogoutConfirmationModal";
 import { usePromoteToHost } from "../../../hooks/auth";
 import GlobalLoading from "../../../components/GlobalLoading";
+import { useMapStore } from "../../../stores/mapStore";
 
 // Update your menu items and icons as needed
 const guestMenuItems = [
@@ -186,6 +187,9 @@ export default function DashboardScreen() {
       const app = getApp();
       const auth = getAuth(app);
       await signOut(auth);
+      useMapStore.getState().setRegion(null);
+      useMapStore.getState().setPendingRegion(null);
+      useMapStore.getState().setLastSearch("");
       console.log("[Logout] Firebase signOut complete");
     } catch (error) {
       console.error("[Logout] Error:", error);

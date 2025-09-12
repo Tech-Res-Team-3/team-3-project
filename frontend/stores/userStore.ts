@@ -20,9 +20,12 @@ export const useUserStore = create<UserStoreState>((set) => ({
     setUsers: (users) => set({ users }),
     addUser: (user) => set((state) => ({ users: [...state.users, user] })),
     updateUser: (user) =>
-        set((state) => ({
-            users: state.users.map((u) => (u.id === user.id ? user : u)),
-        })),
+        set((state) => {
+            console.log("Zustand updateUser called with:", user);
+            return {
+                users: state.users.map((u) => (u.id === user.id ? user : u)),
+            };
+        }),
     removeUser: (userId) =>
         set((state) => ({
             users: state.users.filter((u) => u.id !== userId),
