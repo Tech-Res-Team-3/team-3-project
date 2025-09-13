@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Modal,
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,15 +19,25 @@ import DateTimePicker, {
 } from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { Button } from "../../../../components/Button";
+import { useBookings } from "../../../../hooks/booking/useBookings";
+import { useTrips } from "../../../../hooks/trip/useTrips";
+import { useAuthStore } from "../../../../stores/authStore";
+import axiosInstance from "../../../../utils/axios";
 
 const { width, height } = Dimensions.get("window");
 
 export default function VehicleDetailScreen() {
   const defaultStyles = useDefaultStyles();
-  const { vehicleId } = useLocalSearchParams();
+  const { price, vehicleId } = useLocalSearchParams();
   const vehicle = useVehicleStore((state) =>
     state.vehicles.find((v) => v.id === Number(vehicleId))
   );
+  const bookingPrice = Number(price) || 0;
+  const { addTrip } = useTrips();
+  const user = useAuthStore((s) => s.user);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const { addBooking } = useBookings();
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [activeDateField, setActiveDateField] = useState<"from" | "to" | null>(
@@ -235,6 +246,86 @@ export default function VehicleDetailScreen() {
           </View>
         </View>
       )}
+      {/* Booking Confirmation Modal */}
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowConfirmModal(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.3)",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 16,
+              padding: 24,
+              width: "85%",
+            }}
+          >
+            <Text className="text-xl font-bold mb-2">Confirm Your Booking</Text>
+            <Text>
+              Vehicle: {vehicle.year} {vehicle.make} {vehicle.model}
+            </Text>
+            <Text>
+              From: {formatDate(fromDate)} {fromTime}
+            </Text>
+            <Text>
+              To: {formatDate(toDate)} {toTime}
+            </Text>
+            <Text className="mt-2 text-lg font-semibold">
+              Price: ${bookingPrice}
+            </Text>
+            <View className="flex-row justify-between mt-6">
+              <Button
+                title="Cancel"
+                className="bg-gray-300 flex-1 mr-2"
+                textClassName="text-gray-800"
+                onPress={() => setShowConfirmModal(false)}
+              />
+              <Button
+                title="Book"
+                className="bg-ruby flex-1 ml-2"
+                textClassName="text-white"
+                onPress={async () => {
+                  // Prepare trip data
+                  const tripData = {
+                    startLocation: { latitude: 0, longitude: 0 }, // TODO: get real values
+                    endLocation: { latitude: 0, longitude: 0 }, // TODO: get real values
+                    startAt: fromDate
+                      ? dayjs.isDayjs(fromDate)
+                        ? fromDate.toDate().toISOString()
+                        : new Date(fromDate).toISOString()
+                      : new Date().toISOString(),
+                    endAt: toDate
+                      ? dayjs.isDayjs(toDate)
+                        ? toDate.toDate().toISOString()
+                        : new Date(toDate).toISOString()
+                      : new Date().toISOString(),
+                    status: "SCHEDULED",
+                    price: bookingPrice,
+                    discount: 0,
+                    rating: 0,
+                    userId: user?.id,
+                    vehicleId: vehicle.id,
+                  };
+                  // Call backend to create trip (and booking)
+                  const res = await axiosInstance.post("/trips", tripData);
+                  addTrip(res.data); // Add to Zustand
+                  setShowConfirmModal(false);
+                  // Optionally navigate or show success
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
