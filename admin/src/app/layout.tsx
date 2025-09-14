@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -10,6 +11,12 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: "RAO Admin Portal",
   description: "The admin portal for RAO Rentals",
+  manifest: "/manifest.webmanifest",
+  themeColor: "#0f172a",
+  // icons: {
+  //   icon: '',
+  //   apple: ''
+  // }
 };
 
 export default function RootLayout({
@@ -19,7 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`${openSans.className}`}>{children}</body>
+      <body className={`${openSans.className}`}>
+        <Navbar />
+        <div className='px-2'>{children}</div>
+      </body>
     </html>
   );
 }
