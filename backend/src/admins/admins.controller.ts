@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AdminsService } from './providers/admins.service';
-import { GetUsersFilter } from './dto';
+import { GetUsersFilter, VehicleFilterDto } from './dto';
 import { FirebaseAuthGuard } from 'src/firebase/guards/firebase-auth.guard';
 import { Roles } from 'src/firebase/decorators/roles.decorator';
 import { RolesGuard } from 'src/firebase/guards/roles.guard';
@@ -35,6 +35,11 @@ export class AdminsController {
   @Get('/users/:firebaseUid')
   async getUser(@Param('firebaseUid') firebaseUid: string) {
     return this.adminService.getUser(firebaseUid);
+  }
+
+  @Get('/vehicles')
+  async getAllVehicles(@Query() vehicleFilterDto: VehicleFilterDto) {
+    return this.adminService.getAllVehicles(vehicleFilterDto);
   }
 
   @Patch('/user/:firebaseUid')
