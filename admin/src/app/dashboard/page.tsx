@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const [filter, setFilter] = useState<"ALL" | "GUEST" | "HOST" | "ADMIN">(
     "ALL"
   );
+  const [selectedTab, setSelectedTab] = useState<"USERS" | "VEHICLES">("USERS");
 
   useEffect(() => {
     const stored = localStorage.getItem("adminUser");
@@ -80,60 +81,95 @@ export default function DashboardPage() {
       )}
 
       <div className="border rounded-lg shadow-md p-4 mt-20">
-        <div className="flex items-center justify-between mb-4">
-          <select
-            id="roleFilter"
-            value={filter}
-            onChange={(e) =>
-              setFilter(e.target.value as "ALL" | "GUEST" | "HOST" | "ADMIN")
-            }
-            className="border rounded-md p-1 cursor-pointer"
+        <div className="flex items-center gap-4 border-b mb-4">
+          <button
+            className={`px-4 py-2 rounded-t-md cursor-pointer ${
+              selectedTab === "USERS"
+                ? "bg-red-500 text-white border-t border-1 border-r"
+                : "bg-gray-200"
+            }`}
+            onClick={() => setSelectedTab("USERS")}
           >
-            <option value="ALL">All Users</option>
-            <option value="GUEST">Guests</option>
-            <option value="HOST">Hosts</option>
-            <option value="ADMIN">Admins</option>
-          </select>
+            Users
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-md cursor-pointer ${
+              selectedTab === "VEHICLES"
+                ? "bg-red-500 text-white border-t border-1 border-r"
+                : "bg-gray-200"
+            }`}
+            onClick={() => setSelectedTab("VEHICLES")}
+          >
+            Vehicles
+          </button>
         </div>
 
-        {loading ? (
-          <p>Loading users</p>
-        ) : users.length === 0 ? (
-          <p>No users found</p>
-        ) : (
-          <div className="max-h-150 overflow-y-auto border rounded-md">
-            <table className="w-full text-left">
-              <thead className="bg-gray-100 sticky top-0">
-                <tr>
-                  <th className="p-2">UID</th>
-                  <th className="p-2">First Name</th>
-                  <th className="p-2">Last Name</th>
-                  <th className="p-2">Role</th>
-                  <th className="p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr
-                    key={user.firebaseUid}
-                    className="border-b hover:bg-gray-50"
-                  >
-                    <td className="p-2">{user.firebaseUid}</td>
-                    <td className="p-2">{user.firstName}</td>
-                    <td className="p-2">{user.lastName}</td>
-                    <td className="p-2 capitalize">{user.role}</td>
-                    <td className="p-2">
-                      <button
-                        onClick={() => handlViewUser(user)}
-                        className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+        {selectedTab === "USERS" && (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <select
+                id="roleFilter"
+                value={filter}
+                onChange={(e) =>
+                  setFilter(
+                    e.target.value as "ALL" | "GUEST" | "HOST" | "ADMIN"
+                  )
+                }
+                className="border rounded-md p-1 cursor-pointer"
+              >
+                <option value="ALL">All Users</option>
+                <option value="GUEST">Guests</option>
+                <option value="HOST">Hosts</option>
+                <option value="ADMIN">Admins</option>
+              </select>
+            </div>
+
+            {loading ? (
+              <p>Loading users</p>
+            ) : users.length === 0 ? (
+              <p>No users found</p>
+            ) : (
+              <div className="max-h-150 overflow-y-auto border rounded-md">
+                <table className="w-full text-left">
+                  <thead className="bg-gray-100 sticky top-0">
+                    <tr>
+                      <th className="p-2">UID</th>
+                      <th className="p-2">First Name</th>
+                      <th className="p-2">Last Name</th>
+                      <th className="p-2">Role</th>
+                      <th className="p-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((user) => (
+                      <tr
+                        key={user.firebaseUid}
+                        className="border-b hover:bg-gray-50"
                       >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        <td className="p-2">{user.firebaseUid}</td>
+                        <td className="p-2">{user.firstName}</td>
+                        <td className="p-2">{user.lastName}</td>
+                        <td className="p-2 capitalize">{user.role}</td>
+                        <td className="p-2">
+                          <button
+                            onClick={() => handlViewUser(user)}
+                            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
+
+        {selectedTab === "VEHICLES" && (
+          <div>
+            <p>Vehicels table coming soon...</p>
           </div>
         )}
       </div>
