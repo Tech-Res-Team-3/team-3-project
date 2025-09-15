@@ -32,6 +32,17 @@ export default function LoginPage() {
         body: JSON.stringify({ forAdminPortal: true }),
       });
 
+      const data = await res.json();
+
+      localStorage.setItem(
+        "adminUser",
+        JSON.stringify({
+          uid: user.uid,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+        })
+      );
+
       if (!res.ok) throw new Error("Not authorized for admin portal!");
 
       router.push("/dashboard");
