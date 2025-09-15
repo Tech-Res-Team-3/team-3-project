@@ -34,11 +34,11 @@ export default function Navbar() {
   };
 
   return (
-    <div className="bg-red-500 p-2 md:p-4 relative">
+    <div className="bg-red-500 p-5 md:p-4 relative">
       <div className="flex justify-between items-center">
         <div className="flex justify-between gap-3">
-          <RaoMain className="w-20 h-10 text-white" />
-          <RentalsMain className="w-32 h-10 text-white" />
+          <RaoMain className="w-16 md:w-20 h-10 text-white" />
+          <RentalsMain className="w-28 md:w-32 h-10 text-white" />
         </div>
 
         <div className="hidden md:flex gap-4">
