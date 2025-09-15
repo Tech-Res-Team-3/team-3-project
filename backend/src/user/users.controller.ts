@@ -1,4 +1,12 @@
-import { Body, Controller, UseGuards, Patch, Post, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  UseGuards,
+  Patch,
+  Post,
+  Get,
+  ForbiddenException,
+} from '@nestjs/common';
 import { UsersService } from './providers/users.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
 import { SyncUserDto } from './dto/sync-user.dto';
@@ -46,6 +54,17 @@ export class UsersController {
       role: body.role === 'ADMIN' ? 'ADMIN' : 'GUEST',
     });
     return { message: 'User synced', user: dbUser };
+  }
+
+  @Post('admin-sync')
+  async syncAdminUser(@CurrentUser() user: AuthenticatedUser) {
+    const dbUser = await this.usersService.verifyAdmin(user.uid);
+
+    if (!dbUser) {
+      throw new ForbiddenException('Not authorized for admin portal');
+    }
+
+    return { message: 'Admin access granted', user: dbUser };
   }
 
   /** Promotes the current user to host. */

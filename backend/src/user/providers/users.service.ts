@@ -15,7 +15,6 @@ export class UsersService {
     firebaseUid: string;
     email: string;
     role: 'GUEST' | 'ADMIN';
-  
   }) {
     return this.prisma.user.upsert({
       where: { firebaseUid: data.firebaseUid },
@@ -28,6 +27,22 @@ export class UsersService {
         role: data.role,
       },
     });
+  }
+
+  async verifyAdmin(firebaseUid: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { firebaseUid },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.role !== 'ADMIN') {
+      return false;
+    }
+
+    return user;
   }
 
   /** Updates a user in the database. */
