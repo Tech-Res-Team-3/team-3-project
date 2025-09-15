@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { logout, subscribeToAuthState } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import RaoMain from "./icons/RAO-main.svg";
+import RentalsMain from "./icons/Rentals-main.svg";
 
 export default function Navbar() {
   const router = useRouter();
@@ -34,9 +36,11 @@ export default function Navbar() {
   return (
     <div className="bg-red-500 p-2 md:p-4 relative">
       <div className="flex justify-between items-center">
-        <p className="font-semibold tracking-wide text-white md:text-xl">
-          RAO Rentals
-        </p>
+        <div className="flex justify-between gap-3">
+          <RaoMain className="w-20 h-10 text-white" />
+          <RentalsMain className="w-32 h-10 text-white" />
+        </div>
+
         <div className="hidden md:flex gap-4">
           {user ? (
             <button
