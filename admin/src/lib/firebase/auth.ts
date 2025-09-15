@@ -17,9 +17,7 @@ export async function logout() {
   return await signOut(auth);
 }
 
-export async function subscribeToAuthState(
-  callback: (user: User | null) => void
-) {
+export function subscribeToAuthState(callback: (user: User | null) => void) {
   return onAuthStateChanged(auth, callback);
 }
 

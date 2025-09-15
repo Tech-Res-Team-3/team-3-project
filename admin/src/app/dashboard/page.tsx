@@ -1,22 +1,70 @@
 "use client";
 
+import { getCurrentUser } from "@/lib/firebase/auth";
 import { useState, useEffect } from "react";
 
 interface AdminUser {
-  uid: string;
+  firebaseUid: string;
   firstName: string;
   lastName: string;
 }
 
+interface UserOrHost {
+  firebaseUid: string;
+  firstName: string;
+  lastName: string;
+  role: "GUEST" | "HOST";
+}
+
 export default function DashboardPage() {
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
+  const [users, setUsers] = useState<UserOrHost[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState<"ALL" | "GUEST" | "HOST" | "ADMIN">(
+    "ALL"
+  );
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("adminUser");
-    if (storedUser) {
-      setAdminUser(JSON.parse(storedUser));
+    const stored = localStorage.getItem("adminUser");
+    if (stored) {
+      setAdminUser(JSON.parse(stored));
     }
   }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+
+      const user = await getCurrentUser();
+      if (!user) return;
+
+      try {
+        const idToken = await user.getIdToken();
+
+        const query = filter !== "ALL" ? `?role=${filter}` : "";
+        const res = await fetch(`http://localhost:3333/admin/users${query}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch users");
+
+        const data: UserOrHost[] = await res.json();
+        setUsers(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, [filter]);
+
+  const handlViewUser = (user: UserOrHost) => {
+    alert(`Viewing ${user.firstName} ${user.lastName}`);
+  };
 
   if (!adminUser) {
     return <p>Loading admin info...</p>;
@@ -24,9 +72,71 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4 flex flex-col gap-2">
-      <p className="font-semibold text-2xl">
-        Welcome <span className="text-red-500">{`${adminUser.firstName}`}</span>
-      </p>
+      {adminUser && (
+        <p className="font-semibold text-2xl">
+          Welcome{" "}
+          <span className="text-red-500">{`${adminUser.firstName} ${adminUser.lastName}`}</span>
+        </p>
+      )}
+
+      <div className="border rounded-lg shadow-md p-4 mt-20">
+        <div className="flex items-center justify-between mb-4">
+          <select
+            id="roleFilter"
+            value={filter}
+            onChange={(e) =>
+              setFilter(e.target.value as "ALL" | "GUEST" | "HOST" | "ADMIN")
+            }
+            className="border rounded-md p-1 cursor-pointer"
+          >
+            <option value="ALL">All Users</option>
+            <option value="GUEST">Guests</option>
+            <option value="HOST">Hosts</option>
+            <option value="ADMIN">Admins</option>
+          </select>
+        </div>
+
+        {loading ? (
+          <p>Loading users</p>
+        ) : users.length === 0 ? (
+          <p>No users found</p>
+        ) : (
+          <div className="max-h-150 overflow-y-auto border rounded-md">
+            <table className="w-full text-left">
+              <thead className="bg-gray-100 sticky top-0">
+                <tr>
+                  <th className="p-2">UID</th>
+                  <th className="p-2">First Name</th>
+                  <th className="p-2">Last Name</th>
+                  <th className="p-2">Role</th>
+                  <th className="p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr
+                    key={user.firebaseUid}
+                    className="border-b hover:bg-gray-50"
+                  >
+                    <td className="p-2">{user.firebaseUid}</td>
+                    <td className="p-2">{user.firstName}</td>
+                    <td className="p-2">{user.lastName}</td>
+                    <td className="p-2 capitalize">{user.role}</td>
+                    <td className="p-2">
+                      <button
+                        onClick={() => handlViewUser(user)}
+                        className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
