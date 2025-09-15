@@ -170,7 +170,7 @@ export default function DashboardPage() {
             </div>
 
             {loading ? (
-              <p>Loading users</p>
+              <p>Loading users...</p>
             ) : users.length === 0 ? (
               <p>No users found</p>
             ) : (
@@ -242,7 +242,7 @@ export default function DashboardPage() {
             </div>
 
             {loading ? (
-              <p>Loading users</p>
+              <p>Loading vehicles...</p>
             ) : users.length === 0 ? (
               <p>No users found</p>
             ) : (
