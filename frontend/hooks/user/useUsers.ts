@@ -28,6 +28,20 @@ export function useUsers() {
         }
     }, [setUsers, setLoading, setError]);
 
+    const fetchUser = useCallback(async (id: number) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await axios.get(`/users/${id}`);
+            return res.data;
+        } catch (err: any) {
+            setError(err.message || 'Failed to fetch user');
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }, [setLoading, setError]);
+
     // Update user in backend and Zustand
     const updateUser = useCallback(async (patch: Partial<User>) => {
         setLoading(true);
@@ -50,6 +64,7 @@ export function useUsers() {
     return {
         users,
         fetchAllUsers,
+        fetchUser,
         addUser,
         updateUser,
         removeUser,

@@ -417,7 +417,12 @@ export default function MainAppScreen() {
                     image={require("../../assets/rao-icon-medium.png")}
                   >
                     <Callout
-                      onPress={() => router.push(`/vehicle/${vehicle.id}`)}
+                      onPress={() =>
+                        router.push({
+                          pathname: `/vehicle/${vehicle.id}`,
+                          params: { price: getOrGeneratePrice(vehicle.id) },
+                        })
+                      }
                     >
                       <View className="w-fit p-0">
                         <Text className="font-bold text-base">

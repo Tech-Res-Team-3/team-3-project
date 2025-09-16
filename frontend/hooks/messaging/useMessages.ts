@@ -18,22 +18,34 @@ export function useMessages() {
     // Create a new message
     const createMessage = useCallback(
         async (msg: any) => {
-            if (!user) return;
-            const id = await firestoreMessages.createMessage({
-                ...msg,
-                fromUid: user.firebaseUid,
-            });
-            // Optionally fetch or add to store
-            fetchMessages();
-            return id;
+            if (!user) {
+                console.log("No user, cannot send message");
+                return;
+            }
+            try {
+                console.log("Sending message:", { ...msg, fromUid: user.firebaseUid });
+                const id = await firestoreMessages.createMessage({
+                    ...msg,
+                    fromUid: user.firebaseUid,
+                });
+                console.log("Message sent, Firestore ID:", id);
+            } catch (err) {
+                console.error("Error sending message:", err);
+            }
         },
-        [user, fetchMessages]
+        [user]
     );
 
     // Update a message
     const updateMessage = useCallback(
         async (id: string, updates: any) => {
             await firestoreMessages.updateMessage(id, updates);
+            useMessageStore.getState().setMessages(
+                useMessageStore.getState().messages.map((msg) =>
+                    msg.id === id ? { ...msg, ...updates } : msg
+                )
+            );
+            console.log(`Updated message ${id} in local store with:`, updates);
             fetchMessages();
         },
         [fetchMessages]

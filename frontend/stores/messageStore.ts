@@ -1,9 +1,10 @@
 import { create } from "zustand";
+import type { Message } from "../types/message";
 
 interface MessageState {
-    messages: any[];
-    addMessage: (msg: any) => void;
-    setMessages: (msgs: any[]) => void;
+    messages: Message[];
+    addMessage: (msg: Message) => void;
+    setMessages: (msgs: Message[]) => void;
     clearMessages: () => void;
 }
 
