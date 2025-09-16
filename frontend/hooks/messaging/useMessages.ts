@@ -40,6 +40,12 @@ export function useMessages() {
     const updateMessage = useCallback(
         async (id: string, updates: any) => {
             await firestoreMessages.updateMessage(id, updates);
+            useMessageStore.getState().setMessages(
+                useMessageStore.getState().messages.map((msg) =>
+                    msg.id === id ? { ...msg, ...updates } : msg
+                )
+            );
+            console.log(`Updated message ${id} in local store with:`, updates);
             fetchMessages();
         },
         [fetchMessages]

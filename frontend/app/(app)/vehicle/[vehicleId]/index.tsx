@@ -26,10 +26,12 @@ import { useAuthStore } from "../../../../stores/authStore";
 import axiosInstance from "../../../../utils/axios";
 import { useLoadingStore } from "../../../../stores/loadingStore";
 import { useMessages } from "../../../../hooks/messaging/useMessages";
+import { useUsers } from "../../../../hooks/user/useUsers";
 
 const { width, height } = Dimensions.get("window");
 
 export default function VehicleDetailScreen() {
+  const { fetchUser } = useUsers();
   const { createMessage } = useMessages();
   const setLoading = useLoadingStore((s) => s.setLoading);
   const defaultStyles = useDefaultStyles();
@@ -104,11 +106,10 @@ export default function VehicleDetailScreen() {
 
   const handleBookRental = async () => {
     console.log("handleBookRental called");
-
     console.log("user:", user);
     console.log("vehicle:", vehicle);
-    console.log("vehicle.user:", vehicle?.user);
-    console.log("vehicle.user.firebaseUid:", vehicle?.user?.firebaseUid);
+    console.log("vehicle.userId:", vehicle?.userId);
+
     try {
       setShowConfirmModal(false);
       setLoading(true);
@@ -140,24 +141,32 @@ export default function VehicleDetailScreen() {
 
       console.log("Trip created:", res.data);
 
-      if (vehicle?.user?.firebaseUid && user) {
-        console.log("About to send message to:", vehicle.user.firebaseUid);
-        await createMessage({
-          toUid: vehicle.user.firebaseUid,
-          text:
-            `New booking for your vehicle: ${vehicle.year} ${vehicle.make} ${vehicle.model}\n` +
-            `From: ${formatDate(fromDate)} ${fromTime}\n` +
-            `To: ${formatDate(toDate)} ${toTime}\n` +
-            `Total: $${totalPrice.toFixed(2)}`,
-          meta: {
-            tripId: res.data.id,
-            bookingPrice: totalPrice,
-            from: combineDateTime(fromDate, fromTime).toISOString(),
-            to: combineDateTime(toDate, toTime).toISOString(),
-            bookedBy: user.firstName + " " + (user.lastName ?? ""),
-          },
-        });
-        console.log("createMessage called");
+      // Fetch vehicle owner user and send message
+      if (vehicle?.userId && user) {
+        console.log("Fetching vehicle owner by userId:", vehicle.userId);
+        const ownerUser = await fetchUser(vehicle.userId);
+        console.log("Fetched owner user:", ownerUser);
+
+        if (ownerUser?.firebaseUid) {
+          await createMessage({
+            toUid: ownerUser.firebaseUid,
+            text:
+              `New booking for your vehicle: ${vehicle.year} ${vehicle.make} ${vehicle.model}\n` +
+              `From: ${formatDate(fromDate)} ${fromTime}\n` +
+              `To: ${formatDate(toDate)} ${toTime}\n` +
+              `Total: $${totalPrice.toFixed(2)}`,
+            meta: {
+              tripId: res.data.id,
+              bookingPrice: totalPrice,
+              from: combineDateTime(fromDate, fromTime).toISOString(),
+              to: combineDateTime(toDate, toTime).toISOString(),
+              bookedBy: user.firstName + " " + (user.lastName ?? ""),
+            },
+          });
+          console.log("createMessage called");
+        } else {
+          console.log("Owner user does not have a firebaseUid!");
+        }
       }
 
       setTimeout(() => {
