@@ -1,6 +1,6 @@
-import { Body, Injectable, Param, Patch } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GetUsersFilter } from '../dto';
+import { GetUsersFilter, VehicleFilterDto } from '../dto';
 import { PatchUserDto } from 'src/user/dto/patch-user.dto';
 import { UpdateAddressDto } from 'src/address/dto';
 import { UpdateVehicleDto } from 'src/vehicle/dto';
@@ -14,7 +14,7 @@ export class AdminsService {
 
   /** Get all users endpoint */
   async getAllUsers(filterDto: GetUsersFilter) {
-    const { firstName, lastName, firebaseUid } = filterDto;
+    const { firstName, lastName, firebaseUid, role } = filterDto;
 
     return this.prisma.user.findMany({
       where: {
@@ -25,6 +25,7 @@ export class AdminsService {
           lastName: { contains: lastName, mode: 'insensitive' },
         }),
         ...(firebaseUid && { firebaseUid }),
+        ...(role && { role }),
       },
     });
   }
@@ -38,6 +39,23 @@ export class AdminsService {
         addresses: true,
         driverLicenses: true,
       },
+    });
+  }
+
+  async getAllVehicles(vehicleFilterDto: VehicleFilterDto) {
+    const { make, model } = vehicleFilterDto;
+
+    return this.prisma.vehicle.findMany({
+      where: {
+        ...(make && { make: { contains: make, mode: 'insensitive' } }),
+        ...(model && { model: { contains: model, mode: 'insensitive' } }),
+      },
+    });
+  }
+
+  async getVehicle(id: number) {
+    return await this.prisma.vehicle.findUnique({
+      where: { id },
     });
   }
 

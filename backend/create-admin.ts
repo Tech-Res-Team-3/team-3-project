@@ -1,7 +1,5 @@
 import * as admin from 'firebase-admin';
-import * as firebase from 'firebase/app';
 import * as dotenv from 'dotenv';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 dotenv.config();
 
@@ -15,13 +13,6 @@ if (!admin.apps.length) {
   });
 }
 
-const clientApp = firebase.initializeApp({
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-});
-
-const clientAuth = getAuth(clientApp);
-
 async function createAdminUser(email: string, password: string) {
   try {
     const userRecord = await admin.auth().createUser({
@@ -31,17 +22,10 @@ async function createAdminUser(email: string, password: string) {
 
     await admin.auth().setCustomUserClaims(userRecord.uid, { role: 'ADMIN' });
 
-    const userCredentials = await signInWithEmailAndPassword(
-      clientAuth,
-      email,
-      password,
-    );
-    const idToken = await userCredentials.user.getIdToken(true);
-
-    console.log(`ADMIN role token: ${idToken}`);
+    console.log(`ADMIN created`);
   } catch (error) {
     console.log('Error creating admin user:', error);
   }
 }
 
-createAdminUser('admin@test.com', 'test123');
+createAdminUser('admintest@test.com', 'test123');
