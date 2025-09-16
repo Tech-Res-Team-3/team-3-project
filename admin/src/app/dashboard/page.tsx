@@ -41,16 +41,28 @@ export default function DashboardPage() {
     model: "",
   });
   const [selectedTab, setSelectedTab] = useState<"USERS" | "VEHICLES">("USERS");
+  const [authChecked, setauthCkecked] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const stored = localStorage.getItem("adminUser");
-    if (stored) {
+    const checkAuth = async () => {
+      const user = await getCurrentUser();
+      const stored = localStorage.getItem("adminUser");
+
+      if (!user || !stored) {
+        router.replace("/login");
+        return;
+      }
+
       setAdminUser(JSON.parse(stored));
-    }
-  }, []);
+      setauthCkecked(true);
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
+    if (!authChecked) return;
+
     const fetchUsers = async () => {
       setLoading(true);
 
@@ -104,7 +116,7 @@ export default function DashboardPage() {
       }
     };
     fetchUsers();
-  }, [selectedTab, userFilter, vehicleFilter]);
+  }, [selectedTab, userFilter, vehicleFilter, authChecked]);
 
   const handlViewUser = (user: UserOrHost) => {
     router.push(`/dashboard/users/${user.firebaseUid}`);
