@@ -6,6 +6,7 @@ import {
   Post,
   Get,
   ForbiddenException,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './providers/users.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
@@ -84,5 +85,10 @@ export class UsersController {
   @Get('/me')
   async getMe(@CurrentUser() user: AuthenticatedUser) {
     return this.usersService.getMe(user.uid);
+  }
+
+  @Get('/:firebaseUid')
+  async getUser(@Param('firebaseUid') firebaseUid: string) {
+    return this.usersService.getUser(firebaseUid);
   }
 }

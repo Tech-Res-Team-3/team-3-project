@@ -11,6 +11,7 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: "RAO Admin Portal",
   description: "The admin portal for RAO Rentals",
+  manifest: "/manifest.ts",
 };
 
 export default function RootLayout({
