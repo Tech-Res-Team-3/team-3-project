@@ -4,6 +4,9 @@ import { useState } from "react";
 import { getCurrentUser, login } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 
+console.log("login:", login);
+console.log("getCurrentUser:", getCurrentUser);
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
