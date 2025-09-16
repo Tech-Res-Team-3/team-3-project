@@ -53,6 +53,12 @@ export class AdminsService {
     });
   }
 
+  async getVehicle(id: number) {
+    return await this.prisma.vehicle.findUnique({
+      where: { id },
+    });
+  }
+
   /** Update a users information */
   async updateUser(firebaseUid: string, pathUserDto: PatchUserDto) {
     return await this.prisma.user.update({

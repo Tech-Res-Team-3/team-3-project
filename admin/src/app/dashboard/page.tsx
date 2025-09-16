@@ -1,6 +1,7 @@
 "use client";
 
 import { getCurrentUser } from "@/lib/firebase/auth";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 interface AdminUser {
@@ -40,15 +41,28 @@ export default function DashboardPage() {
     model: "",
   });
   const [selectedTab, setSelectedTab] = useState<"USERS" | "VEHICLES">("USERS");
+  const [authChecked, setauthCkecked] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    const stored = localStorage.getItem("adminUser");
-    if (stored) {
+    const checkAuth = async () => {
+      const user = await getCurrentUser();
+      const stored = localStorage.getItem("adminUser");
+
+      if (!user || !stored) {
+        router.replace("/login");
+        return;
+      }
+
       setAdminUser(JSON.parse(stored));
-    }
-  }, []);
+      setauthCkecked(true);
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
+    if (!authChecked) return;
+
     const fetchUsers = async () => {
       setLoading(true);
 
@@ -102,14 +116,14 @@ export default function DashboardPage() {
       }
     };
     fetchUsers();
-  }, [selectedTab, userFilter, vehicleFilter]);
+  }, [selectedTab, userFilter, vehicleFilter, authChecked]);
 
   const handlViewUser = (user: UserOrHost) => {
-    alert(`Viewing ${user.firstName} ${user.lastName}`);
+    router.push(`/dashboard/users/${user.firebaseUid}`);
   };
 
   const handleViewVehicle = (vehicle: VehicleType) => {
-    alert(`Viewing ${vehicle.make} ${vehicle.model}`);
+    router.push(`/dashboard/vehicles/${vehicle.id}`);
   };
 
   if (!adminUser) {
@@ -274,9 +288,13 @@ export default function DashboardPage() {
                         <td className="p-2">
                           <button
                             onClick={() => handleViewVehicle(vehicle)}
-                            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+                            className={`px-3 py-1 rounded-md cursor-pointer ${
+                              vehicle.verified
+                                ? "bg-blue-500 text-white hover:bg-blue-600"
+                                : "bg-red-500 text-white hover:bg-red-600"
+                            }`}
                           >
-                            View
+                            {vehicle.verified ? "View" : "Needs Review"}
                           </button>
                         </td>
                       </tr>
