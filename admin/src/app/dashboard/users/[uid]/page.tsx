@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getCurrentUser } from "@/lib/firebase/auth";
 
 interface UserDetails {
@@ -18,6 +18,7 @@ export default function UserDetailsPage() {
   const [user, setUser] = useState<UserDetails | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -64,7 +65,13 @@ export default function UserDetailsPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="p-6 max-w-2xl w-full bg-white shadow rounded-lg">
+      <div className="p-6 max-w-2xl w-full bg-white shadow rounded-lg text-center">
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="mb-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 cursor-pointer"
+        >
+          &larr; Back to Dashboard
+        </button>
         <h1 className="text-2xl font-bold mb-4">
           {user.firstName} {user.lastName}
         </h1>
