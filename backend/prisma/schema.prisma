@@ -110,7 +110,7 @@ model Vehicle {
   seats           Int          @default(5)
   type            String
   vehicleImage    String?
-  verified         Boolean      @default(false)
+  verified        Boolean      @default(false)
   rating          Float        @default(0)
   hasSeatbelts    Boolean      @default(true)
   seatbeltType    SeatbeltType @default(BOTH)

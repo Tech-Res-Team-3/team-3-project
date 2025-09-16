@@ -42,6 +42,11 @@ export class AdminsController {
     return this.adminService.getAllVehicles(vehicleFilterDto);
   }
 
+  @Get('/vehicles/:id')
+  async getVehicle(@Param('id', ParseIntPipe) id: number) {
+    return this.adminService.getVehicle(id);
+  }
+
   @Patch('/user/:firebaseUid')
   async updateUser(
     @Param('firebaseUid') firebaseUid: string,

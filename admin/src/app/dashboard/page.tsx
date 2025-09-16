@@ -1,6 +1,7 @@
 "use client";
 
 import { getCurrentUser } from "@/lib/firebase/auth";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 interface AdminUser {
@@ -40,6 +41,7 @@ export default function DashboardPage() {
     model: "",
   });
   const [selectedTab, setSelectedTab] = useState<"USERS" | "VEHICLES">("USERS");
+  const router = useRouter();
 
   useEffect(() => {
     const stored = localStorage.getItem("adminUser");
@@ -105,11 +107,11 @@ export default function DashboardPage() {
   }, [selectedTab, userFilter, vehicleFilter]);
 
   const handlViewUser = (user: UserOrHost) => {
-    alert(`Viewing ${user.firstName} ${user.lastName}`);
+    router.push(`/dashboard/users/${user.firebaseUid}`);
   };
 
   const handleViewVehicle = (vehicle: VehicleType) => {
-    alert(`Viewing ${vehicle.make} ${vehicle.model}`);
+    router.push(`/dashboard/vehicles/${vehicle.id}`);
   };
 
   if (!adminUser) {
