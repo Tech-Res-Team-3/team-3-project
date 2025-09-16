@@ -276,9 +276,13 @@ export default function DashboardPage() {
                         <td className="p-2">
                           <button
                             onClick={() => handleViewVehicle(vehicle)}
-                            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+                            className={`px-3 py-1 rounded-md cursor-pointer ${
+                              vehicle.verified
+                                ? "bg-blue-500 text-white hover:bg-blue-600"
+                                : "bg-red-500 text-white hover:bg-red-600"
+                            }`}
                           >
-                            View
+                            {vehicle.verified ? "View" : "Needs Review"}
                           </button>
                         </td>
                       </tr>
