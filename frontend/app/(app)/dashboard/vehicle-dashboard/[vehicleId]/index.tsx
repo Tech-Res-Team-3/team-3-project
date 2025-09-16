@@ -1,12 +1,14 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as VehicleDashboardIcons from "../../../../../components/icons/dashboard/vehicle/VehicleDashboardIcons";
 import { useVehicleStore } from "../../../../../stores/vehicleStore";
 import { Button } from "../../../../../components/Button";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function VehicleDashboardScreen() {
+  const router = useRouter();
   const { vehicleId } = useLocalSearchParams();
   const vehicle = useVehicleStore((state) =>
     state.vehicles.find((v) => v.id === Number(vehicleId))
@@ -79,6 +81,25 @@ export default function VehicleDashboardScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100 items-center">
+      <View className="w-full bg-gray-100 border-b border-gray-200">
+        <View className="flex-row items-center justify-between px-4 pt-4 pb-3 relative">
+          {/* Back Arrow */}
+          <TouchableOpacity
+            onPress={() => router.replace("/dashboard/vehicle-listings")}
+            hitSlop={12}
+            className="w-10 h-10 justify-center items-start"
+          >
+            <Ionicons name="arrow-back" size={32} color="#c41111" />
+          </TouchableOpacity>
+          {/* Centered Title */}
+          <View className="absolute left-0 right-0 items-center">
+            <Text className="text-2xl font-bold text-gray-900">
+              Vehicle Dashboard
+            </Text>
+          </View>
+          <View className="w-10 h-10" />
+        </View>
+      </View>
       {/* Vehicle Profile Card */}
       <View
         className="w-11/12 bg-white rounded-xl items-center mb-2 pb-2"
