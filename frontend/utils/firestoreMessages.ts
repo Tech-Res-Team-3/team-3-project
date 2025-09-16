@@ -3,10 +3,12 @@ import firestore from "@react-native-firebase/firestore";
 const messagesCollection = firestore().collection("messages");
 
 export const createMessage = async (message: any) => {
+    console.log("firestoreMessages.createMessage called with:", message);
     const docRef = await messagesCollection.add({
         ...message,
         timestamp: firestore.FieldValue.serverTimestamp(),
     });
+    console.log("Firestore write complete");
     return docRef.id;
 };
 
