@@ -7,6 +7,7 @@ import {
   Get,
   ForbiddenException,
   Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './providers/users.service';
 import { FirebaseAuthGuard } from '../firebase/guards/firebase-auth.guard';
@@ -87,8 +88,8 @@ export class UsersController {
     return this.usersService.getMe(user.uid);
   }
 
-  @Get('/:firebaseUid')
-  async getUser(@Param('firebaseUid') firebaseUid: string) {
-    return this.usersService.getUser(firebaseUid);
+  @Get('/:id')
+  async getUser(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getUser(id);
   }
 }

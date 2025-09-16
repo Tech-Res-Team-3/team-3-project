@@ -78,9 +78,9 @@ export class UsersService {
     });
   }
 
-  async getUser(firebaseUid: string) {
+  async getUser(id: number) {
     return this.prisma.user.findUnique({
-      where: { firebaseUid },
+      where: { id },
     });
   }
 }
