@@ -1,22 +1,12 @@
-import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import SplashOverlay from "../components/SplashOverlay";
-import HomeScreen from "./home"; // Import your home screen component
 
 export default function Index() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  return (
-    <View style={styles.container}>
-      {showSplash && <SplashOverlay onFinish={() => setShowSplash(false)} />}
-      {!showSplash && <HomeScreen />}
-    </View>
-  );
+  return <View style={styles.container} />;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff", // or your home screen's background
+    backgroundColor: "#c41111",
   },
 });

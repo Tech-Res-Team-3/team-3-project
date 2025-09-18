@@ -217,12 +217,12 @@ export default function MainAppScreen() {
             onPress={() => router.push("/dashboard")}
             size={45}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => router.push("/complete-profile")}
             style={styles.circleButton}
           >
             <Text className="text-ruby">X</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={handleTestNotification}
             style={styles.circleButton}
