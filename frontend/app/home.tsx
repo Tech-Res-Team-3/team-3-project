@@ -7,10 +7,13 @@ import { useAuthStore } from "../stores/authStore";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { useLoadingStore } from "../stores/loadingStore";
+import LottieView from "lottie-react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 export default function HomeScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const [lottieDone, setLottieDone] = useState(false);
 
   // Check if user is authenticated when they press login button
   const handleLoginPress = () => {
@@ -40,16 +43,23 @@ export default function HomeScreen() {
         <SafeAreaView className="flex-1">
           {/* Logo */}
           <View className="flex-col items-center justify-center gap-9 pt-20">
-            <Image
-              source={require("../assets/logo-main.png")}
-              className="w-3/4 h-44"
-              resizeMode="contain"
+            {/* Lottie Animation */}
+            <LottieView
+              source={require("../assets/animations/rao-home-screen.json")}
+              autoPlay
+              loop={false}
+              style={{ width: "75%", height: 176 }} // h-44 = 176px
+              onAnimationFinish={() => setLottieDone(true)}
             />
-            <Image
-              source={require("../assets/logo-sub.png")}
-              className="w-2/4 h-9"
-              resizeMode="contain"
-            />
+            {/* Sub Logo fades in after Lottie */}
+            {lottieDone && (
+              <Animated.Image
+                entering={FadeIn.duration(700)}
+                source={require("../assets/logo-sub.png")}
+                style={{ width: "50%", height: 36 }} // h-9 = 36px
+                resizeMode="contain"
+              />
+            )}
           </View>
           {/* Buttons */}
           <View className="absolute bottom-0 left-0 right-0 pb-20 flex-col items-center justify-end gap-6">

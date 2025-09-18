@@ -11,7 +11,7 @@ const config: ExpoConfig = {
   userInterfaceStyle: "light",
   newArchEnabled: true,
   splash: {
-    image: "./assets/transparent.png",
+    image: "./assets/rao-logo-white_pad.png",
     resizeMode: "contain",
     backgroundColor: "#c41111"
   },
@@ -38,6 +38,7 @@ const config: ExpoConfig = {
   },
   plugins: [
     "./plugins/withCustomGradle",
+    "./plugins/withNotifeeAndroidFix",
     "./plugins/withGoogleServicesJson",
     "expo-router"
   ],

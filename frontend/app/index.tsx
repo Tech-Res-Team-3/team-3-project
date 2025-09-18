@@ -1,22 +1,21 @@
-import React, { useState } from "react";
+import { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import SplashOverlay from "../components/SplashOverlay";
-import HomeScreen from "./home"; // Import your home screen component
+import { useRouter } from "expo-router";
 
 export default function Index() {
-  const [showSplash, setShowSplash] = useState(true);
+  const router = useRouter();
 
-  return (
-    <View style={styles.container}>
-      {showSplash && <SplashOverlay onFinish={() => setShowSplash(false)} />}
-      {!showSplash && <HomeScreen />}
-    </View>
-  );
+  useEffect(() => {
+    // Navigate to /home as soon as possible
+    router.replace("/home");
+  }, [router]);
+
+  return <View style={styles.container} />;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff", // or your home screen's background
+    backgroundColor: "#c41111",
   },
 });
