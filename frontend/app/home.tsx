@@ -39,16 +39,16 @@ export default function HomeScreen() {
         resizeMode="cover"
       >
         {/* Overlay */}
-        <View className="absolute inset-0 bg-white/40" pointerEvents="none" />
+        <View className="absolute inset-0 bg-white/55" pointerEvents="none" />
         <SafeAreaView className="flex-1">
           {/* Logo */}
-          <View className="flex-col items-center justify-center gap-9 pt-20">
+          <View className="flex-col items-center justify-center">
             {/* Lottie Animation */}
             <LottieView
               source={require("../assets/animations/rao-home-screen.json")}
               autoPlay
               loop={false}
-              style={{ width: "75%", height: 176 }} // h-44 = 176px
+              style={{ width: 300, height: 300 }} // h-44 = 176px
               onAnimationFinish={() => setLottieDone(true)}
             />
             {/* Sub Logo fades in after Lottie */}

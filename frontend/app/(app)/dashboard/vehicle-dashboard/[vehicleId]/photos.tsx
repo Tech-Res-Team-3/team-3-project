@@ -80,7 +80,7 @@ export default function VehiclePhotosScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
-      quality: 0.7,
+      quality: 0.6,
       selectionLimit: 10, // adjust as needed
     });
     if (!result.canceled && result.assets && result.assets.length > 0) {
