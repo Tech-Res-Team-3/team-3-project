@@ -6,12 +6,9 @@ Car owners often have thousands of dollars in idle vehicle value, while renters 
 
 ## Team Members & Roles
 
-- **Ken Brown** - Backend Software Engineer
 - **Cameron Stanley** - Backend Software Engineer
-- **Dustin Snellings** - Fullstack Software Engineer
-- **Kyle Coffie** - Frontend Software Engineer
 - **Andre Livsey** - Frontend Software Engineer
-- **Jim Gorman** - Cybersecurity Specialist
+
 
 ## Tech Stack
 
